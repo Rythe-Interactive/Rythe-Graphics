@@ -2,7 +2,7 @@
 #include <graphics/data/model.hpp>
 #include <graphics/data/material.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     struct skybox_renderer
     {

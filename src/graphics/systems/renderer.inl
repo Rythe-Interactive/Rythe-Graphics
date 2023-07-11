@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 #pragma once
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     template<typename PipelineType>
     std::unordered_map<app::window, std::unique_ptr<PipelineType>> pipeline_provider<PipelineType>::m_pipelines;

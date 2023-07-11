@@ -1,15 +1,15 @@
 #include <graphics/pipeline/default/postfx/fxaa.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void FXAA::setup(app::window& context)
     {
-        using namespace legion::core::fs::literals;
+        using namespace rythe::core::fs::literals;
         m_fxaaShader = ShaderCache::create_shader("fxaa", "engine://shaders/fxaa.shs"_view);
         addRenderPass<&FXAA::renderPass>();
     }
 
-    void FXAA::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void FXAA::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         //Try to get color attachment.
         auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);

@@ -1,14 +1,14 @@
 #include "pipeline.hpp"
 #pragma once
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     template<typename Self>
     std::multimap<priority_type, std::unique_ptr<RenderStageBase>, std::greater<>> RenderPipeline<Self>::m_stages;
 
 
     template<typename T>
-    L_NODISCARD inline bool RenderPipelineBase::has_meta(const std::string& name)
+    R_NODISCARD inline bool RenderPipelineBase::has_meta(const std::string& name)
     {
         id_type id = nameHash(name);
         return m_metadata.count(id) && (m_metadata[id].type() == typeid(T));
@@ -32,7 +32,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD inline T* RenderPipelineBase::get_meta(const std::string& name)
+    R_NODISCARD inline T* RenderPipelineBase::get_meta(const std::string& name)
     {
         id_type id = nameHash(name);
 
@@ -42,7 +42,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD inline bool RenderPipelineBase::has_meta(id_type nameHash)
+    R_NODISCARD inline bool RenderPipelineBase::has_meta(id_type nameHash)
     {
         return m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T));
     }
@@ -63,7 +63,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD inline T* RenderPipelineBase::get_meta(id_type nameHash)
+    R_NODISCARD inline T* RenderPipelineBase::get_meta(id_type nameHash)
     {
         if (m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T)))
             return std::any_cast<T>(&m_metadata[nameHash]);
@@ -103,7 +103,7 @@ namespace legion::rendering
     }
 
     template<typename Self>
-    inline void RenderPipeline<Self>::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    inline void RenderPipeline<Self>::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         m_abort = false;
         for (auto& [_, stage] : m_stages)

@@ -2,7 +2,7 @@
 #include <graphics/data/shader.hpp>
 #include <core/core.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class ShaderCompiler
     {

@@ -4,7 +4,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <graphics/pipeline/gui/stages/imguirenderstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void ImGuiStage::setup(app::window& context)
     {
@@ -22,7 +22,7 @@ namespace legion::rendering
     }
 
     void ImGuiStage::render(app::window& context, camera& cam, const camera::camera_input& camInput,
-        time::span deltaTime)
+        rsl::span deltaTime)
     {
         static id_type mainId = nameHash("main");
 
@@ -75,5 +75,5 @@ namespace legion::rendering
         return ui_priority;
     }
 
-    multicast_delegate<void(app::window&, camera&, const camera::camera_input&, time::span)> ImGuiStage::m_onGuiRender;
+    rsl::multicast_delegate<void(app::window&, camera&, const camera::camera_input&, rsl::span)> ImGuiStage::m_onGuiRender;
 }

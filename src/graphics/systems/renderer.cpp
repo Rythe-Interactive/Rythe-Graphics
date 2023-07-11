@@ -1,13 +1,13 @@
 #include <graphics/systems/renderer.hpp>
 #include <graphics/debuggraphics.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     std::unique_ptr<pipeline_provider_base> Renderer::m_pipelineProvider;
 
     RenderPipelineBase* Renderer::m_currentPipeline;
 
-    void Renderer::debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED const void* userParam)
+    void Renderer::debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam)
     {
         if (id == 131185) // Filter out annoying Nvidia message of: Buffer you made will use VRAM because you told us that you want it to allocate VRAM.
             return;
@@ -25,7 +25,7 @@ namespace legion::rendering
             }
         }
 
-        cstring s;
+        rsl::cstring s;
         switch (source)
         {
         case GL_DEBUG_SOURCE_API:
@@ -48,7 +48,7 @@ namespace legion::rendering
             break;
         }
 
-        cstring t;
+        rsl::cstring t;
 
         switch (type)
         {
@@ -104,7 +104,7 @@ namespace legion::rendering
         }
     }
 
-    void Renderer::debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED const void* userParam)
+    void Renderer::debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam)
     {
         static bool checkedNames = false;
 
@@ -119,7 +119,7 @@ namespace legion::rendering
             }
         }
 
-        cstring s;
+        rsl::cstring s;
         switch (source)
         {
         case GL_DEBUG_SOURCE_API_ARB:
@@ -145,7 +145,7 @@ namespace legion::rendering
             break;
         }
 
-        cstring t;
+        rsl::cstring t;
 
         switch (type)
         {
@@ -189,7 +189,7 @@ namespace legion::rendering
         }
     }
 
-    void Renderer::debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED void* userParam)
+    void Renderer::debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED void* userParam)
     {
         static bool checkedNames = false;
 
@@ -204,7 +204,7 @@ namespace legion::rendering
             }
         }
 
-        cstring c;
+        rsl::cstring c;
         switch (category)
         {
         case GL_DEBUG_CATEGORY_API_ERROR_AMD:
@@ -303,7 +303,7 @@ namespace legion::rendering
 
     void Renderer::setThreadPriority()
     {
-#ifdef LEGION_WINDOWS
+#ifdef RYTHE_WINDOWS
         if (SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST))
         {
             log::info("Acquired realtime priority for rendering thread.");
@@ -316,7 +316,7 @@ namespace legion::rendering
             else*/
             log::warn("Rendering thread failed to enter realtime priority mode: {}", dwError);
         }
-#endif // LEGION_WINDOWS
+#endif // RYTHE_WINDOWS
     }
 
     void Renderer::setup()
@@ -366,7 +366,7 @@ namespace legion::rendering
         m_exiting.store(true, std::memory_order_release);
     }
 
-    void Renderer::render(time::span deltatime)
+    void Renderer::render(rsl::span deltatime)
     {
         if (!m_pipelineProvider)
             return;
@@ -419,7 +419,7 @@ namespace legion::rendering
         }
     }
 
-    L_NODISCARD RenderPipelineBase* Renderer::getPipeline(app::window& context)
+    R_NODISCARD RenderPipelineBase* Renderer::getPipeline(app::window& context)
     {
         if (!m_pipelineProvider)
             return nullptr;
@@ -430,12 +430,12 @@ namespace legion::rendering
         return m_pipelineProvider->get(context);
     }
 
-    L_NODISCARD RenderPipelineBase* Renderer::getCurrentPipeline()
+    R_NODISCARD RenderPipelineBase* Renderer::getCurrentPipeline()
     {
         return m_currentPipeline;
     }
 
-    L_NODISCARD RenderPipelineBase* Renderer::getMainPipeline()
+    R_NODISCARD RenderPipelineBase* Renderer::getMainPipeline()
     {
         if (!m_pipelineProvider)
             return nullptr;

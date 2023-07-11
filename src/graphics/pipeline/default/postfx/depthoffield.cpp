@@ -3,7 +3,7 @@
 #include <core/filesystem/filesystem.hpp>
 
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     std::atomic_bool DepthOfField::m_autoFocus = { false };
 
@@ -39,7 +39,7 @@ namespace legion::rendering
         // Adding itself to the post processing renderpass.
         addRenderPass<&DepthOfField::renderPass>();
     }
-    void DepthOfField::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void DepthOfField::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         //Gets textures from framebuffer.
         auto [valid_textures, depth_texture, color_texture] = getTextures(fbo);

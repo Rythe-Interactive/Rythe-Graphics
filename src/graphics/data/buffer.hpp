@@ -5,7 +5,7 @@
  * @file buffer.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     /**@class buffer
      * @brief Low level rendering buffer that can be used for all kinds of purposes.
@@ -46,7 +46,7 @@ namespace legion::rendering
          * @param usage Intended memory usage. eg: GL_STATIC_DRAW (Data doesn't change and ised for drawing many times), GL_DYNAMIC_READ (Changes all the time and is used for reading back to CPU)
          * @note If the buffer is allocated with a nullptr as the data pointer then the memory in VRAM may be garbage when read. Do not assume null writes to happen.
          */
-        buffer(GLenum target, size_type size, void* data, GLenum usage);
+        buffer(GLenum target, rsl::size_type size, void* data, GLenum usage);
 
         /**@brief Main non allocating constructor. This constructor actually creates the GPU side buffer and binds it to this instance.
          * @param target The buffer type to create. eg: GL_ARRAY_BUFFER, GL_SHADER_STORAGE_BUFFER
@@ -57,19 +57,19 @@ namespace legion::rendering
 
         /**@brief Returns the rendering API id of the buffer. Useful for low level native rendering.
          */
-        L_NODISCARD app::gl_id id() const;
+        R_NODISCARD app::gl_id id() const;
 
         /**@brief Returns the rendering API type/target of the buffer. Useful for low level native rendering.
          */
-        L_NODISCARD GLenum target() const;
+        R_NODISCARD GLenum target() const;
 
         /**@brief Returns the rendering API intended memory usage of the buffer. Useful for low level native rendering.
          */
-        L_NODISCARD GLenum usage() const;
+        R_NODISCARD GLenum usage() const;
 
         /**@brief Returns the current size of the buffer in bytes.
          */
-        L_NODISCARD size_type size() const;
+        R_NODISCARD rsl::size_type size() const;
 
         /**@brief Bind buffer to a set indexed buffer binding location in shaders.
          * @note Read more at <a href="http://docs.gl/gl4/glBindBufferBase">docs.gl.</a>
@@ -80,7 +80,7 @@ namespace legion::rendering
 
         /**@brief Resize the buffer to a new size. This reallocates VRAM and thus invalidates all data in the buffer.
          */
-        void resize(size_type newSize) const;
+        void resize(rsl::size_type newSize) const;
 
         /**@brief Send new data to the VRAM of the buffer. This may reallocate the buffer if the size of the new data is larger than the previously allocated VRAM.
          * @param data Vector with the data to send.
@@ -92,14 +92,14 @@ namespace legion::rendering
          * @param size Size the data to send.
          * @param data Pointer to the data to send. (Should not be a nullptr, if you only want to allocate/reallocate then use the resize function.)
          */
-        void bufferData(size_type size, void* data) const;
+        void bufferData(rsl::size_type size, void* data) const;
 
         /**@brief Send new data to the VRAM of the buffer with a certain offset. This function does not reallocate data and thus the sum of offset + size cannot be more that the size of the buffer.
          * @param offset Offset since the start of the buffer in bytes.
          * @param size Size of the new data in bytes.
          * @param data Pointer to the new data to write.
          */
-        void bufferData(size_type offset, size_type size, void* data) const;
+        void bufferData(rsl::size_type offset, rsl::size_type size, void* data) const;
 
         /**@brief Bind the buffer to the current context. Useful for low level native rendering.
          */

@@ -2,7 +2,7 @@
 #include <graphics/data/buffer.hpp>
 #include <graphics/data/vertexarray.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     struct screen_quad
     {
@@ -10,7 +10,7 @@ namespace legion::rendering
         screen_quad() = default;
         explicit screen_quad(std::nullptr_t)
         {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())
             {
                 log::error("No current context to create screen quad with.");
@@ -42,7 +42,7 @@ namespace legion::rendering
 
         void render()
         {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())
             {
                 log::error("No current context to work with.");

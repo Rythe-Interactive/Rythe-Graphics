@@ -1,7 +1,7 @@
 #pragma once
 #include <graphics/pipeline/base/pipeline.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class DefaultPipeline : public RenderPipeline<DefaultPipeline>
     {

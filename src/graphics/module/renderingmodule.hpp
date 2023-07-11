@@ -4,14 +4,14 @@
 #include <graphics/components/renderable.hpp>
 #include <graphics/components/light.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class RenderingModule : public Module
     {
     public:
         virtual void setup() override
         {
-            for (cstring extension : stbi_texture_loader::extensions)
+            for (rsl::cstring extension : stbi_texture_loader::extensions)
                 fs::AssetImporter::reportConverter<stbi_texture_loader>(extension);
 
             registerComponentType<camera>();

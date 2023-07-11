@@ -1,13 +1,13 @@
 #include <graphics/pipeline/default/postfx/skybox.hpp>
 #include <graphics/components/renderable.hpp>
-namespace legion::rendering
+namespace rythe::rendering
 {
     void Skybox::setup(app::window& context)
     {
         addRenderPass<&Skybox::renderPass>();
     }
 
-    void Skybox::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void Skybox::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         ecs::filter<skybox_renderer> filter;
         static id_type matricesId = nameHash("model matrix buffer");

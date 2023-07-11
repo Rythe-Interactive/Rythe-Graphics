@@ -9,7 +9,7 @@
  * @file shader.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     struct camera;
     struct shader;
@@ -129,7 +129,7 @@ namespace legion::rendering
     }
 
     template<>
-    inline void uniform<math::vec3>::set_value(const math::vec3& value)
+    inline void uniform<rsl::math::float3>::set_value(const rsl::math::float3& value)
     {
         if (is_valid())
             glUniform3fv(m_location, 1, math::value_ptr(value));
@@ -495,7 +495,7 @@ namespace legion::rendering
         static shader* get_shader(id_type id);
 
         static void process_io(shader& shader, id_type id);
-        static app::gl_id compile_shader(GLuint shaderType, cstring source, GLint sourceLength);
+        static app::gl_id compile_shader(GLuint shaderType, rsl::cstring source, GLint sourceLength);
 
         static bool load_precompiled(const fs::view& file, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
         static void store_precompiled(const fs::view& file, const shader_ilo& ilo, const std::unordered_map<std::string, shader_state>& state);

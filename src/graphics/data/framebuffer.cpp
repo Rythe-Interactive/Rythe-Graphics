@@ -1,13 +1,13 @@
 #include <graphics/data/framebuffer.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     framebuffer::framebuffer(GLenum target)
         : m_id([](app::gl_id& value) { // Assign logic for framebuffer deletion to managed resource.
             if (!app::ContextHelper::initialized())
                 return;
 
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to delete framebuffer with.");
@@ -19,7 +19,7 @@ namespace legion::rendering
             }, invalid_id),
         m_target(target)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to create framebuffer with.");
@@ -31,7 +31,7 @@ namespace legion::rendering
 
     std::pair<bool, std::string> framebuffer::verify() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -46,7 +46,7 @@ namespace legion::rendering
         const auto verification = glCheckNamedFramebufferStatus(m_id, m_target); // Fetch the framebuffer status.
         glBindFramebuffer(m_target, 0);
 
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         // Initialize to success so no extra allocations need to happen when everything is good.
         std::pair<bool, std::string> result(true, std::string("Framebuffer is complete."));
 
@@ -168,7 +168,7 @@ namespace legion::rendering
 
     void framebuffer::bind() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -181,7 +181,7 @@ namespace legion::rendering
 
     void framebuffer::attach(renderbuffer rbo, GLenum attachment)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -202,7 +202,7 @@ namespace legion::rendering
 
     void framebuffer::attach(texture_handle texture, GLenum attachment)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -250,7 +250,7 @@ namespace legion::rendering
 
     void framebuffer::attach(attachment att, GLenum attachment)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -280,7 +280,7 @@ namespace legion::rendering
         m_attachments[attachment] = att; // Insert the attachment into the map of attachments.
     }
 
-    L_NODISCARD const attachment& framebuffer::getAttachment(GLenum attachment) const
+    R_NODISCARD const attachment& framebuffer::getAttachment(GLenum attachment) const
     {
         if (m_id.value == 0)
         {
@@ -295,7 +295,7 @@ namespace legion::rendering
 
     void framebuffer::release() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -306,7 +306,7 @@ namespace legion::rendering
         glBindFramebuffer(m_target, 0);
     }
 
-    L_NODISCARD framebuffer::operator bool() const
+    R_NODISCARD framebuffer::operator bool() const
     {
         return m_id.value;
     }

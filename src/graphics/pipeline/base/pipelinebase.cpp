@@ -1,6 +1,6 @@
 #include <graphics/pipeline/base/pipelinebase.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     std::atomic_bool RenderPipelineBase::m_exiting = { false };
 
@@ -31,13 +31,13 @@ namespace legion::rendering
         return &m_framebuffers[id];
     }
 
-    L_NODISCARD bool RenderPipelineBase::hasFramebuffer(const std::string& name, GLenum target)
+    R_NODISCARD bool RenderPipelineBase::hasFramebuffer(const std::string& name, GLenum target)
     {
         id_type id = nameHash(name);
         return m_framebuffers.contains(id) && m_framebuffers[id].target() == target;
     }
 
-    L_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(const std::string& name)
+    R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(const std::string& name)
     {
         id_type id = nameHash(name);
         if(m_framebuffers.contains(id))
@@ -60,12 +60,12 @@ namespace legion::rendering
         return &m_framebuffers[nameHash];
     }
 
-    L_NODISCARD bool RenderPipelineBase::hasFramebuffer(id_type nameHash, GLenum target)
+    R_NODISCARD bool RenderPipelineBase::hasFramebuffer(id_type nameHash, GLenum target)
     {
         return m_framebuffers.contains(nameHash) && m_framebuffers[nameHash].target() == target;
     }
 
-    L_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(id_type nameHash)
+    R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(id_type nameHash)
     {
         if (m_framebuffers.contains(nameHash))
             return &m_framebuffers[nameHash];

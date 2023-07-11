@@ -48,7 +48,7 @@
 /* attachment 2 */ #define POSITION_ATTACHMENT  NORMAL_ATTACHMENT + 1
 /* attachment 3 */ #define OVERDRAW_ATTACHMENT  POSITION_ATTACHMENT + 1
 
-namespace legion::rendering::detail
+namespace rythe::rendering::detail
 {
     inline const std::vector<std::string>& get_default_defines()
     {

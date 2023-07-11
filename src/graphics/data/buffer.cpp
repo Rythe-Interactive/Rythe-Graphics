@@ -1,13 +1,13 @@
 #include <graphics/data/buffer.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void buffer::idDeleter(app::gl_id& value)
     {
         if (!app::ContextHelper::initialized())
             return;
 
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to delete buffer with.");
@@ -18,12 +18,12 @@ namespace legion::rendering
             glDeleteBuffers(1, &value);
     }
 
-    buffer::buffer(GLenum target, size_type size, void* data, GLenum usage)
+    buffer::buffer(GLenum target, rsl::size_type size, void* data, GLenum usage)
         : m_id(&buffer::idDeleter, invalid_id),
         m_target(target),
         m_usage(usage)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to create buffer with.");
@@ -42,7 +42,7 @@ namespace legion::rendering
         m_target(target),
         m_usage(usage)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to create buffer with.");
@@ -55,24 +55,24 @@ namespace legion::rendering
         glBindBuffer(target, 0);
     }
 
-    L_NODISCARD app::gl_id buffer::id() const
+    R_NODISCARD app::gl_id buffer::id() const
     {
         return m_id;
     }
 
-    L_NODISCARD GLenum buffer::target() const
+    R_NODISCARD GLenum buffer::target() const
     {
         return m_target;
     }
 
-    L_NODISCARD GLenum buffer::usage() const
+    R_NODISCARD GLenum buffer::usage() const
     {
         return m_usage;
     }
 
-    L_NODISCARD size_type buffer::size() const
+    R_NODISCARD rsl::size_type buffer::size() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to read data from.");
@@ -80,7 +80,7 @@ namespace legion::rendering
         }
 #endif
 
-        size_type size;
+        rsl::size_type size;
         glBindBuffer(m_target, m_id);
         glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&size)); // Fetch VRAM size of the currently bound buffer.
         glBindBuffer(m_target, 0);
@@ -89,7 +89,7 @@ namespace legion::rendering
 
     void buffer::bindBufferBase(uint index) const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -107,9 +107,9 @@ namespace legion::rendering
         glBindBuffer(m_target, 0);
     }
 
-    void buffer::resize(size_type newSize) const
+    void buffer::resize(rsl::size_type newSize) const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -122,9 +122,9 @@ namespace legion::rendering
         glBindBuffer(m_target, 0);
     }
 
-    void buffer::bufferData(size_type size, void* data) const
+    void buffer::bufferData(rsl::size_type size, void* data) const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -134,7 +134,7 @@ namespace legion::rendering
 
         glBindBuffer(m_target, m_id);
 
-        size_type oldSize;
+        rsl::size_type oldSize;
         glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)); // Fetch the previous size of the buffer.
 
         if (oldSize >= size)
@@ -145,16 +145,16 @@ namespace legion::rendering
         glBindBuffer(m_target, 0);
     }
 
-    void buffer::bufferData(size_type offset, size_type size, void* data) const
+    void buffer::bufferData(rsl::size_type offset, rsl::size_type size, void* data) const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
             return;
         }
 
-        size_type oldSize;
+        rsl::size_type oldSize;
         glBindBuffer(m_target, m_id);
         glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)); // Fetch VRAM size of the currently bound buffer.
         glBindBuffer(m_target, 0);
@@ -171,7 +171,7 @@ namespace legion::rendering
 
     void buffer::bind() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -184,7 +184,7 @@ namespace legion::rendering
 
     void buffer::release() const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");

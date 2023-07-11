@@ -13,7 +13,7 @@
  * @file model.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     /**@class model
      * @brief Struct containing all the buffer ids and the VAO needed for rendering.
@@ -90,9 +90,9 @@ namespace legion::rendering
 namespace std
 {
     template<>
-    struct hash<legion::rendering::model_handle>
+    struct hash<rythe::rendering::model_handle>
     {
-        std::size_t operator()(legion::rendering::model_handle const& handle) const noexcept
+        std::size_t operator()(rythe::rendering::model_handle const& handle) const noexcept
         {
             return static_cast<std::size_t>(handle.id);
         }

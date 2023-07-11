@@ -1,25 +1,25 @@
 #include <graphics/pipeline/default/postfx/bloom.hpp>
 #include <graphics/systems/renderer.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
-    size_type Bloom::m_blurIterations = 5;
+    rsl::size_type Bloom::m_blurIterations = 5;
 
-    void Bloom::setIterationCount(size_type count)
+    void Bloom::setIterationCount(rsl::size_type count)
     {
-        m_blurIterations = math::min(count, static_cast<size_type>(10));
+        m_blurIterations = math::min(count, static_cast<rsl::size_type>(10));
     }
 
     void Bloom::setup(app::window& context)
     {
-        using namespace legion::core::fs::literals;
+        using namespace rythe::core::fs::literals;
         // Create all the shaders needed.
         m_brightnessThresholdShader = rendering::ShaderCache::create_shader("bloom brightness threshold", "engine://shaders/bloombrightnessthreshold.shs"_view);
         m_combineShader = rendering::ShaderCache::create_shader("bloom combine", "engine://shaders/bloomcombine.shs"_view);
 
         m_resampleShader = ShaderCache::create_shader("bloom resample", "engine://shaders/resample.shs"_view);
         auto fbSize = context.size() / 2;
-        for (size_type i = 0; i < 10; i++)
+        for (rsl::size_type i = 0; i < 10; i++)
         {
             m_downSampleTex[i] = TextureCache::create_texture("bloomTex" + std::to_string(i), fbSize, settings);
 
@@ -64,7 +64,7 @@ namespace legion::rendering
         if (m_downSampleTex[0].get_texture().size() != framebufferSize / 2)
         {
             auto fbSize = framebufferSize;
-            for (size_type i = 0; i < 10; i++)
+            for (rsl::size_type i = 0; i < 10; i++)
             {
                 m_downSampleTex[i].get_texture().resize(fbSize);
 
@@ -77,7 +77,7 @@ namespace legion::rendering
 
         texture_handle src = overdrawtexture;
 
-        auto sampleProcess = [&](size_type idx, bool upSample)
+        auto sampleProcess = [&](rsl::size_type idx, bool upSample)
         {
             auto& fbo = m_pingpongFrameBuffers[idx % 2];
             fbo.attach(m_downSampleTex[idx], FRAGMENT_ATTACHMENT);
@@ -96,12 +96,12 @@ namespace legion::rendering
 
         m_resampleShader.configure_variant("downsample");
 
-        for (size_type i = 0; i < m_blurIterations; i++)
+        for (rsl::size_type i = 0; i < m_blurIterations; i++)
             sampleProcess(i, false);
 
         m_resampleShader.configure_variant("upsample");
 
-        for (size_type i = 1; i < m_blurIterations; i++)
+        for (rsl::size_type i = 1; i < m_blurIterations; i++)
             sampleProcess(m_blurIterations - i - 1, true);
 
         return src;
@@ -131,7 +131,7 @@ namespace legion::rendering
         fbo.release();
     }
 
-    void Bloom::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void Bloom::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         // If a brightness threshold texture had not been created yet, create one.
         texture_handle overdrawTexture;

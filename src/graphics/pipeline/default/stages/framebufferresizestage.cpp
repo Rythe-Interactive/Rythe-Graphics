@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/stages/framebufferresizestage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     std::atomic<float> FramebufferResizeStage::m_renderScale = 1.f;
 
@@ -116,7 +116,7 @@ namespace legion::rendering
         TextureCache::destroy_texture("depth_stencil_image1");
     }
 
-    void FramebufferResizeStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void FramebufferResizeStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         static id_type sceneColorId = nameHash("scene color history");
         static id_type sceneNormalId = nameHash("scene normal history");

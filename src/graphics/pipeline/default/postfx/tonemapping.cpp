@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/postfx/tonemapping.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     std::atomic<id_type> Tonemapping::m_currentShader = { nameHash("aces tonemapping") };
     std::atomic_bool Tonemapping::m_autoExposure = { false };
@@ -11,7 +11,7 @@ namespace legion::rendering
         static id_type acesId = nameHash("aces tonemapping");
         static id_type reinhardId = nameHash("reinhard tonemapping");
         static id_type reinhardJodieId = nameHash("reinhard jodie tonemapping");
-        static id_type legionId = nameHash("legion tonemapping");
+        static id_type rytheId = nameHash("rythe tonemapping");
         static id_type unreal3Id = nameHash("unreal3 tonemapping");
 
         switch (type)
@@ -25,14 +25,14 @@ namespace legion::rendering
         case tonemapping_type::reinhard_jodie:
             m_currentShader.store(reinhardJodieId, std::memory_order_relaxed);
             break;
-        case tonemapping_type::legion:
-            m_currentShader.store(legionId, std::memory_order_relaxed);
+        case tonemapping_type::rythe:
+            m_currentShader.store(rytheId, std::memory_order_relaxed);
             break;
         case tonemapping_type::unreal3:
             m_currentShader.store(unreal3Id, std::memory_order_relaxed);
             break;
         default:
-            m_currentShader.store(legionId, std::memory_order_relaxed);
+            m_currentShader.store(rytheId, std::memory_order_relaxed);
             break;
         }
     }
@@ -49,16 +49,16 @@ namespace legion::rendering
 
     void Tonemapping::setup(app::window& context)
     {
-        using namespace legion::core::fs::literals;
+        using namespace rythe::core::fs::literals;
         rendering::ShaderCache::create_shader("aces tonemapping", "engine://shaders/aces.shs"_view);
         rendering::ShaderCache::create_shader("reinhard tonemapping", "engine://shaders/reinhard.shs"_view);
         rendering::ShaderCache::create_shader("reinhard jodie tonemapping", "engine://shaders/reinhardjodie.shs"_view);
-        rendering::ShaderCache::create_shader("legion tonemapping", "engine://shaders/legiontonemap.shs"_view);
+        rendering::ShaderCache::create_shader("rythe tonemapping", "engine://shaders/rythetonemap.shs"_view);
         rendering::ShaderCache::create_shader("unreal3 tonemapping", "engine://shaders/unreal3.shs"_view);
         addRenderPass<&Tonemapping::renderPass>();
     }
 
-    void Tonemapping::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void Tonemapping::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         //Try to get color attachment.
         auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);
@@ -84,7 +84,7 @@ namespace legion::rendering
                 auto tex = historyTexture->get_texture();
                 auto size = tex.size();
 
-                size_type maxMip = math::log2(math::max(size.x, size.y));
+                rsl::size_type maxMip = math::log2(math::max(size.x, size.y));
 
                 static std::vector<math::color> colors = { math::color() };
 
@@ -94,7 +94,7 @@ namespace legion::rendering
                 glBindTexture(static_cast<GLenum>(tex.type), 0);
 
 
-                float luminance = math::dot(math::vec3(colors[0].r, colors[0].g, colors[0].b), math::vec3(0.2126f, 0.7152f, 0.0722f));
+                float luminance = math::dot(rsl::math::float3(colors[0].r, colors[0].g, colors[0].b), rsl::math::float3(0.2126f, 0.7152f, 0.0722f));
 
                 float newExposure = math::clamp(math::pow(math::max((1.0f - luminance), 0.f), 2.2f) * 10.f, 0.f, 10.f);
 

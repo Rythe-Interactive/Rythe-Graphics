@@ -4,7 +4,7 @@
 #include <graphics/util/settings.hpp>
 #include <application/application.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     delegate<void(const std::string&, log::severity)> ShaderCompiler::m_callback;
 
@@ -70,7 +70,7 @@ namespace legion::rendering
     {
         static std::string compPath;
         if (compPath.empty())
-            compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "lgncleancache";
+            compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "rytcleancache";
         return compPath;
     }
 
@@ -250,29 +250,29 @@ namespace legion::rendering
         using severity = log::severity;
 
         GLuint glShaderType = detail::get_gl_type(shaderType);
-        auto lgnShaderType = detail::get_lgn_type(shaderType);
+        auto rytShaderType = detail::get_ryt_type(shaderType);
 
-        if (shaderType != GL_LGN_VERTEX_SHADER &&
-            shaderType != GL_LGN_FRAGMENT_SHADER &&
-            shaderType != GL_LGN_GEOMETRY_SHADER &&
-            shaderType != GL_LGN_TESS_EVALUATION_SHADER &&
-            shaderType != GL_LGN_TESS_CONTROL_SHADER)
+        if (shaderType != GL_ryt_VERTEX_SHADER &&
+            shaderType != GL_ryt_FRAGMENT_SHADER &&
+            shaderType != GL_ryt_GEOMETRY_SHADER &&
+            shaderType != GL_ryt_TESS_EVALUATION_SHADER &&
+            shaderType != GL_ryt_TESS_CONTROL_SHADER)
         {
-            switch (lgnShaderType)
+            switch (rytShaderType)
             {
-            case LGN_VERTEX_SHADER:
+            case ryt_VERTEX_SHADER:
                 glShaderType = GL_VERTEX_SHADER;
                 break;
-            case LGN_FRAGMENT_SHADER:
+            case ryt_FRAGMENT_SHADER:
                 glShaderType = GL_FRAGMENT_SHADER;
                 break;
-            case LGN_GEOMETRY_SHADER:
+            case ryt_GEOMETRY_SHADER:
                 glShaderType = GL_GEOMETRY_SHADER;
                 break;
-            case LGN_TESS_EVALUATION_SHADER:
+            case ryt_TESS_EVALUATION_SHADER:
                 glShaderType = GL_TESS_EVALUATION_SHADER;
                 break;
-            case LGN_TESS_CONTROL_SHADER:
+            case ryt_TESS_CONTROL_SHADER:
                 glShaderType = GL_TESS_CONTROL_SHADER;
                 break;
             default:
@@ -297,7 +297,7 @@ namespace legion::rendering
         auto folderEnd = filepath.find_last_of("\\/");
         std::string folderPath(filepath.c_str(), folderEnd);
 
-        std::string definesString = " -D LEGION";
+        std::string definesString = " -D RYTHE";
         if (compilerSettings & shader_compiler_options::debug)
             definesString += " -D DEBUG";
         else

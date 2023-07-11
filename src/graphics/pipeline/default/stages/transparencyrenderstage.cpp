@@ -4,13 +4,13 @@
 #include <graphics/data/model.hpp>
 #include <graphics/components/renderable.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void TransparencyRenderStage::setup(app::window& context)
     {
     }
 
-    void TransparencyRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void TransparencyRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         (void)deltaTime;
         (void)cam;
@@ -33,7 +33,7 @@ namespace legion::rendering
         if (!lightsBuffer)
             return;
 
-        size_type* lightCount = get_meta<size_type>(lightCountId);
+        rsl::size_type* lightCount = get_meta<rsl::size_type>(lightCountId);
         if (!lightCount)
             return;
 

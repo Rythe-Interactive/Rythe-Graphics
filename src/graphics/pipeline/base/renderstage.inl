@@ -1,9 +1,9 @@
 #pragma once
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     template<typename T>
-    L_NODISCARD inline bool RenderStageBase::has_meta(const std::string& name)
+    R_NODISCARD inline bool RenderStageBase::has_meta(const std::string& name)
     {
         return m_pipeline->has_meta<T>(name);
     }
@@ -15,13 +15,13 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD inline T* RenderStageBase::get_meta(const std::string& name)
+    R_NODISCARD inline T* RenderStageBase::get_meta(const std::string& name)
     {
         return m_pipeline->get_meta<T>(name);
     }
 
     template<typename T>
-    L_NODISCARD inline bool RenderStageBase::has_meta(id_type nameHash)
+    R_NODISCARD inline bool RenderStageBase::has_meta(id_type nameHash)
     {
         return m_pipeline->has_meta<T>(nameHash);
     }
@@ -33,7 +33,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD inline T* RenderStageBase::get_meta(id_type nameHash)
+    R_NODISCARD inline T* RenderStageBase::get_meta(id_type nameHash)
     {
         return m_pipeline->get_meta<T>(nameHash);
     }

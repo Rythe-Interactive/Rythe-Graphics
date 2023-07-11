@@ -12,7 +12,7 @@
 #define ui_priority -64
 #define submit_priority -96
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class RenderPipelineBase;
 
@@ -27,9 +27,9 @@ namespace legion::rendering
         bool m_isInitialized = false;
 
     protected:
-        virtual void setup(app::window& context) LEGION_PURE;
+        virtual void setup(app::window& context) RYTHE_PURE;
 
-        virtual void _shutdown_impl() LEGION_PURE;
+        virtual void _shutdown_impl() RYTHE_PURE;
     public:
         static RenderPipelineBase* m_pipeline;
 
@@ -41,36 +41,36 @@ namespace legion::rendering
             setup(context);
         }
 
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime) LEGION_PURE;
-        virtual priority_type priority() LEGION_IMPURE_RETURN(default_priority);
+        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) RYTHE_PURE;
+        virtual priority_type priority() RYTHE_IMPURE_RETURN(default_priority);
 
     protected:
         void abort();
 
         template<typename T>
-        L_NODISCARD bool has_meta(const std::string& name);
+        R_NODISCARD bool has_meta(const std::string& name);
 
         template<typename T, typename... Args>
         T* create_meta(const std::string& name, Args&&... args);
 
         template<typename T>
-        L_NODISCARD T* get_meta(const std::string& name);
+        R_NODISCARD T* get_meta(const std::string& name);
 
         template<typename T>
-        L_NODISCARD bool has_meta(id_type nameHash);
+        R_NODISCARD bool has_meta(id_type nameHash);
 
         template<typename T, typename... Args>
         T* create_meta(id_type nameHash, Args&&... args);
 
         template<typename T>
-        L_NODISCARD T* get_meta(id_type nameHash);
+        R_NODISCARD T* get_meta(id_type nameHash);
 
         framebuffer* addFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        L_NODISCARD bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        L_NODISCARD framebuffer* getFramebuffer(const std::string& name);
+        R_NODISCARD bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
+        R_NODISCARD framebuffer* getFramebuffer(const std::string& name);
         framebuffer* addFramebuffer(id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        L_NODISCARD bool hasFramebuffer(id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        L_NODISCARD framebuffer* getFramebuffer(id_type nameHash);
+        R_NODISCARD bool hasFramebuffer(id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+        R_NODISCARD framebuffer* getFramebuffer(id_type nameHash);
 
     };
 

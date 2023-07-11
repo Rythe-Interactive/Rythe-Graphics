@@ -1,7 +1,7 @@
 #include "buffer.hpp"
 #pragma once
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     template<typename T>
     buffer::buffer(GLenum target, const std::vector<T>& data, GLenum usage)
@@ -9,7 +9,7 @@ namespace legion::rendering
         m_target(target),
         m_usage(usage)
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to create buffer with.");
@@ -25,7 +25,7 @@ namespace legion::rendering
     template<typename T>
     inline void buffer::bufferData(const std::vector<T>& data) const
     {
-#if defined(LEGION_DEBUG)
+#if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to work with.");
@@ -35,7 +35,7 @@ namespace legion::rendering
 
         glBindBuffer(m_target, m_id);
 
-        size_type oldSize;
+        rsl::size_type oldSize;
         glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)); // Fetch the previous size of the buffer.
 
         auto dataSize = data.size() * sizeof(T);

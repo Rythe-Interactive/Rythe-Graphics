@@ -1,7 +1,7 @@
 #include <graphics/pipeline/base/renderstage.hpp>
 #include <graphics/pipeline/base/pipeline.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     RenderPipelineBase* RenderStageBase::m_pipeline;
 
@@ -15,12 +15,12 @@ namespace legion::rendering
         return m_pipeline->addFramebuffer(name, target);
     }
 
-    L_NODISCARD bool RenderStageBase::hasFramebuffer(const std::string& name, GLenum target)
+    R_NODISCARD bool RenderStageBase::hasFramebuffer(const std::string& name, GLenum target)
     {
         return m_pipeline->hasFramebuffer(name, target);
     }
 
-    L_NODISCARD framebuffer* RenderStageBase::getFramebuffer(const std::string& name)
+    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(const std::string& name)
     {
         return m_pipeline->getFramebuffer(name);
     }
@@ -30,12 +30,12 @@ namespace legion::rendering
         return m_pipeline->addFramebuffer(nameHash, target);
     }
 
-    L_NODISCARD bool RenderStageBase::hasFramebuffer(id_type nameHash, GLenum target)
+    R_NODISCARD bool RenderStageBase::hasFramebuffer(id_type nameHash, GLenum target)
     {
         return m_pipeline->hasFramebuffer(nameHash, target);
     }
 
-    L_NODISCARD framebuffer* RenderStageBase::getFramebuffer(id_type nameHash)
+    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(id_type nameHash)
     {
         return m_pipeline->getFramebuffer(nameHash);
     }

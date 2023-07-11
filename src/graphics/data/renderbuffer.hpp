@@ -3,7 +3,7 @@
 
 /**@file renderbuffer.hpp
  */
-namespace legion::rendering
+namespace rythe::rendering
 {
     /**@class renderbuffer
      * @brief Low level renderbuffer.
@@ -59,19 +59,19 @@ namespace legion::rendering
 
         /**@brief Returns the rendering API id of the renderbuffer. Useful for low level native rendering.
          */
-        L_NODISCARD app::gl_id id() const;
+        R_NODISCARD app::gl_id id() const;
 
         /**@brief Returns the multi-sampling sample count of the renderbuffer. Useful for low level native rendering.
          */
-        L_NODISCARD size_type samples() const;
+        R_NODISCARD rsl::size_type samples() const;
 
         /**@brief Returns the internal format of the renderbuffer. Useful for low level native rendering.
          */
-        L_NODISCARD GLenum format() const;
+        R_NODISCARD GLenum format() const;
 
         /**@brief Returns the current resolution of the renderbuffer.
          */
-        L_NODISCARD math::ivec2 size() const;
+        R_NODISCARD math::ivec2 size() const;
 
         /**@brief Resizes the renderbuffer to a new resolution. This reallocates VRAM and thus invalidates all data in the renderbuffer.
          */

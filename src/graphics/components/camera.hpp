@@ -7,7 +7,7 @@
  * @file camera.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class OldRenderer;
 
@@ -24,7 +24,7 @@ namespace legion::rendering
         math::color clearColor = math::colors::cornflower;
         struct camera_input
         {
-            camera_input(math::mat4 view, math::mat4 proj, math::vec3 pos, math::vec3 vdir, float nearz, float farz, math::ivec2 viewportSize) :
+            camera_input(math::mat4 view, math::mat4 proj, rsl::math::float3 pos, rsl::math::float3 vdir, float nearz, float farz, math::ivec2 viewportSize) :
                 view(view), proj(proj), pos(pos), nearz(nearz), vdir(vdir), farz(farz), viewportSize(viewportSize)
             {
             }
@@ -54,7 +54,7 @@ namespace legion::rendering
                     {
                         struct
                         {
-                            math::vec3 pos;
+                            rsl::math::float3 pos;
                             float nearz;
                         };
                         math::vec4 posnearz;
@@ -63,7 +63,7 @@ namespace legion::rendering
                     {
                         struct
                         {
-                            math::vec3 vdir;
+                            rsl::math::float3 vdir;
                             float farz;
                         };
                         math::vec4 vdirfarz;

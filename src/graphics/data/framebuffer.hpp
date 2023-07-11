@@ -9,7 +9,7 @@
  * @file framebuffer.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     using attachment = std::variant<std::monostate, texture_handle, renderbuffer>;
     static const attachment invalid_attachment = std::monostate();
@@ -81,7 +81,7 @@ namespace legion::rendering
          * @param attachment Attachment-point to fetch the attachment for.
          * @return const std::any& An std::any that should be any_castable to either a texture handle or a renderbuffer if an attachment was active, the std::any will be empty otherwise.
          */
-        L_NODISCARD const attachment& getAttachment(GLenum attachment) const;
+        R_NODISCARD const attachment& getAttachment(GLenum attachment) const;
 
         /**@brief Release the framebuffer from the current context. Useful for low level native rendering.
          */
@@ -89,6 +89,6 @@ namespace legion::rendering
 
         /**@brief Check if the framebuffer was generated or not.
          */
-        L_NODISCARD operator bool() const;
+        R_NODISCARD operator bool() const;
     };
 }

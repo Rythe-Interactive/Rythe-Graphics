@@ -2,11 +2,11 @@
 #include <graphics/data/postprocessingeffect.hpp>
 #include <graphics/util/bindings.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     enum struct tonemapping_type
     {
-        aces, legion, reinhard, reinhard_jodie, unreal3
+        aces, rythe, reinhard, reinhard_jodie, unreal3
     };
 
     class Tonemapping : public PostProcessingEffect<Tonemapping>
@@ -24,7 +24,7 @@ namespace legion::rendering
 
         void setup(app::window& context) override;
 
-        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime);
+        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
 
     };
 

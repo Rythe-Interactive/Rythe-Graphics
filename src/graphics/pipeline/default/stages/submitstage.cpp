@@ -1,8 +1,8 @@
 #include <graphics/pipeline/default/stages/submitstage.hpp>
 
-using namespace legion::core::filesystem::literals;
+using namespace rythe::core::filesystem::literals;
 
-namespace legion::rendering
+namespace rythe::rendering
 {
 
     void SubmitStage::setup(app::window& context)
@@ -31,7 +31,7 @@ namespace legion::rendering
         m_screenShader = ShaderCache::create_shader("screen shader", "engine://shaders/screenshader.shs"_view);
     }
 
-    void SubmitStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void SubmitStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         (void)deltaTime;
         (void)camInput;

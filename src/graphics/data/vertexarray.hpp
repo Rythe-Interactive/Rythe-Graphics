@@ -5,7 +5,7 @@
 /**@file vertexarray.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     /**@class vertexarray
      * @brief Low level vertexarray object.
@@ -34,7 +34,7 @@ namespace legion::rendering
          */
         static vertexarray generate();
 
-        void setAttribPointer(const buffer& buf, uint index, size_type size, GLenum type, bool normalized, size_type stride, size_type offset);
+        void setAttribPointer(const buffer& buf, uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset);
 
         void setAttribDivisor(uint index, uint divisor);
 

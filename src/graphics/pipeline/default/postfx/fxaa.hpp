@@ -2,7 +2,7 @@
 #include <graphics/data/postprocessingeffect.hpp>
 #include <graphics/util/bindings.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class FXAA : public PostProcessingEffect<FXAA>
     {
@@ -11,7 +11,7 @@ namespace legion::rendering
     public:
         void setup(app::window& context) override;
 
-        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime);
+        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
     };
 
 

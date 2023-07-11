@@ -1,6 +1,6 @@
 #include <graphics/data/material.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     material_parameter_base* material_parameter_base::create_param(const std::string& name, const GLint& location, const GLenum& type)
     {
@@ -15,7 +15,7 @@ namespace legion::rendering
             return new material_parameter<math::vec2>(name, location);
             break;
         case GL_FLOAT_VEC3:
-            return new material_parameter<math::vec3>(name, location);
+            return new material_parameter<rsl::math::float3>(name, location);
             break;
         case GL_FLOAT_VEC4:
             return new material_parameter<math::vec4>(name, location);
@@ -184,7 +184,7 @@ namespace legion::rendering
         MaterialCache::m_materials[id].set_variant(variantId);
     }
 
-    L_NODISCARD shader_handle material_handle::get_shader()
+    R_NODISCARD shader_handle material_handle::get_shader()
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].m_shader;
@@ -196,14 +196,14 @@ namespace legion::rendering
         MaterialCache::m_materials[id].bind();
     }
 
-    L_NODISCARD const std::string& material_handle::get_name() const
+    R_NODISCARD const std::string& material_handle::get_name() const
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_name();
     }
 
 
-    L_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
+    R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_params();

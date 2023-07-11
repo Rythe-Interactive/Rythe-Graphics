@@ -4,12 +4,12 @@
 
 #include <unordered_map>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     struct pipeline_provider_base
     {
-        virtual RenderPipelineBase* get(app::window& context) LEGION_PURE;
-        virtual void shutdown() LEGION_PURE;
+        virtual RenderPipelineBase* get(app::window& context) RYTHE_PURE;
+        virtual void shutdown() RYTHE_PURE;
     };
 
     template<typename PipelineType>
@@ -28,9 +28,9 @@ namespace legion::rendering
         static std::unique_ptr<pipeline_provider_base> m_pipelineProvider;
         std::atomic_bool m_exiting = false;
 
-        static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED const void* userParam);
-        static void debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED const void* userParam);
-        static void debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, L_MAYBEUNUSED void* userParam);
+        static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam);
+        static void debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam);
+        static void debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED void* userParam);
         bool initContext(const app::window& window);
 
         void setThreadPriority();
@@ -49,14 +49,14 @@ namespace legion::rendering
 
         void onExit(events::exit& event);
 
-        void render(time::span deltatime);
+        void render(rsl::span deltatime);
 
         template<typename Pipeline CNDOXY(inherits_from<Pipeline, RenderPipeline<Pipeline>> = 0)>
         static void setPipeline();
 
-        L_NODISCARD static RenderPipelineBase* getPipeline(app::window& context);
-        L_NODISCARD static RenderPipelineBase* getCurrentPipeline();
-        L_NODISCARD static RenderPipelineBase* getMainPipeline();
+        R_NODISCARD static RenderPipelineBase* getPipeline(app::window& context);
+        R_NODISCARD static RenderPipelineBase* getCurrentPipeline();
+        R_NODISCARD static RenderPipelineBase* getMainPipeline();
     };
 }
 

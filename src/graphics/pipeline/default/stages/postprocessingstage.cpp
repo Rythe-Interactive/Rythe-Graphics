@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/stages/postprocessingstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
 
     std::multimap<priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>> PostProcessingStage::m_effects;
@@ -8,7 +8,7 @@ namespace legion::rendering
 
     void PostProcessingStage::setup(app::window& context)
     {
-        using namespace legion::core::fs::literals;
+        using namespace rythe::core::fs::literals;
 
         app::context_guard guard(context);
 
@@ -24,7 +24,7 @@ namespace legion::rendering
         m_screenShader = ShaderCache::create_shader("screen shader", "engine://shaders/screenshader.shs"_view);
     }
 
-    void PostProcessingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void PostProcessingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         static id_type mainId = nameHash("main");
 

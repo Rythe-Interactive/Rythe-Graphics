@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/stages/lightbufferstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
    async::spinlock LightBufferStage::m_lightEntitiesLock;
    std::unordered_set<ecs::entity> LightBufferStage::m_lightEntities;
@@ -29,7 +29,7 @@ namespace legion::rendering
         }
 
         create_meta<buffer>("light buffer", lightsBuffer);
-        create_meta<size_type>("light count");
+        create_meta<rsl::size_type>("light count");
 
         bindToEvent<events::component_creation<light>, &LightBufferStage::onLightCreate>();
         bindToEvent<events::component_destruction<light>, &LightBufferStage::onLightDestroy>();
@@ -41,7 +41,7 @@ namespace legion::rendering
             m_lightEntities.insert(ent);
     }
 
-    void LightBufferStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void LightBufferStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         (void)deltaTime;
         (void)camInput;

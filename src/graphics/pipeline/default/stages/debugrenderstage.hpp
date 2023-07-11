@@ -3,7 +3,7 @@
 #include <graphics/pipeline/base/pipeline.hpp>
 #include <graphics/debuggraphics.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class DebugRenderStage : public RenderStage<DebugRenderStage>
     {
@@ -19,7 +19,7 @@ namespace legion::rendering
         void drawDebugLine(events::event_base& event);
 
         virtual void setup(app::window& context) override;
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime) override;
+        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
         virtual priority_type priority() override;
     };
 }

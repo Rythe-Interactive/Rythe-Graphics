@@ -1,7 +1,7 @@
 #pragma once
 #include <graphics/data/postprocessingeffect.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class DepthOfField : public PostProcessingEffect<DepthOfField>
     {
@@ -58,7 +58,7 @@ namespace legion::rendering
          * @param camInput The matrix data used to do everything 3D math-i.
          * @param deltaTime Current delta time.
          */
-        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime);
+        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
         /**
          * @brief areaOfFocus Calculates what is in focus and what is not.
          * @param color_texture The scene color texture collected from the framebuffer.

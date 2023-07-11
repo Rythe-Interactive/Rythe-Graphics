@@ -1,16 +1,16 @@
 #pragma once
 #include <graphics/pipeline/base/renderstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class ImGuiStage : public RenderStage<ImGuiStage>
     {
     public:
         void setup(app::window& context) override;
-        void render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime) override;
+        void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
         priority_type priority() override;
 
-        template <class T,void(T::*Func)(app::window&, camera&, const camera::camera_input&, time::span)>
+        template <class T,void(T::*Func)(app::window&, camera&, const camera::camera_input&, rsl::span)>
         static void addGuiRender(T* ptr)
         {
             m_onGuiRender.emplace_back<T>(ptr, Func);
@@ -21,6 +21,6 @@ namespace legion::rendering
 
         /** @brief to render imgui things add a function here
          */
-        static multicast_delegate<void(app::window&, camera&, const camera::camera_input&, time::span)> m_onGuiRender;
+        static rsl::multicast_delegate<void(app::window&, camera&, const camera::camera_input&, rsl::span)> m_onGuiRender;
     };
 }

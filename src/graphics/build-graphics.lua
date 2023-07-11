@@ -27,7 +27,7 @@ project "graphics"
     language "C++"
     targetdir "../../../../../build/%{cfg.buildcfg}"
     cppdialect "C++20"
-    includedirs { "../","../../third_party/","../../../application/src/","../../../core/src/"}
+    includedirs { "../","../../third_party/*","../../../application/src/","../../../core/src/"}
 	dependson { "core", "application" }
 
     files {"**.h", "**.hpp" ,"**.inl","**.c", "**.cpp"}

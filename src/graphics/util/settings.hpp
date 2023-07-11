@@ -1,7 +1,7 @@
 #pragma once
 #include <core/core.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     enum shader_compiler_options
     {

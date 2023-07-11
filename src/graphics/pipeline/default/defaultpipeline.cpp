@@ -16,7 +16,7 @@
 #include <graphics/data/buffer.hpp>
 
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void DefaultPipeline::setup(app::window& context)
     {

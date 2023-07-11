@@ -2,7 +2,7 @@
 #include <graphics/data/postprocessingeffect.hpp>
 
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     /**
      * @class Bloom
@@ -35,10 +35,10 @@ namespace legion::rendering
               texture_wrap::edge_clamp
         };
 
-        static size_type m_blurIterations;
+        static rsl::size_type m_blurIterations;
 
     public:
-        static void setIterationCount(size_type count);
+        static void setIterationCount(rsl::size_type count);
 
         /**
          * @brief setup The setup function of the post processing effect.
@@ -59,6 +59,6 @@ namespace legion::rendering
          * @param depthtexture The depth data gathered from previous renderpasses.
          * @param deltaTime Current delta time.
          */
-        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, time::span deltaTime);
+        void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
     };
 }

@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <fstream>
-namespace legion::rendering
+namespace rythe::rendering
 {
     sparse_map<id_type, model> ModelCache::m_models;
     async::rw_spinlock ModelCache::m_modelLock;

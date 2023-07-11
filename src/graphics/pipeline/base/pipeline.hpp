@@ -8,7 +8,7 @@
 #include <memory>
 #include <any>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     template<typename Self>
     class RenderPipeline : public RenderPipelineBase
@@ -24,13 +24,13 @@ namespace legion::rendering
 
         static void attachStage(std::unique_ptr<RenderStageBase>&& stage);
 
-        virtual void setup(app::window& context) LEGION_PURE;
+        virtual void setup(app::window& context) RYTHE_PURE;
 
         void init(app::window& context) override;
 
         void shutdown() override;
 
-        void render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime) override;
+        void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
     };
 }
 

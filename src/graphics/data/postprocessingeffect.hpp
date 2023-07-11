@@ -10,14 +10,14 @@
 
 #include <graphics/pipeline/base/pipelinebase.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class PostProcessingEffectBase
     {
     public:
-        std::vector<delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, time::span)>> renderPasses;
-        virtual id_type getId() const LEGION_PURE;
-        virtual const std::string& getName() const LEGION_PURE;
+        std::vector<delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
+        virtual id_type getId() const RYTHE_PURE;
+        virtual const std::string& getName() const RYTHE_PURE;
         void init(app::window& context)
         {
             m_initialized = true;
@@ -28,7 +28,7 @@ namespace legion::rendering
         bool isInitialized() const { return m_initialized; }
 
     protected:
-        virtual void setup(app::window& context) LEGION_PURE;
+        virtual void setup(app::window& context) RYTHE_PURE;
         void renderQuad()
         {
             m_quad.render();
@@ -54,10 +54,10 @@ namespace legion::rendering
         static const std::string name;
 
     protected:
-        template<void(Self::* func_type)(framebuffer&, RenderPipelineBase* ,camera&, const camera::camera_input&, time::span)>
+        template<void(Self::* func_type)(framebuffer&, RenderPipelineBase* ,camera&, const camera::camera_input&, rsl::span)>
         void addRenderPass()
         {
-            renderPasses.push_back(delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, time::span)>::from<Self, func_type>(reinterpret_cast<Self*>(this)));
+            renderPasses.push_back(delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::from<Self, func_type>(reinterpret_cast<Self*>(this)));
         }
     };
 

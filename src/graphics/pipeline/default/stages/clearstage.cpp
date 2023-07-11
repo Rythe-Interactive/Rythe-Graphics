@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/stages/clearstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void ClearStage::setup(app::window& context)
     {
@@ -8,7 +8,7 @@ namespace legion::rendering
         glClearDepth(1.0f);
     }
 
-    void ClearStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void ClearStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         (void)deltaTime;
         (void)camInput;

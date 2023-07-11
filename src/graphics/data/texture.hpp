@@ -5,7 +5,7 @@
  * @file texture.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     enum struct texture_type : GLenum
     {
@@ -45,7 +45,7 @@ namespace legion::rendering
     };
 
     /**@brief Internal channel layout of the colors.
-     * @ref legion::core::image_components
+     * @ref rythe::core::image_components
      */
     using texture_components = image_components;
 
@@ -53,7 +53,7 @@ namespace legion::rendering
      */
     constexpr GLenum components_to_format[] = { 0, GL_RED, GL_RG, GL_RGB, GL_RGBA, GL_DEPTH_COMPONENT, GL_STENCIL_INDEX, GL_DEPTH_STENCIL };
 
-    /**@brief Utility array for converting data size to GLenum. (channels_to_glenum[sizeof(byte)] = GL_UNSIGNED_BYTE)
+    /**@brief Utility array for converting data size to GLenum. (channels_to_glenum[sizeof(rsl::byte)] = GL_UNSIGNED_BYTE)
      */
     constexpr GLenum channels_to_glenum[] = { GL_UNSIGNED_INT_24_8, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_FLOAT };
 
@@ -100,7 +100,7 @@ namespace legion::rendering
         texture_components channels;
         texture_type type;
         bool immutable;
-        size_type mipCount;
+        rsl::size_type mipCount;
         texture_format format;
         channel_format fileFormat;
 
@@ -139,7 +139,7 @@ namespace legion::rendering
         texture_components components;
         bool flipVertical;
         bool generateMipmaps;
-        size_type mipCount;
+        rsl::size_type mipCount;
         texture_mipmap min;
         texture_mipmap mag;
         texture_wrap wrapR;

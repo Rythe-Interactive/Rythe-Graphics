@@ -12,7 +12,7 @@
 #include <graphics/data/material.hpp>
 #include <graphics/data/postprocessingeffect.hpp>
 
-namespace legion
+namespace rythe
 {
-    namespace gfx = ::legion::rendering;
+    namespace gfx = ::rythe::rendering;
 }

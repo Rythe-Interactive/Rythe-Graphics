@@ -4,12 +4,12 @@
 
 #include <graphics/data/importers/texture_importers.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     common::result<texture, fs_error> stbi_texture_loader::load(const fs::basic_resource& resource, texture_import_settings&& settings)
     {
         // Prefetch data from the resource.
-        const byte_vec& data = resource.get();
+        const rsl::byte_vec& data = resource.get();
 
         // Setup stb_image settings.
         stbi_set_flip_vertically_on_load(settings.flipVertical);

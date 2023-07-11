@@ -1,6 +1,6 @@
 #include <graphics/pipeline/default/stages/debugrenderstage.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     async::spinlock DebugRenderStage::debugLinesLock;
     thread_local std::unordered_set<debug::debug_line_event>* DebugRenderStage::localLines;
@@ -15,7 +15,7 @@ namespace legion::rendering
     void DebugRenderStage::endDebugDomain()
     {
         if (!localLines) return;
-        size_type localSize = localLines->size();
+        rsl::size_type localSize = localLines->size();
 
         std::thread::id id = std::this_thread::get_id();
 
@@ -61,9 +61,9 @@ namespace legion::rendering
         events::EventBus::bindToEvent(nameHash("debug_line"), delegate<void(events::event_base&)>::template from<DebugRenderStage, &DebugRenderStage::drawDebugLine>(this));
     }
 
-    void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
-        using namespace legion::core::fs::literals;
+        using namespace rythe::core::fs::literals;
         endDebugDomain();
 
         std::vector<debug::debug_line_event> lines;
@@ -112,11 +112,11 @@ namespace legion::rendering
 
         static material_handle debugMaterial = MaterialCache::create_material("debug", "assets://shaders/debug.shs"_view);
         static app::gl_id vertexBuffer = -1;
-        static size_type vertexBufferSize = 0;
+        static rsl::size_type vertexBufferSize = 0;
         static app::gl_id colorBuffer = -1;
-        static size_type colorBufferSize = 0;
+        static rsl::size_type colorBufferSize = 0;
         static app::gl_id ignoreDepthBuffer = -1;
-        static size_type ignoreDepthBufferSize = 0;
+        static rsl::size_type ignoreDepthBufferSize = 0;
         static app::gl_id vao = -1;
 
         if (debugMaterial == invalid_material_handle)
@@ -134,7 +134,7 @@ namespace legion::rendering
         if (vao == -1)
             glGenVertexArrays(1, &vao);
 
-        static std::unordered_map<float, std::tuple<std::vector<uint>, std::vector<math::color>, std::vector<math::vec3>>> lineBatches;
+        static std::unordered_map<float, std::tuple<std::vector<uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
         for (auto& [width, data] : lineBatches)
         {
             auto& [ignoreDepths, colors, vertices] = data;
@@ -176,21 +176,21 @@ namespace legion::rendering
             ///------------ vertices ------------///
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
-            size_type vertexCount = vertices.size();
+            rsl::size_type vertexCount = vertices.size();
             if (vertexCount > vertexBufferSize)
             {
-                glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(math::vec3), 0, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(rsl::math::float3), 0, GL_DYNAMIC_DRAW);
                 vertexBufferSize = vertexCount;
             }
 
-            glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * sizeof(math::vec3), vertices.data());
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * sizeof(rsl::math::float3), vertices.data());
             glEnableVertexAttribArray(SV_POSITION);
             glVertexAttribPointer(SV_POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
             ///------------ colors ------------///
             glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 
-            size_type colorCount = colors.size();
+            rsl::size_type colorCount = colors.size();
             if (colorCount > colorBufferSize)
             {
                 glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(math::color), 0, GL_DYNAMIC_DRAW);
@@ -212,7 +212,7 @@ namespace legion::rendering
             ///------------ ignore depth ------------///
             glBindBuffer(GL_ARRAY_BUFFER, ignoreDepthBuffer);
 
-            size_type ignoreDepthCount = ignoreDepths.size();
+            rsl::size_type ignoreDepthCount = ignoreDepths.size();
             if (ignoreDepthCount > ignoreDepthBufferSize)
             {
                 glBufferData(GL_ARRAY_BUFFER, ignoreDepthCount * sizeof(uint), 0, GL_DYNAMIC_DRAW);

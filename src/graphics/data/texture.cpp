@@ -1,6 +1,6 @@
 #include <graphics/data/texture.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     void texture::to_resource(fs::basic_resource* resource, const texture& value)
     {
@@ -12,7 +12,7 @@ namespace legion::rendering
 
     void texture::from_resource(texture* value, const fs::basic_resource& resource)
     {
-        byte_vec::const_iterator start = resource.begin();
+        rsl::byte_vec::const_iterator start = resource.begin();
         retrieveBinaryData(value->textureId, start);
         retrieveBinaryData(value->channels, start);
         retrieveBinaryData(value->type, start);

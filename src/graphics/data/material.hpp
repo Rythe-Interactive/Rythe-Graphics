@@ -7,7 +7,7 @@
  * @file material.hpp
  */
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     struct material;
 
@@ -34,11 +34,11 @@ namespace legion::rendering
 
         /**@brief Get the name of the parameter
          */
-        L_NODISCARD std::string get_name() const { return m_name; }
+        R_NODISCARD std::string get_name() const { return m_name; }
 
         /**@internal
          */
-        virtual void apply(shader_handle& shader) LEGION_PURE;
+        virtual void apply(shader_handle& shader) RYTHE_PURE;
         /**@endinternal
         */
     };
@@ -132,12 +132,12 @@ namespace legion::rendering
         /**@brief Check if the material has a parameter by name.
          */
         template<typename T>
-        L_NODISCARD bool has_param(const std::string& name);
+        R_NODISCARD bool has_param(const std::string& name);
 
         /**@brief Get the value of a parameter by name.
          */
         template<typename T>
-        L_NODISCARD T get_param(const std::string& name);
+        R_NODISCARD T get_param(const std::string& name);
 
         /**@brief Set the value of a parameter by location.
          */
@@ -147,26 +147,26 @@ namespace legion::rendering
         /**@brief Check if the material has a parameter by location.
          */
         template<typename T>
-        L_NODISCARD bool has_param(GLint location);
+        R_NODISCARD bool has_param(GLint location);
 
         /**@brief Get the value of a parameter by location.
          */
         template<typename T>
-        L_NODISCARD T get_param(GLint location);
+        R_NODISCARD T get_param(GLint location);
 
         /**@brief Get attribute bound to a certain name.
          */
-        L_NODISCARD attribute get_attribute(const std::string& name)
+        R_NODISCARD attribute get_attribute(const std::string& name)
         {
             return m_shader.get_attribute(nameHash(name));
         }
 
-        L_NODISCARD const std::string& get_name()
+        R_NODISCARD const std::string& get_name()
         {
             return m_name;
         }
 
-        L_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params()
+        R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params()
         {
             if (m_currentVariant == 0)
                 m_currentVariant = nameHash("default");
@@ -194,7 +194,7 @@ namespace legion::rendering
         void set_variant(id_type variantId);
         void set_variant(const std::string& variant);
 
-        L_NODISCARD shader_handle get_shader();
+        R_NODISCARD shader_handle get_shader();
 
         /**@brief Bind the material to the rendering context and prepare for use.
          */
@@ -215,12 +215,12 @@ namespace legion::rendering
         /**@brief Check if the material has a parameter by name.
          */
         template<typename T>
-        L_NODISCARD bool has_param(const std::string& name);
+        R_NODISCARD bool has_param(const std::string& name);
 
         /**@brief Get the value of a parameter by name.
          */
         template<typename T>
-        L_NODISCARD T get_param(const std::string& name);
+        R_NODISCARD T get_param(const std::string& name);
 
         /**@brief Set the value of a parameter by location.
          */
@@ -230,16 +230,16 @@ namespace legion::rendering
         /**@brief Check if the material has a parameter by location.
          */
         template<typename T>
-        L_NODISCARD bool has_param(GLint location);
+        R_NODISCARD bool has_param(GLint location);
 
         /**@brief Get the value of a parameter by location.
          */
         template<typename T>
-        L_NODISCARD T get_param(GLint location);
+        R_NODISCARD T get_param(GLint location);
 
-        L_NODISCARD const std::string& get_name() const;
+        R_NODISCARD const std::string& get_name() const;
 
-        L_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params();
+        R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params();
 
         /**@brief Get attribute bound to a certain name.
          */
@@ -314,28 +314,28 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD bool material_handle::has_param(const std::string& name)
+    R_NODISCARD bool material_handle::has_param(const std::string& name)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_param<T>(name);
     }
 
     template<typename T>
-    L_NODISCARD bool material_handle::has_param(GLint location)
+    R_NODISCARD bool material_handle::has_param(GLint location)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_param<T>(location);
     }
 
     template<typename T>
-    L_NODISCARD T material_handle::get_param(const std::string& name)
+    R_NODISCARD T material_handle::get_param(const std::string& name)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_param<T>(name);
     }
 
     template<typename T>
-    L_NODISCARD T material_handle::get_param(GLint location)
+    R_NODISCARD T material_handle::get_param(GLint location)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_param<T>(location);
@@ -356,7 +356,7 @@ namespace legion::rendering
     }
 
     template<>
-    L_NODISCARD inline bool material::has_param<math::color>(const std::string& name)
+    R_NODISCARD inline bool material::has_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -367,7 +367,7 @@ namespace legion::rendering
     }
 
     template<>
-    L_NODISCARD inline math::color material::get_param<math::color>(const std::string& name)
+    R_NODISCARD inline math::color material::get_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -400,7 +400,7 @@ namespace legion::rendering
     }
 
     template<>
-    L_NODISCARD inline math::color material::get_param<math::color>(GLint location)
+    R_NODISCARD inline math::color material::get_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -418,7 +418,7 @@ namespace legion::rendering
     }
 
     template<>
-    L_NODISCARD inline bool material::has_param<math::color>(GLint location)
+    R_NODISCARD inline bool material::has_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -446,7 +446,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD bool material::has_param(const std::string& name)
+    R_NODISCARD bool material::has_param(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -457,7 +457,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD T material::get_param(const std::string& name)
+    R_NODISCARD T material::get_param(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -490,7 +490,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD T material::get_param(GLint location)
+    R_NODISCARD T material::get_param(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -508,7 +508,7 @@ namespace legion::rendering
     }
 
     template<typename T>
-    L_NODISCARD bool material::has_param(GLint location)
+    R_NODISCARD bool material::has_param(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = nameHash("default");
@@ -535,7 +535,7 @@ namespace legion::rendering
 
         //Generate some Metadata 
         bob.comment("File is autogenerated by Bob the IniBuilder, please do not edit");
-        bob.comment("(c) Legion-Engine 2021 MIT-License");
+        bob.comment("(c) RYTHE-Engine 2021 MIT-License");
         bob.comment("");
         bob.comment("Base parameters contains static information about the material");
 
@@ -554,7 +554,7 @@ namespace legion::rendering
             std::string kv = value->get_name();
 
             // check if the material prop is internal and should not be safed
-            if (common::starts_with(kv, "lgn_"))
+            if (common::starts_with(kv, "ryt_"))
                 continue;
 
             // check if the key ends with a trailing NUL for whatever reason,
@@ -585,9 +585,9 @@ namespace legion::rendering
                 bob.value(static_cast<material_parameter<int>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<math::vec3>())
+            if (value->type() == typeHash<rsl::math::float3>())
             {
-                bob.value(static_cast<material_parameter<math::vec3>*>(value.get())->get_value()).finish_entry();
+                bob.value(static_cast<material_parameter<rsl::math::float3>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
             if (value->type() == typeHash<math::vec4>())
@@ -666,9 +666,9 @@ namespace legion::rendering
 namespace std
 {
     template<>
-    struct hash<legion::rendering::material_handle>
+    struct hash<rythe::rendering::material_handle>
     {
-        std::size_t operator()(legion::rendering::material_handle const& handle) const noexcept
+        std::size_t operator()(rythe::rendering::material_handle const& handle) const noexcept
         {
             return static_cast<std::size_t>(handle.id);
         }

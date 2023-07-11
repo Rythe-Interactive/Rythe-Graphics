@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <graphics/shadercompiler/shadercompiler.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     sparse_map<id_type, shader> ShaderCache::m_shaders;
     async::rw_spinlock ShaderCache::m_shaderLock;
@@ -69,7 +69,7 @@ namespace legion::rendering
                     uniform = new rendering::uniform<math::vec2>(id, name, type, location);
                     break;
                 case GL_FLOAT_VEC3:
-                    uniform = new rendering::uniform<math::vec3>(id, name, type, location);
+                    uniform = new rendering::uniform<rsl::math::float3>(id, name, type, location);
                     break;
                 case GL_FLOAT_VEC4:
                     uniform = new rendering::uniform<math::vec4>(id, name, type, location);
@@ -151,7 +151,7 @@ namespace legion::rendering
         }
     }
 
-    app::gl_id ShaderCache::compile_shader(GLuint shaderType, cstring source, GLint sourceLength)
+    app::gl_id ShaderCache::compile_shader(GLuint shaderType, rsl::cstring source, GLint sourceLength)
     {
         // Create and compile shader.
         app::gl_id shaderId = glCreateShader(shaderType);
@@ -180,7 +180,7 @@ namespace legion::rendering
             {
                 errorMessage = "Unknown error, OpenGL context might not have been made current?";
             }
-            cstring shaderTypename;
+            rsl::cstring shaderTypename;
             switch (shaderType)
             {
             case GL_FRAGMENT_SHADER:
@@ -228,10 +228,10 @@ namespace legion::rendering
         if (resource.size() <= 22)
             return false;
 
-        byte_vec data = resource.get();
+        rsl::byte_vec data = resource.get();
 
         std::string_view magic(reinterpret_cast<char*>(data.data()), 19);
-        if (magic != "\xabLEGION SHADER\xbb\r\n\x13\n")
+        if (magic != "\xabRYTHE SHADER\xbb\r\n\x13\n")
             return false;
 
         auto start = data.cbegin() + 19;
@@ -293,9 +293,9 @@ namespace legion::rendering
         if (precompiled.is_valid(true) && precompiled.file_info().can_be_written)
         {
             fs::basic_resource resource(nullptr);
-            byte_vec& data = resource.get();
+            rsl::byte_vec& data = resource.get();
 
-            std::string magic = "\xabLEGION SHADER\xbb\r\n\x13\n";
+            std::string magic = "\xabRYTHE SHADER\xbb\r\n\x13\n";
             for (auto item : magic)
                 data.push_back(item);
 
@@ -381,7 +381,7 @@ namespace legion::rendering
                     }
                 }
 
-                byte compilerSettings = 0;
+                rsl::byte compilerSettings = 0;
                 compilerSettings |= settings.api;
                 if (settings.debug)
                     compilerSettings |= shader_compiler_options::debug;
@@ -743,7 +743,7 @@ namespace legion::rendering
                     }
                 }
 
-                byte compilerSettings = 0;
+                rsl::byte compilerSettings = 0;
                 compilerSettings |= settings.api;
                 if (settings.debug)
                     compilerSettings |= shader_compiler_options::debug;
@@ -1154,7 +1154,7 @@ namespace legion::rendering
 
     shader_variant& shader::get_variant(id_type variantId)
     {
-#if defined(LEGION_VALIDATE)
+#if defined(RYTHE_VALIDATE)
         if (!m_variants.count(variantId))
             return const_cast<shader_variant&>(invalid_shader_handle.get_variant(0));
 #endif
@@ -1173,7 +1173,7 @@ namespace legion::rendering
 
     const shader_variant& shader::get_variant(id_type variantId) const
     {
-#if defined(LEGION_VALIDATE)
+#if defined(RYTHE_VALIDATE)
         if (!m_variants.count(variantId))
             return invalid_shader_handle.get_variant(0);
 #endif

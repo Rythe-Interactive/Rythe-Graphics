@@ -1,6 +1,6 @@
 #include <graphics/components/light.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     uint light::m_lastidx;
 
@@ -49,7 +49,7 @@ namespace legion::rendering
         m_falloff = power;
     }
 
-    L_NODISCARD light light::directional(math::color color, float intensity)
+    R_NODISCARD light light::directional(math::color color, float intensity)
     {
         light ret;
         ret.set_type(light_type::DIRECTIONAL);
@@ -58,7 +58,7 @@ namespace legion::rendering
         return ret;
     }
 
-    L_NODISCARD light light::spot(math::color color, float angle, float intensity, float attenuation, float falloff)
+    R_NODISCARD light light::spot(math::color color, float angle, float intensity, float attenuation, float falloff)
     {
         light ret;
         ret.set_type(light_type::SPOT);
@@ -70,7 +70,7 @@ namespace legion::rendering
         return ret;
     }
 
-    L_NODISCARD light light::point(math::color color, float intensity, float attenuation, float falloff)
+    R_NODISCARD light light::point(math::color color, float intensity, float attenuation, float falloff)
     {
         light ret;
         ret.set_type(light_type::POINT);

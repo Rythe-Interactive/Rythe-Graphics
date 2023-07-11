@@ -1,13 +1,13 @@
 #include <graphics/pipeline/default/stages/meshbatchingstage.hpp>
 
-namespace  legion::rendering
+namespace  rythe::rendering
 {
     void MeshBatchingStage::setup(app::window& context)
     {
         create_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>>>("mesh batches");
     }
 
-    void MeshBatchingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime)
+    void MeshBatchingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         (void)deltaTime;
         (void)camInput;
@@ -33,7 +33,7 @@ namespace  legion::rendering
 
         {
             std::vector<std::reference_wrapper<std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>> batchList;
-            for (size_type i = 0; i < renderablesQuery.size(); i++)
+            for (rsl::size_type i = 0; i < renderablesQuery.size(); i++)
             {
                 auto& batch = (*batches)[renderers[i].get().material][model_handle{ filters[i].get().shared_mesh.id() }];
                 if (batch.first.empty())
@@ -48,7 +48,7 @@ namespace  legion::rendering
             matrixList.reserve(renderablesQuery.size());
 
 
-            for (size_type i = 0; i < batchList.size(); i++)
+            for (rsl::size_type i = 0; i < batchList.size(); i++)
             {
                 auto& [entities, matrices] = batchList[i].get();
                 if (entities.size() == 0)
@@ -62,7 +62,7 @@ namespace  legion::rendering
             if (entityList.size())
             {
                 auto poolSize = (schd::Scheduler::jobPoolSize() + 1) * 2;
-                size_type jobSize = math::iround(math::ceil(entityList.size() / static_cast<float>(poolSize)));
+                rsl::size_type jobSize = math::iround(math::ceil(entityList.size() / static_cast<float>(poolSize)));
 
                 queueJobs(poolSize, [&](id_type jobId)
                     {
@@ -70,7 +70,7 @@ namespace  legion::rendering
                         auto end = start + jobSize;
                         if (end > entityList.size())
                             end = entityList.size();
-                        for (size_type i = start; i < end; i++)
+                        for (rsl::size_type i = start; i < end; i++)
                             matrixList[i].get() = transform(entityList[i].get_component<transform>()).to_world_matrix();
                     }
                 ).wait();

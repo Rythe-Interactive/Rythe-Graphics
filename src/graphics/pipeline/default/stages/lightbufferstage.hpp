@@ -3,7 +3,7 @@
 #include <graphics/pipeline/base/pipeline.hpp>
 #include <graphics/components/light.hpp>
 
-namespace legion::rendering
+namespace rythe::rendering
 {
     class LightBufferStage : public RenderStage<LightBufferStage>
     {
@@ -22,7 +22,7 @@ namespace legion::rendering
         }
 
         virtual void setup(app::window& context) override;
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, time::span deltaTime) override;
+        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
         virtual priority_type priority() override;
     };
 }
