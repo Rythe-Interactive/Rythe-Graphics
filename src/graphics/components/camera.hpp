@@ -24,20 +24,20 @@ namespace rythe::rendering
         math::color clearColor = math::colors::cornflower;
         struct camera_input
         {
-            camera_input(math::mat4 view, math::mat4 proj, rsl::math::float3 pos, rsl::math::float3 vdir, float nearz, float farz, math::ivec2 viewportSize) :
+            camera_input(math::float4x4 view, math::float4x4 proj, rsl::math::float3 pos, rsl::math::float3 vdir, float nearz, float farz, math::int2 viewportSize) :
                 view(view), proj(proj), pos(pos), nearz(nearz), vdir(vdir), farz(farz), viewportSize(viewportSize)
             {
             }
 
             void bind(material_handle& materialHandle) const
             {
-                if (materialHandle.has_param<math::mat4>(SV_VIEW))
+                if (materialHandle.has_param<math::float4x4>(SV_VIEW))
                     materialHandle.set_param(SV_VIEW, view);
-                if (materialHandle.has_param<math::mat4>(SV_PROJECT))
+                if (materialHandle.has_param<math::float4x4>(SV_PROJECT))
                     materialHandle.set_param(SV_PROJECT, proj);
-                if (materialHandle.has_param<math::vec4>(SV_CAMPOS))
+                if (materialHandle.has_param<math::float4>(SV_CAMPOS))
                     materialHandle.set_param(SV_CAMPOS, posnearz);
-                if (materialHandle.has_param<math::vec4>(SV_VIEWDIR))
+                if (materialHandle.has_param<math::float4>(SV_VIEWDIR))
                     materialHandle.set_param(SV_VIEWDIR, vdirfarz);
                 if (materialHandle.has_param<math::ivec2>(SV_VIEWPORT))
                     materialHandle.set_param(SV_VIEWPORT, viewportSize);
@@ -45,11 +45,11 @@ namespace rythe::rendering
 
             union
             {
-                math::vec4 data[10];
+                math::float4 data[10];
                 struct
                 {
-                    math::mat4 view;
-                    math::mat4 proj;
+                    math::float4x4 view;
+                    math::float4x4 proj;
                     union
                     {
                         struct
@@ -57,7 +57,7 @@ namespace rythe::rendering
                             rsl::math::float3 pos;
                             float nearz;
                         };
-                        math::vec4 posnearz;
+                        math::float4 posnearz;
                     };
                     union
                     {
@@ -66,9 +66,9 @@ namespace rythe::rendering
                             rsl::math::float3 vdir;
                             float farz;
                         };
-                        math::vec4 vdirfarz;
+                        math::float4 vdirfarz;
                     };
-                    math::ivec2 viewportSize;
+                    math::int2 viewportSize;
                 };
             };
         };
@@ -90,12 +90,12 @@ namespace rythe::rendering
         /**@brief Get the projection matrix for a certain aspect ratio
          * @param ratio Aspect ratio (width / height)
          */
-        math::mat4 get_projection(float ratio) const
+        math::float4x4 get_projection(float ratio) const
         {
             const auto fovx = math::deg2rad(fov);
             const auto invTanHalfFovx = 1.f / math::tan(fovx * 0.5f);
             const auto depthScale = farz / (farz - nearz);
-            return math::mat4{
+            return math::float4x4{
                 invTanHalfFovx, 0.f, 0.f, 0.f,
                 0.f, invTanHalfFovx * ratio, 0.f, 0.f,
                 0.f, 0.f, depthScale, 1.f,

@@ -16,7 +16,7 @@ namespace rythe::rendering
 
         m_drawFBO = framebuffer(GL_FRAMEBUFFER);
 
-        m_swapTexture = TextureCache::create_texture("color_swap_image", math::ivec2(1, 1), {
+        m_swapTexture = TextureCache::create_texture("color_swap_image", math::int2(1, 1), {
         texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
         texture_components::rgb, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
         texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat });
@@ -26,7 +26,7 @@ namespace rythe::rendering
 
     void PostProcessingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
-        static id_type mainId = nameHash("main");
+        static id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)
@@ -97,7 +97,7 @@ namespace rythe::rendering
         glEnable(GL_DEPTH_TEST);
     }
 
-    priority_type PostProcessingStage::priority()
+    rsl::priority_type PostProcessingStage::priority()
     {
         return post_fx_priority;
     }

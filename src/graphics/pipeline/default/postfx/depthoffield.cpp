@@ -46,7 +46,7 @@ namespace rythe::rendering
         if (!valid_textures) return;
 
         //Change sizes
-        math::ivec2 textureSize = color_texture.get_texture().size();
+        math::int2 textureSize = color_texture.get_texture().size();
         if (textureSize != m_destinationTexture.get_texture().size())
         {
             m_destinationTexture.get_texture().resize(textureSize);
@@ -117,7 +117,7 @@ namespace rythe::rendering
         uint attachment = FRAGMENT_ATTACHMENT;
         glDrawBuffers(1, &attachment);
 
-        static id_type autoFocusId = nameHash("auto_focus");
+        static id_type autoFocusId = rsl::nameHash("auto_focus");
 
         auto doAutoFocus = m_autoFocus.load(std::memory_order_relaxed);
 
@@ -128,14 +128,14 @@ namespace rythe::rendering
 
         // Bind and assign the depth threshold shader.
         m_depthThresholdShader.bind();
-        m_depthThresholdShader.get_uniform_with_location<math::vec4>(SV_VIEWDIR).set_value(camInput.vdirfarz);
-        m_depthThresholdShader.get_uniform_with_location<math::vec4>(SV_CAMPOS).set_value(camInput.posnearz);
+        m_depthThresholdShader.get_uniform_with_location<math::float4>(SV_VIEWDIR).set_value(camInput.vdirfarz);
+        m_depthThresholdShader.get_uniform_with_location<math::float4>(SV_CAMPOS).set_value(camInput.posnearz);
         m_depthThresholdShader.get_uniform_with_location<math::ivec2>(SV_VIEWPORT).set_value(camInput.viewportSize);
         m_depthThresholdShader.get_uniform_with_location<texture_handle>(SV_SCENEDEPTH).set_value(depth_texture);
 
         if (doAutoFocus)
         {
-            m_depthThresholdShader.get_uniform_with_location<math::mat4>(SV_VIEW).set_value(camInput.view);
+            m_depthThresholdShader.get_uniform_with_location<math::float4x4>(SV_VIEW).set_value(camInput.view);
             m_depthThresholdShader.get_uniform<float>("sampleOffset").set_value(0.5f);
         }
 
@@ -157,7 +157,7 @@ namespace rythe::rendering
         fbo.bind();
         m_bokehShader.bind();
         m_bokehShader.get_uniform_with_location<texture_handle>(SV_SCENECOLOR).set_value(m_halfres1);
-        m_bokehShader.get_uniform<math::vec2>("scale").set_value(math::vec2(2.0f));
+        m_bokehShader.get_uniform<math::float2>("scale").set_value(math::float2(2.0f));
         m_bokehShader.get_uniform<float>("bokehRadius").set_value(m_bokehSize);
         renderQuad();
         m_bokehShader.release();
@@ -183,7 +183,7 @@ namespace rythe::rendering
         fbo.bind();
         m_preFilterShader.bind();
         m_preFilterShader.get_uniform_with_location<texture_handle>(SV_SCENECOLOR).set_value(color_texture);
-        m_preFilterShader.get_uniform<math::vec2>("scale").set_value(math::vec2(2.0f));
+        m_preFilterShader.get_uniform<math::float2>("scale").set_value(math::float2(2.0f));
         m_preFilterShader.get_uniform<texture_handle>("aofTexture").set_value(m_thresholdTexture);
         renderQuad();
         m_preFilterShader.release();

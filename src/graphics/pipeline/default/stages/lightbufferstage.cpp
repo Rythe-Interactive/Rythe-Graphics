@@ -47,8 +47,8 @@ namespace rythe::rendering
         (void)camInput;
         (void)cam;
 
-        static id_type lightsbufferId = nameHash("light buffer");
-        static id_type lightCountId = nameHash("light count");
+        static id_type lightsbufferId = rsl::nameHash("light buffer");
+        static id_type lightCountId = rsl::nameHash("light count");
         buffer* lightsBuffer = get_meta<buffer>(lightsbufferId);
 
         {
@@ -70,7 +70,7 @@ namespace rythe::rendering
 
     }
 
-    priority_type LightBufferStage::priority()
+    rsl::priority_type LightBufferStage::priority()
     {
         return setup_priority;
     }

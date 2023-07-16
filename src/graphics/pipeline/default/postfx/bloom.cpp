@@ -26,7 +26,7 @@ namespace rythe::rendering
             if (fbSize.x == 1 && fbSize.y == 1)
                 break;
 
-            fbSize = math::max(fbSize / 2, math::ivec2(1, 1));
+            fbSize = math::max(fbSize / 2, math::int2(1, 1));
         }
 
         // Creating 2 framebuffers to pingpong texturs with. (used for blurring)
@@ -59,7 +59,7 @@ namespace rythe::rendering
         fbo.release();
     }
 
-    texture_handle Bloom::blurOverdraw(const math::ivec2& framebufferSize, texture_handle overdrawtexture)
+    texture_handle Bloom::blurOverdraw(const math::int2& framebufferSize, texture_handle overdrawtexture)
     {
         if (m_downSampleTex[0].get_texture().size() != framebufferSize / 2)
         {
@@ -71,7 +71,7 @@ namespace rythe::rendering
                 if (fbSize.x == 1 && fbSize.y == 1)
                     break;
 
-                fbSize = math::max(fbSize / 2, math::ivec2(1, 1));
+                fbSize = math::max(fbSize / 2, math::int2(1, 1));
             }
         }
 
@@ -84,7 +84,7 @@ namespace rythe::rendering
             fbo.bind();
             m_resampleShader.bind();
             m_resampleShader.get_uniform_with_location<texture_handle>(SV_SCENECOLOR).set_value(src);
-            m_resampleShader.get_uniform<math::vec2>("scale").set_value(math::vec2(math::pow(2.f, static_cast<float>(idx))));
+            m_resampleShader.get_uniform<math::float2>("scale").set_value(math::float2(math::pow(2.f, static_cast<float>(idx))));
             if (upSample)
                 m_resampleShader.get_uniform<texture_handle>("mixTex").set_value(m_downSampleTex[idx]);
 
@@ -153,7 +153,7 @@ namespace rythe::rendering
         seperateOverdraw(fbo, color_texture, overdrawTexture);
 
         // Gets the size of the lighting data texture.
-        math::ivec2 framebufferSize = color_texture.get_texture().size();
+        math::int2 framebufferSize = color_texture.get_texture().size();
 
         // Blur the overdraw buffer.
         texture_handle blurredImage = blurOverdraw(framebufferSize, overdrawTexture);

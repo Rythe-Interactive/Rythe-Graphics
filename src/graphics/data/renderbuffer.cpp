@@ -2,7 +2,7 @@
 
 namespace rythe::rendering
 {
-    renderbuffer::renderbuffer(GLenum internalformat, math::ivec2 resolution, uint samples)
+    renderbuffer::renderbuffer(GLenum internalformat, math::int2 resolution, uint samples)
         : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())
@@ -131,16 +131,16 @@ namespace rythe::rendering
         return m_internalformat;
     }
 
-    R_NODISCARD math::ivec2 renderbuffer::size() const
+    R_NODISCARD math::int2 renderbuffer::size() const
     {
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
             log::error("No current context to read from.");
-            return math::ivec2(0, 0);
+            return math::int2(0, 0);
         }
 #endif
-        math::ivec2 size;
+        math::int2 size;
         glBindRenderbuffer(GL_RENDERBUFFER, m_id);
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &size.x); // Fetch width.
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &size.y); // Fetch height.

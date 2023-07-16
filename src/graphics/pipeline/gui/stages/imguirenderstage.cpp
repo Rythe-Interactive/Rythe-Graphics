@@ -24,7 +24,7 @@ namespace rythe::rendering
     void ImGuiStage::render(app::window& context, camera& cam, const camera::camera_input& camInput,
         rsl::span deltaTime)
     {
-        static id_type mainId = nameHash("main");
+        static id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)
@@ -70,7 +70,7 @@ namespace rythe::rendering
         fbo->release();
     }
 
-    priority_type ImGuiStage::priority()
+    rsl::priority_type ImGuiStage::priority()
     {
         return ui_priority;
     }

@@ -1,9 +1,9 @@
 #pragma once
-#include <application/application.hpp>
+#include "application/application.hpp"
 
 namespace rythe::rendering
 {
-    enum struct light_type : uint
+    enum struct light_type : rsl::uint
     {
         POINT = 0,
         DIRECTIONAL = 1,
@@ -17,7 +17,7 @@ namespace rythe::rendering
             light_type type;
             float attenuation;
             float intensity;
-            uint index;
+            rsl::uint index;
             rsl::math::float3 direction;
             float falloff;
             rsl::math::float3 position;
@@ -29,7 +29,7 @@ namespace rythe::rendering
     struct light
     {
     private:
-        static uint m_lastidx;
+        static rsl::uint m_lastidx;
     public:
         light();
 
@@ -56,7 +56,7 @@ namespace rythe::rendering
                 light_type m_type;
                 float m_attenuation;
                 float m_intensity;
-                uint m_index;
+                rsl::uint m_index;
                 rsl::math::float3 m_direction;
                 float m_falloff;
                 rsl::math::float3 m_position;

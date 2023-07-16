@@ -18,16 +18,16 @@ namespace rythe::rendering
         //Get color texture.
         auto color_texture = std::get<texture_handle>(color_attachment);
 
-        static id_type texelSizeId = nameHash("texelSize");
-        static id_type blurConstraintId = nameHash("blurConstraint");
-        static id_type reductionScaleId = nameHash("reductionScale");
-        static id_type reductionConstraintId = nameHash("reductionConstraint");
+        static id_type texelSizeId = rsl::nameHash("texelSize");
+        static id_type blurConstraintId = rsl::nameHash("blurConstraint");
+        static id_type reductionScaleId = rsl::nameHash("reductionScale");
+        static id_type reductionConstraintId = rsl::nameHash("reductionConstraint");
 
         fbo.bind();
         m_fxaaShader.bind();
 
         auto renderSize = color_texture.get_texture().size();
-        m_fxaaShader.get_uniform<math::vec2>(texelSizeId).set_value(math::vec2(1.f / renderSize.x, 1.f / renderSize.y));
+        m_fxaaShader.get_uniform<math::float2>(texelSizeId).set_value(math::float2(1.f / renderSize.x, 1.f / renderSize.y));
 
         m_fxaaShader.get_uniform<float>(blurConstraintId).set_value(8.f);
         m_fxaaShader.get_uniform<float>(reductionScaleId).set_value(1.f/8.f);

@@ -12,13 +12,13 @@ namespace rythe::rendering
             return new material_parameter<float>(name, location);
             break;
         case GL_FLOAT_VEC2:
-            return new material_parameter<math::vec2>(name, location);
+            return new material_parameter<math::float2>(name, location);
             break;
         case GL_FLOAT_VEC3:
             return new material_parameter<rsl::math::float3>(name, location);
             break;
         case GL_FLOAT_VEC4:
-            return new material_parameter<math::vec4>(name, location);
+            return new material_parameter<math::float4>(name, location);
             break;
         case GL_UNSIGNED_INT:
             return new material_parameter<uint>(name, location);
@@ -48,13 +48,13 @@ namespace rythe::rendering
             return new material_parameter<math::bvec4>(name, location);
             break;
         case GL_FLOAT_MAT2:
-            return new material_parameter<math::mat2>(name, location);
+            return new material_parameter<math::float2x2>(name, location);
             break;
         case GL_FLOAT_MAT3:
-            return new material_parameter<math::mat3>(name, location);
+            return new material_parameter<math::float3x3>(name, location);
             break;
         case GL_FLOAT_MAT4:
-            return new material_parameter<math::mat4>(name, location);
+            return new material_parameter<math::float4x4>(name, location);
             break;
         default:
             return nullptr;
@@ -73,7 +73,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         if (m_materials.count(id))
             return { id };
 
@@ -107,7 +107,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         if (m_materials.count(id))
             return { id };
 
@@ -140,7 +140,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_materialLock);
         if (m_materials.count(id))
             return { id };
@@ -166,7 +166,7 @@ namespace rythe::rendering
 
     bool material_handle::has_variant(const std::string& variant) const
     {
-        id_type variantId = nameHash(variant);
+        id_type variantId = rsl::nameHash(variant);
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_variant(variantId);
     }
@@ -179,7 +179,7 @@ namespace rythe::rendering
 
     void material_handle::set_variant(const std::string& variant)
     {
-        id_type variantId = nameHash(variant);
+        id_type variantId = rsl::nameHash(variant);
         async::readonly_guard guard(MaterialCache::m_materialLock);
         MaterialCache::m_materials[id].set_variant(variantId);
     }
@@ -242,7 +242,7 @@ namespace rythe::rendering
     {
         std::string variantName = variant;
         std::replace(variantName.begin(), variantName.end(), ' ', '_');
-        id_type variantId = nameHash(variantName);
+        id_type variantId = rsl::nameHash(variantName);
         if (m_shader.has_variant(variantId))
             m_currentVariant = variantId;
         else

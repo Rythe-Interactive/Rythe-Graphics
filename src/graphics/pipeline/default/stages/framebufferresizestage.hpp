@@ -8,7 +8,7 @@ namespace rythe::rendering
     {
         static std::atomic<float> m_renderScale;
 
-        math::ivec2 m_framebufferSize;
+        math::int2 m_framebufferSize;
         texture_handle m_colorTexture[2];
         texture_handle m_normalTexture[2];
         texture_handle m_positionTexture[2];
@@ -22,7 +22,7 @@ namespace rythe::rendering
         virtual void setup(app::window& context) override;
         void shutdown();
         virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
-        virtual priority_type priority() override;
+        virtual rsl::priority_type priority() override;
 
     };
 }

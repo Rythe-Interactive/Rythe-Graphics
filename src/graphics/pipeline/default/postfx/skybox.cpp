@@ -10,7 +10,7 @@ namespace rythe::rendering
     void Skybox::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         ecs::filter<skybox_renderer> filter;
-        static id_type matricesId = nameHash("model matrix buffer");
+        static id_type matricesId = rsl::nameHash("model matrix buffer");
         static auto modelHandle = rendering::ModelCache::create_model("Cube", fs::view("assets://models/cube.glb"));
 
         if (filter.empty())
@@ -27,7 +27,7 @@ namespace rythe::rendering
         if (!mesh.buffered)
             modelHandle.buffer_data(*modelMatrixBuffer);
 
-        modelMatrixBuffer->bufferData(std::vector<math::mat4>{math::mat4(1.f)});
+        modelMatrixBuffer->bufferData(std::vector<math::float4x4>{math::float4x4(1.f)});
 
         texture_handle sceneDepth;
         auto depthAttachment = fbo.getAttachment(GL_DEPTH_ATTACHMENT);

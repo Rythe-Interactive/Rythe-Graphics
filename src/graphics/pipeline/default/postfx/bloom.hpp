@@ -48,7 +48,7 @@ namespace rythe::rendering
 
         void seperateOverdraw(framebuffer& fbo, texture_handle colortexture, texture_handle overdrawtexture);
 
-        texture_handle blurOverdraw(const math::ivec2& framebufferSize, texture_handle overdrawtexture);
+        texture_handle blurOverdraw(const math::int2& framebufferSize, texture_handle overdrawtexture);
 
         void combineImages(framebuffer& fbo, texture_handle colortexture, texture_handle overdrawtexture);
 

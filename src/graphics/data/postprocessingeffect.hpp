@@ -15,7 +15,7 @@ namespace rythe::rendering
     class PostProcessingEffectBase
     {
     public:
-        std::vector<delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
+        std::vector<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
         virtual id_type getId() const RYTHE_PURE;
         virtual const std::string& getName() const RYTHE_PURE;
         void init(app::window& context)
@@ -57,12 +57,12 @@ namespace rythe::rendering
         template<void(Self::* func_type)(framebuffer&, RenderPipelineBase* ,camera&, const camera::camera_input&, rsl::span)>
         void addRenderPass()
         {
-            renderPasses.push_back(delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::from<Self, func_type>(reinterpret_cast<Self*>(this)));
+            renderPasses.push_back(rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::from<Self, func_type>(reinterpret_cast<Self*>(this)));
         }
     };
 
     template<typename Self>
-    const id_type PostProcessingEffect<Self>::id = typeHash<Self>();
+    const id_type PostProcessingEffect<Self>::id = rsl::typeHash<Self>();
 
     template<typename Self>
     const std::string PostProcessingEffect<Self>::name = nameOfType<Self>();

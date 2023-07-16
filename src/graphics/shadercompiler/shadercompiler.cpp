@@ -6,7 +6,7 @@
 
 namespace rythe::rendering
 {
-    delegate<void(const std::string&, log::severity)> ShaderCompiler::m_callback;
+    rsl::delegate<void(const std::string&, log::severity)> ShaderCompiler::m_callback;
 
 
     std::string ShaderCompiler::get_view_path(const fs::view& view, bool mustBeFile)

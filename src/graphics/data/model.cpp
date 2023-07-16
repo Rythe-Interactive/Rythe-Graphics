@@ -93,10 +93,10 @@ namespace rythe::rendering
         model.uvBuffer = buffer(GL_ARRAY_BUFFER, mesh_handle->uvs, GL_STATIC_DRAW);
         model.vertexArray.setAttribPointer(model.uvBuffer, SV_TEXCOORD0, 2, GL_FLOAT, false, 0, 0);
 
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::mat4), 0 * sizeof(math::mat4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::mat4), 1 * sizeof(math::mat4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::mat4), 2 * sizeof(math::mat4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::mat4), 3 * sizeof(math::mat4::col_type));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::float4x4), 0 * sizeof(math::float4x4::col_type));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::float4x4), 1 * sizeof(math::float4x4::col_type));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::float4x4), 2 * sizeof(math::float4x4::col_type));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::float4x4), 3 * sizeof(math::float4x4::col_type));
 
         model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 0, 1);
         model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 1, 1);
@@ -108,7 +108,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name, const fs::view& file, assets::import_settings<mesh> settings)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -266,7 +266,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -415,7 +415,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name, id_type meshId)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -712,7 +712,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name, assets::asset<mesh> mesh)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -1007,7 +1007,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::get_handle(const std::string& name)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_modelLock);
         if (m_models.contains(id))
             return { id };
@@ -1030,7 +1030,7 @@ namespace rythe::rendering
     void ModelCache::destroy_model(const std::string& name)
     {
         bool erased = false;
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         {
             async::readwrite_guard guard(m_modelLock);
 
@@ -1047,7 +1047,7 @@ namespace rythe::rendering
 
     assets::asset<mesh> ModelCache::get_mesh(const std::string& name)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         return assets::get<mesh>(id);
     }
 }

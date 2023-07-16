@@ -2,9 +2,9 @@
 
 namespace rythe::rendering
 {
-    uint light::m_lastidx;
+    rsl::uint light::m_lastidx;
 
-    light::light() : m_type(light_type::POINT), m_attenuation(10), m_intensity(1), m_index(m_lastidx++), m_direction(0, 0, 1), m_falloff(math::pi<float>()), m_position(0,0,0), m_angle(math::radians(45.f)), m_color(1, 1, 1) { }
+    light::light() : m_type(light_type::POINT), m_attenuation(10), m_intensity(1), m_index(m_lastidx++), m_direction(0, 0, 1), m_falloff(math::pi<float>()), m_position(0,0,0), m_angle(math::deg2rad(45.f)), m_color(1, 1, 1) { }
 
     const detail::light_data& light::get_light_data(const ecs::component<position>& pos, const ecs::component<rotation>& rot)
     {

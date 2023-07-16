@@ -1,7 +1,10 @@
 #pragma once
-#include <graphics/data/shader.hpp>
 #include <memory>
-#include <core/filesystem/filesystem.hpp>
+#include <rsl/hash>
+#include <rsl/type_util>
+
+#include "core/filesystem/filesystem.hpp"
+#include "graphics/data/shader.hpp"
 
 /**
  * @file material.hpp
@@ -21,16 +24,16 @@ namespace rythe::rendering
         static material_parameter_base* create_param(const std::string& name, const GLint& location, const GLenum& type);
     protected:
         std::string m_name;
-        id_type m_id;
-        id_type m_typeId;
+        rsl::id_type m_id;
+        rsl::id_type m_typeId;
         GLint m_location;
 
-        material_parameter_base(const std::string& name, GLint location, id_type typeId) : m_name(name), m_id(nameHash(name)), m_typeId(typeId), m_location(location) {}
+        material_parameter_base(const std::string& name, GLint location, rsl::id_type typeId) : m_name(name), m_id(rsl::nameHash(name)), m_typeId(typeId), m_location(location) {}
 
     public:
         /**@brief Get the type hash of the variable type of this parameter.
          */
-        id_type type() { return m_typeId; }
+        rsl::id_type type() { return m_typeId; }
 
         /**@brief Get the name of the parameter
          */
@@ -59,7 +62,7 @@ namespace rythe::rendering
             shader.get_uniform<T>(m_id).set_value(m_value);
         }
     public:
-        material_parameter(const std::string& name, GLint location) : material_parameter_base(name, location, typeHash<T>()), m_value() {}
+        material_parameter(const std::string& name, GLint location) : material_parameter_base(name, location, rsl::typeHash<T>()), m_value() {}
 
         void set_value(const T& value) { m_value = value; }
         T get_value() const { return m_value; }
@@ -68,8 +71,8 @@ namespace rythe::rendering
     struct variant_submaterial
     {
         std::string name;
-        std::unordered_map<id_type, std::unique_ptr<material_parameter_base>> parameters;
-        std::unordered_map<GLint, id_type> idOfLocation;
+        std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>> parameters;
+        std::unordered_map<GLint, rsl::id_type> idOfLocation;
     };
 
     /**@class material
@@ -94,7 +97,7 @@ namespace rythe::rendering
                 variant.name = m_shader.get_variant(variantId).name;
                 for (auto& [name, location, type] : variantInfo)
                 {
-                    id_type hash = nameHash(name);
+                    rsl::id_type hash = rsl::nameHash(name);
                     variant.parameters.emplace(hash, material_parameter_base::create_param(name, location, type));
                     variant.idOfLocation[location] = hash;
                 }
@@ -102,15 +105,15 @@ namespace rythe::rendering
         }
 
         std::string m_name;
-        id_type m_currentVariant = 0;
-        std::unordered_map<id_type, variant_submaterial> m_variants;
+        rsl::id_type m_currentVariant = 0;
+        std::unordered_map<rsl::id_type, variant_submaterial> m_variants;
     public:
 
-        id_type current_variant() const;
+        rsl::id_type current_variant() const;
 
-        bool has_variant(id_type variantId) const;
+        bool has_variant(rsl::id_type variantId) const;
         bool has_variant(const std::string& variant) const;
-        void set_variant(id_type variantId);
+        void set_variant(rsl::id_type variantId);
         void set_variant(const std::string& variant);
 
         /**@brief Bind the material to the rendering context and prepare for use.
@@ -158,7 +161,7 @@ namespace rythe::rendering
          */
         R_NODISCARD attribute get_attribute(const std::string& name)
         {
-            return m_shader.get_attribute(nameHash(name));
+            return m_shader.get_attribute(rsl::nameHash(name));
         }
 
         R_NODISCARD const std::string& get_name()
@@ -166,10 +169,10 @@ namespace rythe::rendering
             return m_name;
         }
 
-        R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params()
+        R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params()
         {
             if (m_currentVariant == 0)
-                m_currentVariant = nameHash("default");
+                m_currentVariant = rsl::nameHash("default");
 
             return m_variants[m_currentVariant].parameters;
         }
@@ -185,13 +188,13 @@ namespace rythe::rendering
      */
     struct material_handle
     {
-        id_type id;
+        rsl::id_type id;
 
-        id_type current_variant() const;
+        rsl::id_type current_variant() const;
 
-        bool has_variant(id_type variantId) const;
+        bool has_variant(rsl::id_type variantId) const;
         bool has_variant(const std::string& variant) const;
-        void set_variant(id_type variantId);
+        void set_variant(rsl::id_type variantId);
         void set_variant(const std::string& variant);
 
         R_NODISCARD shader_handle get_shader();
@@ -239,7 +242,7 @@ namespace rythe::rendering
 
         R_NODISCARD const std::string& get_name() const;
 
-        R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& get_params();
+        R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params();
 
         /**@brief Get attribute bound to a certain name.
          */
@@ -271,7 +274,7 @@ namespace rythe::rendering
         friend struct material_handle;
     private:
         static async::rw_spinlock m_materialLock;
-        static std::unordered_map<id_type, material> m_materials;
+        static std::unordered_map<rsl::id_type, material> m_materials;
 
         static material_handle m_invalid_material;
 
@@ -295,7 +298,7 @@ namespace rythe::rendering
          */
         static material_handle get_material(const std::string& name);
 
-        static std::pair<async::rw_spinlock&, std::unordered_map<id_type, material>&> get_all_materials();
+        static std::pair<async::rw_spinlock&, std::unordered_map<rsl::id_type, material>&> get_all_materials();
     };
 
 #pragma region implementations
@@ -345,12 +348,12 @@ namespace rythe::rendering
     inline void material::set_param<math::color>(const std::string& name, const math::color& value)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
-        id_type id = nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<math::vec4>())
-            static_cast<material_parameter<math::vec4>*>(submaterial.parameters[id].get())->set_value(value);
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
+            static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->set_value(value);
         else
             log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<math::color>());
     }
@@ -359,23 +362,23 @@ namespace rythe::rendering
     R_NODISCARD inline bool material::has_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
-        id_type id = nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        return submaterial.parameters.count(id) && submaterial.parameters.at(id)->type() == typeHash<math::vec4>();
+        return submaterial.parameters.count(id) && submaterial.parameters.at(id)->type() == rsl::typeHash<math::float4>();
     }
 
     template<>
     R_NODISCARD inline math::color material::get_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
-        id_type id = nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<math::vec4>())
-            return static_cast<material_parameter<math::vec4>*>(submaterial.parameters[id].get())->get_value();
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
+            return static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->get_value();
 
         log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<math::color>());
         return math::color();
@@ -385,16 +388,16 @@ namespace rythe::rendering
     inline void material::set_param<math::color>(GLint location, const math::color& value)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
 
-        id_type id = submaterial.idOfLocation[location];
+        rsl::id_type id = submaterial.idOfLocation[location];
 
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<math::vec4>())
-            static_cast<material_parameter<math::vec4>*>(submaterial.parameters[id].get())->set_value(value);
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
+            static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->set_value(value);
         else
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
     }
@@ -403,15 +406,15 @@ namespace rythe::rendering
     R_NODISCARD inline math::color material::get_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
 
-        id_type id = submaterial.idOfLocation[location];
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<math::vec4>())
-            return static_cast<material_parameter<math::vec4>*>(submaterial.parameters[id].get())->get_value();
+        rsl::id_type id = submaterial.idOfLocation[location];
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
+            return static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->get_value();
 
         log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
         return math::color();
@@ -421,25 +424,25 @@ namespace rythe::rendering
     R_NODISCARD inline bool material::has_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             return false;
 
-        id_type id = submaterial.idOfLocation[location];
-        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<math::vec4>();
+        rsl::id_type id = submaterial.idOfLocation[location];
+        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>();
     }
 
     template<typename T>
     void material::set_param(const std::string& name, const T& value)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        id_type id = nameHash(name);
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>())
+        rsl::id_type id = rsl::nameHash(name);
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->set_value(value);
         else
             log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<T>());
@@ -449,22 +452,22 @@ namespace rythe::rendering
     R_NODISCARD bool material::has_param(const std::string& name)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
-        id_type id = nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>();
+        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>();
     }
 
     template<typename T>
     R_NODISCARD T material::get_param(const std::string& name)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
-        id_type id = nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>())
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             return static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->get_value();
 
         log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<T>());
@@ -475,15 +478,15 @@ namespace rythe::rendering
     void material::set_param(GLint location, const T& value)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
 
-        id_type id = submaterial.idOfLocation[location];
+        rsl::id_type id = submaterial.idOfLocation[location];
 
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>())
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->set_value(value);
         else
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
@@ -493,14 +496,14 @@ namespace rythe::rendering
     R_NODISCARD T material::get_param(GLint location)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
 
-        id_type id = submaterial.idOfLocation[location];
-        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>())
+        rsl::id_type id = submaterial.idOfLocation[location];
+        if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             return static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->get_value();
 
         log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
@@ -511,14 +514,14 @@ namespace rythe::rendering
     R_NODISCARD bool material::has_param(GLint location)
     {
         if (m_currentVariant == 0)
-            m_currentVariant = nameHash("default");
+            m_currentVariant = rsl::nameHash("default");
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
             return false;
 
-        id_type id = submaterial.idOfLocation[location];
-        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == typeHash<T>();
+        rsl::id_type id = submaterial.idOfLocation[location];
+        return submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>();
     }
 #pragma endregion
 
@@ -569,43 +572,43 @@ namespace rythe::rendering
             bob.glyph(kv).eq();
 
             // determine  what type of variable we are dealing with
-            if (value->type() == typeHash<bool>())
+            if (value->type() == rsl::typeHash<bool>())
             {
                 // add the value and finish the entry
                 bob.value(static_cast<material_parameter<bool>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<float>())
+            if (value->type() == rsl::typeHash<float>())
             {
                 bob.value(static_cast<material_parameter<float>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<int>())
+            if (value->type() == rsl::typeHash<int>())
             {
                 bob.value(static_cast<material_parameter<int>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<rsl::math::float3>())
+            if (value->type() == rsl::typeHash<rsl::math::float3>())
             {
                 bob.value(static_cast<material_parameter<rsl::math::float3>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<math::vec4>())
+            if (value->type() == rsl::typeHash<math::float4>())
             {
-                bob.value(static_cast<material_parameter<math::vec4>*>(value.get())->get_value()).finish_entry();
+                bob.value(static_cast<material_parameter<math::float4>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<math::ivec3>())
+            if (value->type() == rsl::typeHash<math::ivec3>())
             {
                 bob.value(static_cast<material_parameter<math::ivec3>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<math::ivec4>())
+            if (value->type() == rsl::typeHash<math::ivec4>())
             {
                 bob.value(static_cast<material_parameter<math::ivec4>*>(value.get())->get_value()).finish_entry();
                 continue;
             }
-            if (value->type() == typeHash<texture_handle>())
+            if (value->type() == rsl::typeHash<texture_handle>())
             {
                 //for the texture handle we need to extract the texture first and ask it for its path
                 texture_handle th = static_cast<material_parameter<texture_handle>*>(value.get())->get_value();

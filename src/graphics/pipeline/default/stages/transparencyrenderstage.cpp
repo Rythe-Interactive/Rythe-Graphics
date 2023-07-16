@@ -14,18 +14,18 @@ namespace rythe::rendering
     {
         (void)deltaTime;
         (void)cam;
-        static id_type mainId = nameHash("main");
-        static id_type batchesId = nameHash("mesh batches");
-        static id_type lightsId = nameHash("light buffer");
-        static id_type lightCountId = nameHash("light count");
-        static id_type matricesId = nameHash("model matrix buffer");
+        static id_type mainId = rsl::nameHash("main");
+        static id_type batchesId = rsl::nameHash("mesh batches");
+        static id_type lightsId = rsl::nameHash("light buffer");
+        static id_type lightCountId = rsl::nameHash("light count");
+        static id_type matricesId = rsl::nameHash("model matrix buffer");
 
         // Leave this for later implementation, no time rn. (Glyn)
-        // static id_type sceneColorId = nameHash("scene color history");
-        // static id_type sceneDepthId = nameHash("scene depth history");
+        // static id_type sceneColorId = rsl::nameHash("scene color history");
+        // static id_type sceneDepthId = rsl::nameHash("scene depth history");
 
         //auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::unordered_set<ecs::entity>>>>(batchesId);
-        auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>>>(batchesId);
+        auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>(batchesId);
         if (!batches)
             return;
 
@@ -291,7 +291,7 @@ namespace rythe::rendering
         fbo->release();
     }
 
-    priority_type TransparencyRenderStage::priority()
+    rsl::priority_type TransparencyRenderStage::priority()
     {
         return transparent_priority;
     }

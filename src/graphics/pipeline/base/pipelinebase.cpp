@@ -16,7 +16,7 @@ namespace rythe::rendering
 
     framebuffer* RenderPipelineBase::addFramebuffer(const std::string& name, GLenum target)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
 
         if (m_framebuffers.contains(id))
         {
@@ -33,13 +33,13 @@ namespace rythe::rendering
 
     R_NODISCARD bool RenderPipelineBase::hasFramebuffer(const std::string& name, GLenum target)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         return m_framebuffers.contains(id) && m_framebuffers[id].target() == target;
     }
 
     R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(const std::string& name)
     {
-        id_type id = nameHash(name);
+        id_type id = rsl::nameHash(name);
         if(m_framebuffers.contains(id))
             return &m_framebuffers[id];
         return nullptr;

@@ -118,15 +118,15 @@ namespace rythe::rendering
 
     void FramebufferResizeStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
-        static id_type sceneColorId = nameHash("scene color history");
-        static id_type sceneNormalId = nameHash("scene normal history");
-        static id_type scenePositionId = nameHash("scene position history");
-        static id_type hdrOverdrawId = nameHash("HDR overdraw history");
-        static id_type sceneDepthId = nameHash("scene depth history");
+        static id_type sceneColorId = rsl::nameHash("scene color history");
+        static id_type sceneNormalId = rsl::nameHash("scene normal history");
+        static id_type scenePositionId = rsl::nameHash("scene position history");
+        static id_type hdrOverdrawId = rsl::nameHash("HDR overdraw history");
+        static id_type sceneDepthId = rsl::nameHash("scene depth history");
         static bool useTexture1 = false;
 
         float renderScale = m_renderScale.load(std::memory_order_acquire);
-        math::ivec2 framebufferSize = context.framebufferSize();
+        math::int2 framebufferSize = context.framebufferSize();
         framebufferSize.x *= renderScale;
         framebufferSize.y *= renderScale;
 
@@ -193,7 +193,7 @@ namespace rythe::rendering
         useTexture1 = !useTexture1;
     }
 
-    priority_type FramebufferResizeStage::priority()
+    rsl::priority_type FramebufferResizeStage::priority()
     {
         return setup_priority + 1;
     }

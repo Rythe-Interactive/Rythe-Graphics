@@ -13,7 +13,7 @@ namespace rythe::rendering
         (void)deltaTime;
         (void)camInput;
 
-        static id_type mainId = nameHash("main");
+        static id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)
@@ -54,7 +54,7 @@ namespace rythe::rendering
         fbo->release();
     }
 
-    priority_type ClearStage::priority()
+    rsl::priority_type ClearStage::priority()
     {
         return setup_priority;
     }

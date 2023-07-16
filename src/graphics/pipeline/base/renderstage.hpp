@@ -42,7 +42,7 @@ namespace rythe::rendering
         }
 
         virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) RYTHE_PURE;
-        virtual priority_type priority() RYTHE_IMPURE_RETURN(default_priority);
+        virtual rsl::priority_type priority() RYTHE_IMPURE_RETURN(default_priority);
 
     protected:
         void abort();

@@ -33,7 +33,7 @@ namespace rythe::debug
 
         virtual id_type get_id()
         {
-            static id_type id = nameHash("debug_line");
+            static id_type id = rsl::nameHash("debug_line");
             return id;
         }
     };

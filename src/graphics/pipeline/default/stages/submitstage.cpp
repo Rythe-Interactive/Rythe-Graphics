@@ -36,7 +36,7 @@ namespace rythe::rendering
         (void)deltaTime;
         (void)camInput;
 
-        static id_type mainId = nameHash("main");
+        static id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)
@@ -89,7 +89,7 @@ namespace rythe::rendering
         cam.renderTarget.release();
     }
 
-    priority_type SubmitStage::priority()
+    rsl::priority_type SubmitStage::priority()
     {
         return submit_priority;
     }

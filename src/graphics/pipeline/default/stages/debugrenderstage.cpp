@@ -58,7 +58,7 @@ namespace rythe::rendering
     void DebugRenderStage::setup(app::window& context)
     {
         startDebugDomain();
-        events::EventBus::bindToEvent(nameHash("debug_line"), delegate<void(events::event_base&)>::template from<DebugRenderStage, &DebugRenderStage::drawDebugLine>(this));
+        events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template from<DebugRenderStage, &DebugRenderStage::drawDebugLine>(this));
     }
 
     void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
@@ -94,7 +94,7 @@ namespace rythe::rendering
             }
         }
 
-        static id_type mainId = nameHash("main");
+        static id_type mainId = rsl::nameHash("main");
         auto fbo = getFramebuffer(mainId);
         if (!fbo)
         {
@@ -255,7 +255,7 @@ namespace rythe::rendering
         startDebugDomain();
     }
 
-    priority_type DebugRenderStage::priority()
+    rsl::priority_type DebugRenderStage::priority()
     {
         return post_fx_priority + 1;
     }

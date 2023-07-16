@@ -4,7 +4,7 @@ namespace  rythe::rendering
 {
     void MeshBatchingStage::setup(app::window& context)
     {
-        create_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>>>("mesh batches");
+        create_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>("mesh batches");
     }
 
     void MeshBatchingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
@@ -14,8 +14,8 @@ namespace  rythe::rendering
         (void)cam;
         (void)context;
 
-        static id_type batchesId = nameHash("mesh batches");
-        auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>>>(batchesId);
+        static id_type batchesId = rsl::nameHash("mesh batches");
+        auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>(batchesId);
 
         static ecs::filter<position, rotation, scale, mesh_filter, mesh_renderer> renderablesQuery{};
 
@@ -32,7 +32,7 @@ namespace  rythe::rendering
         }
 
         {
-            std::vector<std::reference_wrapper<std::pair<std::vector<ecs::entity>, std::vector<math::mat4>>>> batchList;
+            std::vector<std::reference_wrapper<std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>> batchList;
             for (rsl::size_type i = 0; i < renderablesQuery.size(); i++)
             {
                 auto& batch = (*batches)[renderers[i].get().material][model_handle{ filters[i].get().shared_mesh.id() }];
@@ -44,7 +44,7 @@ namespace  rythe::rendering
 
             std::vector<ecs::entity> entityList;
             entityList.reserve(renderablesQuery.size());
-            std::vector<std::reference_wrapper<math::mat4>> matrixList;
+            std::vector<std::reference_wrapper<math::float4x4>> matrixList;
             matrixList.reserve(renderablesQuery.size());
 
 
@@ -78,7 +78,7 @@ namespace  rythe::rendering
         }
     }
 
-    priority_type MeshBatchingStage::priority()
+    rsl::priority_type MeshBatchingStage::priority()
     {
         return setup_priority;
     }
