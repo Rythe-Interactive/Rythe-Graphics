@@ -21,7 +21,10 @@ DEALINGS IN THE SOFTWARE.
 
 ]]--
 
-includedirs { "../",}
-dependson { "core", "graphics", "application" }
+print("including graphics")
+includedirs { "$(SolutionDir)rythe\\graphics\\src","rythe\\graphics\\third_party\\*"}
+dependson { "core", "application" }
 filter "kind:not StaticLib"
-    links { "graphics", "core","GL", "dl","imgui" }
+    links { "core"}
+
+dofile "rythe/engine/application/include-application.lua"

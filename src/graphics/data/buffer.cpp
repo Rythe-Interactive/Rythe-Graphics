@@ -1,4 +1,4 @@
-#include <graphics/data/buffer.hpp>
+#include "graphics/data/buffer.hpp"
 
 namespace rythe::rendering
 {
@@ -23,6 +23,7 @@ namespace rythe::rendering
         m_target(target),
         m_usage(usage)
     {
+        //m_id = common::managed_resource<app::gl_id>(invalid_id);
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())
         {
@@ -87,7 +88,7 @@ namespace rythe::rendering
         return size;
     }
 
-    void buffer::bindBufferBase(uint index) const
+    void buffer::bindBufferBase(rsl::uint index) const
     {
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())

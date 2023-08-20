@@ -21,25 +21,25 @@ DEALINGS IN THE SOFTWARE.
 
 ]]--
 
-group "engine"
-project "graphics"
-    kind "StaticLib"
-    language "C++"
-    targetdir "../../../../../build/%{cfg.buildcfg}"
-    cppdialect "C++20"
-    includedirs { "../","../../third_party/*","../../../application/src/","../../../core/src/"}
-	dependson { "core", "application" }
+createProject("engine","graphics","StaticLib")
+includedirs {
+    "include",
+    "include/*",
+    "include/*/src/",
+    "third_party/",
+    "third_party/*",
+    "third_party/*/src/",
+    "third_party/*/include/",
+    "src"
+}    
 
-    files {"**.h", "**.hpp" ,"**.inl","**.c", "**.cpp"}
-
-    filter "configurations:Debug*"
-        defines {"DEBUG"}
-        symbols "On"
-
-    filter "configurations:Release*"
-        defines {"NDEBUG"}
-        optimize "On"
-		
-    filter "configurations:*64"
-       architecture "x86_64"
-group ""
+files { 
+    "src/%{prj.name}/**.h",
+    "src/%{prj.name}/**.hpp",
+    "src/%{prj.name}/**.inl",
+    "src/%{prj.name}/**.c",
+    "src/%{prj.name}/**.cpp"
+}
+    
+dofile "rythe/engine/core/include-core.lua"
+dofile "rythe/engine/application/include-application.lua"

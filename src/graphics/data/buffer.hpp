@@ -1,5 +1,5 @@
 #pragma once
-#include <application/application.hpp>
+#include "application/application.hpp"
 
 /**
  * @file buffer.hpp
@@ -76,7 +76,7 @@ namespace rythe::rendering
          * @param index Indexed buffer binding location to bind to.
          * @note Target must be GL_ATOMIC_COUNTER_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER or GL_SHADER_STORAGE_BUFFER.
          */
-        void bindBufferBase(uint index) const;
+        void bindBufferBase(rsl::uint index) const;
 
         /**@brief Resize the buffer to a new size. This reallocates VRAM and thus invalidates all data in the buffer.
          */
