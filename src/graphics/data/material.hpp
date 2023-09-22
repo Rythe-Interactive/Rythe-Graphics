@@ -41,7 +41,7 @@ namespace rythe::rendering
 
         /**@internal
          */
-        virtual void apply(shader_handle& shader) RYTHE_PURE;
+        virtual void apply(shader_handle& shader) = 0;
         /**@endinternal
         */
     };

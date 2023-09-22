@@ -27,9 +27,9 @@ namespace rythe::rendering
         bool m_isInitialized = false;
 
     protected:
-        virtual void setup(app::window& context) RYTHE_PURE;
+        virtual void setup(app::window& context) = 0;
 
-        virtual void _shutdown_impl() RYTHE_PURE;
+        virtual void _shutdown_impl() = 0;
     public:
         static RenderPipelineBase* m_pipeline;
 
@@ -41,7 +41,7 @@ namespace rythe::rendering
             setup(context);
         }
 
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) RYTHE_PURE;
+        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
         virtual rsl::priority_type priority() RYTHE_IMPURE_RETURN(default_priority);
 
     protected:

@@ -8,8 +8,8 @@ namespace rythe::rendering
 {
     struct pipeline_provider_base
     {
-        virtual RenderPipelineBase* get(app::window& context) RYTHE_PURE;
-        virtual void shutdown() RYTHE_PURE;
+        virtual RenderPipelineBase* get(app::window& context) = 0;
+        virtual void shutdown() = 0;
     };
 
     template<typename PipelineType>
