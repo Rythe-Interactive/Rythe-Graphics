@@ -16,8 +16,8 @@ namespace rythe::rendering
     {
     public:
         std::vector<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
-        virtual rsl::id_type getId() const RYTHE_PURE;
-        virtual const std::string& getName() const RYTHE_PURE;
+        virtual id_type getId() const = 0;
+        virtual const std::string& getName() const = 0;
         void init(app::window& context)
         {
             m_initialized = true;
@@ -28,7 +28,7 @@ namespace rythe::rendering
         bool isInitialized() const { return m_initialized; }
 
     protected:
-        virtual void setup(app::window& context) RYTHE_PURE;
+        virtual void setup(app::window& context) = 0;
         void renderQuad()
         {
             m_quad.render();

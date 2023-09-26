@@ -50,11 +50,11 @@ namespace rythe::rendering
         R_NODISCARD bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
         R_NODISCARD framebuffer* getFramebuffer(rsl::id_type nameHash);
 
-        virtual void init(app::window& context) RYTHE_PURE;
+        virtual void init(app::window& context) = 0;
 
         virtual void shutdown();
 
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) RYTHE_PURE;
+        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
     };
 
 }

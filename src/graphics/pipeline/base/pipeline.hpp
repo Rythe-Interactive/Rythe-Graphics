@@ -24,7 +24,7 @@ namespace rythe::rendering
 
         static void attachStage(std::unique_ptr<RenderStageBase>&& stage);
 
-        virtual void setup(app::window& context) RYTHE_PURE;
+        virtual void setup(app::window& context) = 0;
 
         void init(app::window& context) override;
 
