@@ -117,7 +117,7 @@ namespace rythe::rendering
         uint attachment = FRAGMENT_ATTACHMENT;
         glDrawBuffers(1, &attachment);
 
-        static id_type autoFocusId = rsl::nameHash("auto_focus");
+        static rsl::id_type autoFocusId = rsl::nameHash("auto_focus");
 
         auto doAutoFocus = m_autoFocus.load(std::memory_order_relaxed);
 

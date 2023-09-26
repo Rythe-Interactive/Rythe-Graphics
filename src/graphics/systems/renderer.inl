@@ -30,7 +30,7 @@ namespace rythe::rendering
         m_pipelines.clear();
     }
 
-    template<typename Pipeline CNDOXY(inherits_from<Pipeline, RenderPipeline<Pipeline>>)>
+    template<typename Pipeline, rsl::inherits_from<Pipeline, RenderPipeline<Pipeline>>>
     inline void Renderer::setPipeline()
     {
         m_pipelineProvider = std::make_unique<pipeline_provider<Pipeline>>();

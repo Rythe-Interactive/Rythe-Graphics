@@ -125,21 +125,21 @@ namespace rythe::rendering
     inline void uniform<math::float2>::set_value(const math::float2& value)
     {
         if (is_valid())
-            glUniform2fv(m_location, 1, math::value_ptr(value));
+            glUniform2fv(m_location, 1, value.data);
     }
 
     template<>
     inline void uniform<rsl::math::float3>::set_value(const rsl::math::float3& value)
     {
         if (is_valid())
-            glUniform3fv(m_location, 1, math::value_ptr(value));
+            glUniform3fv(m_location, 1, value.data);
     }
 
     template<>
     inline void uniform<math::float4>::set_value(const math::float4& value)
     {
         if (is_valid())
-            glUniform4fv(m_location, 1, math::value_ptr(value));
+            glUniform4fv(m_location, 1, value.data);
     }
 
     template<>
@@ -153,21 +153,21 @@ namespace rythe::rendering
     inline void uniform<math::int2>::set_value(const math::int2& value)
     {
         if (is_valid())
-            glUniform2iv(m_location, 1, math::value_ptr(value));
+            glUniform2iv(m_location, 1, value.data);
     }
 
     template<>
     inline void uniform<math::int3>::set_value(const math::int3& value)
     {
         if (is_valid())
-            glUniform3iv(m_location, 1, math::value_ptr(value));
+            glUniform3iv(m_location, 1, value.data);
     }
 
     template<>
     inline void uniform<math::int4>::set_value(const math::int4& value)
     {
         if (is_valid())
-            glUniform4iv(m_location, 1, math::value_ptr(value));
+            glUniform4iv(m_location, 1, value.data);
     }
 
     template<>
@@ -181,42 +181,42 @@ namespace rythe::rendering
     inline void uniform<math::bool2>::set_value(const math::bool2& value)
     {
         if (is_valid())
-            glUniform2iv(m_location, 1, math::value_ptr(math::int2(value)));
+            glUniform2iv(m_location, 1, math::int2(value).data);
     }
 
     template<>
     inline void uniform<math::bool3>::set_value(const math::bool3& value)
     {
         if (is_valid())
-            glUniform3iv(m_location, 1, math::value_ptr(math::int3(value)));
+            glUniform3iv(m_location, 1, math::int3(value).data);
     }
 
     template<>
     inline void uniform<math::bool4>::set_value(const math::bool4& value)
     {
         if (is_valid())
-            glUniform4iv(m_location, 1, math::value_ptr(math::int4(value)));
+            glUniform4iv(m_location, 1, math::int4(value).data);
     }
 
     template<>
     inline void uniform<math::float2x2>::set_value(const math::float2x2& value)
     {
         if (is_valid())
-            glUniformMatrix2fv(m_location, 1, false, math::value_ptr(value));
+            glUniformMatrix2fv(m_location, 1, false, value.data);
     }
 
     template<>
     inline void uniform<math::float3x3>::set_value(const math::float3x3& value)
     {
         if (is_valid())
-            glUniformMatrix3fv(m_location, 1, false, math::value_ptr(value));
+            glUniformMatrix3fv(m_location, 1, false, value.data);
     }
 
     template<>
     inline void uniform<math::float4x4>::set_value(const math::float4x4& value)
     {
         if (is_valid())
-            glUniformMatrix4fv(m_location, 1, false, math::value_ptr(value));
+            glUniformMatrix4fv(m_location, 1, false, value.data);
     }
 
     /**@class attribute
@@ -335,7 +335,7 @@ namespace rythe::rendering
             auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[rsl::nameHash(uniformName)].get());
             if (ptr)
                 return *ptr;
-            log::error("Uniform of type {} does not exist with name {} in shader {}.", nameOfType<T>(), uniformName, name);
+            log::error("Uniform of type {} does not exist with name {} in shader {}.", rsl::nameOfType<T>(), uniformName, name);
             return uniform<T>(nullptr);
         }
 
@@ -364,7 +364,7 @@ namespace rythe::rendering
             auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get());
             if (ptr)
                 return *ptr;
-            log::error("Uniform of type {} does not exist with id {} in shader {}.", nameOfType<T>(), id, name);
+            log::error("Uniform of type {} does not exist with id {} in shader {}.", rsl::nameOfType<T>(), id, name);
             return uniform<T>(nullptr);
         }
 
@@ -392,7 +392,7 @@ namespace rythe::rendering
             auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[m_currentShaderVariant->idOfLocation[location]].get());
             if (ptr)
                 return *ptr;
-            log::error("Uniform of type {} does not exist with location {} in shader {}.", nameOfType<T>(), location, name);
+            log::error("Uniform of type {} does not exist with location {} in shader {}.", rsl::nameOfType<T>(), location, name);
             return uniform<T>(nullptr);
         }
 

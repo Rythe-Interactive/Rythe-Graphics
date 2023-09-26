@@ -16,7 +16,7 @@ namespace rythe::rendering
         /**
          * @brief A multimap with priority as key and postprocessing effect as value.
          */
-        static std::multimap<priority_type, std::unique_ptr<PostProcessingEffectBase>,std::greater<>> m_effects;
+        static std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>,std::greater<>> m_effects;
         screen_quad m_screenQuad;
 
         framebuffer m_drawFBO;
@@ -26,13 +26,13 @@ namespace rythe::rendering
         shader_handle m_screenShader;
 
     public:
-        template<typename effect_type, typename ...Args CNDOXY(inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0)>
-        static void addEffect(priority_type priority = default_priority, Args&&...args)
+        template<typename effect_type, typename ...Args,rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
+        static void addEffect(rsl::priority_type priority = default_priority, Args&&...args)
         {
             m_effects.emplace(priority, std::unique_ptr<PostProcessingEffectBase>(new effect_type(std::forward<Args>(args)...)));
         }
 
-        template<typename effect_type CNDOXY(inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0)>
+        template<typename effect_type, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
         static void removeEffect()
         {
             for (auto iter = m_effects.begin(); iter != m_effects.end();)

@@ -25,17 +25,17 @@ namespace rythe::rendering
         return m_pipeline->getFramebuffer(name);
     }
 
-    framebuffer* RenderStageBase::addFramebuffer(id_type nameHash, GLenum target)
+    framebuffer* RenderStageBase::addFramebuffer(rsl::id_type nameHash, GLenum target)
     {
         return m_pipeline->addFramebuffer(nameHash, target);
     }
 
-    R_NODISCARD bool RenderStageBase::hasFramebuffer(id_type nameHash, GLenum target)
+    R_NODISCARD bool RenderStageBase::hasFramebuffer(rsl::id_type nameHash, GLenum target)
     {
         return m_pipeline->hasFramebuffer(nameHash, target);
     }
 
-    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(id_type nameHash)
+    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(rsl::id_type nameHash)
     {
         return m_pipeline->getFramebuffer(nameHash);
     }

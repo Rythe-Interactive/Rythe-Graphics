@@ -47,13 +47,13 @@ namespace rythe::rendering
         (void)camInput;
         (void)cam;
 
-        static id_type lightsbufferId = rsl::nameHash("light buffer");
-        static id_type lightCountId = rsl::nameHash("light count");
+        static rsl::id_type lightsbufferId = rsl::nameHash("light buffer");
+        static rsl::id_type lightCountId = rsl::nameHash("light count");
         buffer* lightsBuffer = get_meta<buffer>(lightsbufferId);
 
         {
             std::lock_guard guard(m_lightEntitiesLock);
-            *get_meta<id_type>(lightCountId) = m_lightEntities.size();
+            *get_meta<rsl::id_type>(lightCountId) = m_lightEntities.size();
 
             m_lights.resize(m_lightEntities.size());
             int i = 0;

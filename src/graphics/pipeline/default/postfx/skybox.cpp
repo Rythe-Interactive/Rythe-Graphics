@@ -10,7 +10,7 @@ namespace rythe::rendering
     void Skybox::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
         ecs::filter<skybox_renderer> filter;
-        static id_type matricesId = rsl::nameHash("model matrix buffer");
+        static rsl::id_type matricesId = rsl::nameHash("model matrix buffer");
         static auto modelHandle = rendering::ModelCache::create_model("Cube", fs::view("assets://models/cube.glb"));
 
         if (filter.empty())

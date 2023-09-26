@@ -2,17 +2,17 @@
 
 namespace rythe::rendering
 {
-    std::atomic<id_type> Tonemapping::m_currentShader = { rsl::nameHash("aces tonemapping") };
+    std::atomic<rsl::id_type> Tonemapping::m_currentShader = { rsl::nameHash("aces tonemapping") };
     std::atomic_bool Tonemapping::m_autoExposure = { false };
     std::atomic<float> Tonemapping::m_exposure = { 2.f };
 
     void Tonemapping::setAlgorithm(tonemapping_type type) noexcept
     {
-        static id_type acesId = rsl::nameHash("aces tonemapping");
-        static id_type reinhardId = rsl::nameHash("reinhard tonemapping");
-        static id_type reinhardJodieId = rsl::nameHash("reinhard jodie tonemapping");
-        static id_type rytheId = rsl::nameHash("rythe tonemapping");
-        static id_type unreal3Id = rsl::nameHash("unreal3 tonemapping");
+        static rsl::id_type acesId = rsl::nameHash("aces tonemapping");
+        static rsl::id_type reinhardId = rsl::nameHash("reinhard tonemapping");
+        static rsl::id_type reinhardJodieId = rsl::nameHash("reinhard jodie tonemapping");
+        static rsl::id_type rytheId = rsl::nameHash("rythe tonemapping");
+        static rsl::id_type unreal3Id = rsl::nameHash("unreal3 tonemapping");
 
         switch (type)
         {
@@ -67,12 +67,12 @@ namespace rythe::rendering
         //Get color texture.
         auto color_texture = std::get<texture_handle>(color_attachment);
 
-        static id_type exposureId = rsl::nameHash("exposure");
+        static rsl::id_type exposureId = rsl::nameHash("exposure");
 
         auto exposure = m_exposure.load(std::memory_order_relaxed);
         auto doAutoExposure = m_autoExposure.load(std::memory_order_relaxed);
         static bool firstFrame = true;
-        static id_type historyMetaId = rsl::nameHash("scene color history");
+        static rsl::id_type historyMetaId = rsl::nameHash("scene color history");
         texture_handle* historyTexture = pipeline->get_meta<texture_handle>(historyMetaId);
 
         if (doAutoExposure)

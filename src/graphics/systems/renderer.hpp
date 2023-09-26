@@ -51,7 +51,7 @@ namespace rythe::rendering
 
         void render(rsl::span deltatime);
 
-        template<typename Pipeline CNDOXY(inherits_from<Pipeline, RenderPipeline<Pipeline>> = 0)>
+        template<typename Pipeline, rsl::inherits_from<Pipeline, RenderPipeline<Pipeline>> = 0>
         static void setPipeline();
 
         R_NODISCARD static RenderPipelineBase* getPipeline(app::window& context);

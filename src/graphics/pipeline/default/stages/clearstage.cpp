@@ -13,7 +13,7 @@ namespace rythe::rendering
         (void)deltaTime;
         (void)camInput;
 
-        static id_type mainId = rsl::nameHash("main");
+        static rsl::id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)

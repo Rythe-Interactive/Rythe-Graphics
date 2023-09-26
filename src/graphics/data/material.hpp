@@ -355,7 +355,7 @@ namespace rythe::rendering
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
             static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->set_value(value);
         else
-            log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<math::color>());
+            log::warn("material {} does not have a parameter named {} of type {}", m_name, name, rsl::nameOfType<math::color>());
     }
 
     template<>
@@ -380,7 +380,7 @@ namespace rythe::rendering
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
             return static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->get_value();
 
-        log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<math::color>());
+        log::warn("material {} does not have a parameter named {} of type {}", m_name, name, rsl::nameOfType<math::color>());
         return math::color();
     }
 
@@ -392,14 +392,14 @@ namespace rythe::rendering
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<math::color>());
 
         rsl::id_type id = submaterial.idOfLocation[location];
 
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
             static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->set_value(value);
         else
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<math::color>());
     }
 
     template<>
@@ -410,13 +410,13 @@ namespace rythe::rendering
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<math::color>());
 
         rsl::id_type id = submaterial.idOfLocation[location];
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<math::float4>())
             return static_cast<material_parameter<math::float4>*>(submaterial.parameters[id].get())->get_value();
 
-        log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<math::color>());
+        log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<math::color>());
         return math::color();
     }
 
@@ -445,7 +445,7 @@ namespace rythe::rendering
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->set_value(value);
         else
-            log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<T>());
+            log::warn("material {} does not have a parameter named {} of type {}", m_name, name, rsl::nameOfType<T>());
     }
 
     template<typename T>
@@ -470,7 +470,7 @@ namespace rythe::rendering
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             return static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->get_value();
 
-        log::warn("material {} does not have a parameter named {} of type {}", m_name, name, nameOfType<T>());
+        log::warn("material {} does not have a parameter named {} of type {}", m_name, name, rsl::nameOfType<T>());
         return T();
     }
 
@@ -482,14 +482,14 @@ namespace rythe::rendering
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<T>());
 
         rsl::id_type id = submaterial.idOfLocation[location];
 
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->set_value(value);
         else
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<T>());
     }
 
     template<typename T>
@@ -500,13 +500,13 @@ namespace rythe::rendering
 
         variant_submaterial& submaterial = m_variants.at(m_currentVariant);
         if (!submaterial.idOfLocation.count(location))
-            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
+            log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<T>());
 
         rsl::id_type id = submaterial.idOfLocation[location];
         if (submaterial.parameters.count(id) && submaterial.parameters[id]->type() == rsl::typeHash<T>())
             return static_cast<material_parameter<T>*>(submaterial.parameters[id].get())->get_value();
 
-        log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, nameOfType<T>());
+        log::warn("material {} does not have a parameter at location {} of type {}", m_name, location, rsl::nameOfType<T>());
         return T();
     }
 

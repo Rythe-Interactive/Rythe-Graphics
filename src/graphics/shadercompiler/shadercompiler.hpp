@@ -16,7 +16,7 @@ namespace rythe::rendering
 
         static void extract_state(std::string_view source, shader_state& state);
         static bool extract_ilo(const std::string& variant, std::string_view source, uint64 shaderType, shader_ilo& ilo);
-        static std::string invoke_compiler(const fs::view& file, bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
+        static std::string invoke_compiler(const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
 
     public:
         template<class owner_type, void(owner_type::* func_type)(const std::string&, log::severity)>
@@ -50,8 +50,8 @@ namespace rythe::rendering
 
         static void cleanCache(const fs::view& path);
 
-        static bool process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
-        static bool process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines);
-        static bool process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
+        static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
+        static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines);
+        static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
     };
 }

@@ -12,7 +12,7 @@ namespace rythe::rendering
     class Tonemapping : public PostProcessingEffect<Tonemapping>
     {
     private:
-        static std::atomic<id_type> m_currentShader;
+        static std::atomic<rsl::id_type> m_currentShader;
         static std::atomic_bool m_autoExposure;
         static std::atomic<float> m_exposure;
 

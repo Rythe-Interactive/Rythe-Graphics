@@ -17,13 +17,13 @@ namespace rythe::rendering
         vulkan = 8
     };
 
-    constexpr bitfield8 default_shader_compiler_settings =  0 | shader_compiler_options::api_opengl;
+    constexpr rsl::bitfield8 default_shader_compiler_settings =  0 | shader_compiler_options::api_opengl;
 
     struct shader_import_settings
     {
         bool usePrecompiledIfAvailable;
         bool storePrecompiled;
-        bitfield8 api;
+        rsl::bitfield8 api;
         bool debug;
         bool low_power;
     };

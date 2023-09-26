@@ -5,11 +5,11 @@
 
 namespace rythe::rendering
 {
-    sparse_map<id_type, shader> ShaderCache::m_shaders;
+    sparse_map<rsl::id_type, shader> ShaderCache::m_shaders;
     async::rw_spinlock ShaderCache::m_shaderLock;
-    std::unordered_set<id_type> ShaderCache::m_checkedPaths;
+    std::unordered_set<rsl::id_type> ShaderCache::m_checkedPaths;
 
-    shader* ShaderCache::get_shader(id_type id)
+    shader* ShaderCache::get_shader(rsl::id_type id)
     {
         async::readonly_guard guard(m_shaderLock);
         if (m_shaders.count(id))
@@ -18,7 +18,7 @@ namespace rythe::rendering
             return &m_shaders.at(invalid_id);
     }
 
-    void ShaderCache::process_io(shader& shader, id_type id)
+    void ShaderCache::process_io(shader& shader, rsl::id_type id)
     {
         for (auto& [_, variant] : shader.m_variants)
         {
@@ -408,7 +408,7 @@ namespace rythe::rendering
 
         for (auto& [shaderVariant, variantSource] : shaders)
         {
-            id_type variantId = rsl::nameHash(shaderVariant);
+            rsl::id_type variantId = rsl::nameHash(shaderVariant);
             shader_variant& variant = shader.m_variants[variantId];
             variant.name = shaderVariant;
             GLenum blendSrc = GL_FALSE, blendDst = GL_FALSE;
@@ -652,7 +652,7 @@ namespace rythe::rendering
         delete_shader(rsl::nameHash(name));
     }
 
-    void ShaderCache::delete_shader(id_type id)
+    void ShaderCache::delete_shader(rsl::id_type id)
     {
         async::readonly_guard guard(m_shaderLock);
         if (m_shaders.contains(id))
@@ -669,13 +669,13 @@ namespace rythe::rendering
         return has_shader(rsl::nameHash(name));
     }
 
-    bool ShaderCache::has_shader(id_type id)
+    bool ShaderCache::has_shader(rsl::id_type id)
     {
         async::readonly_guard guard(m_shaderLock);
 
         if (m_shaders.contains(id))
         {
-            static id_type defaultId = rsl::nameHash("default");
+            static rsl::id_type defaultId = rsl::nameHash("default");
             auto& shader = m_shaders.at(id);
             return !shader.m_variants.empty() && shader.m_variants.count(defaultId);
         }
@@ -684,10 +684,10 @@ namespace rythe::rendering
 
     shader_handle ShaderCache::create_shader(const std::string& name, const fs::view& file, shader_import_settings settings)
     {
-        static id_type defaultId = rsl::nameHash("default");
+        static rsl::id_type defaultId = rsl::nameHash("default");
 
         // Get the id of the new shader.
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         { // Check if the shader already exists.
             async::readonly_guard guard(m_shaderLock);
@@ -770,7 +770,7 @@ namespace rythe::rendering
 
         for (auto& [shaderVariant, variantSource] : shaders)
         {
-            id_type variantId = rsl::nameHash(shaderVariant);
+            rsl::id_type variantId = rsl::nameHash(shaderVariant);
             shader_variant& variant = shader.m_variants[variantId];
             variant.name = shaderVariant;
 
@@ -992,7 +992,7 @@ namespace rythe::rendering
 
     shader_handle ShaderCache::get_handle(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         async::readonly_guard guard(m_shaderLock);
 
@@ -1007,7 +1007,7 @@ namespace rythe::rendering
             return { id };
     }
 
-    shader_handle ShaderCache::get_handle(id_type id)
+    shader_handle ShaderCache::get_handle(rsl::id_type id)
     {
         async::readonly_guard guard(m_shaderLock);
 
@@ -1022,7 +1022,7 @@ namespace rythe::rendering
             return { id };
     }
 
-    shader_variant& shader_handle::get_variant(id_type variantId)
+    shader_variant& shader_handle::get_variant(rsl::id_type variantId)
     {
         return ShaderCache::get_shader(id)->get_variant(variantId);
     }
@@ -1032,7 +1032,7 @@ namespace rythe::rendering
         return ShaderCache::get_shader(id)->get_variant(variant);
     }
 
-    const shader_variant& shader_handle::get_variant(id_type variantId) const
+    const shader_variant& shader_handle::get_variant(rsl::id_type variantId) const
     {
         return ShaderCache::get_shader(id)->get_variant(variantId);
     }
@@ -1062,10 +1062,10 @@ namespace rythe::rendering
         return ShaderCache::get_shader(id)->path;
     }
 
-    std::unordered_map<id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> shader_handle::get_uniform_info() const
+    std::unordered_map<rsl::id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> shader_handle::get_uniform_info() const
     {
         auto* shader = ShaderCache::get_shader(id);
-        std::unordered_map<id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> info;
+        std::unordered_map<rsl::id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> info;
 
         for (auto& [variantId, variant] : shader->m_variants)
         {
@@ -1075,7 +1075,7 @@ namespace rythe::rendering
         return info;
     }
 
-    std::vector<std::tuple<std::string, GLint, GLenum>> shader_handle::get_uniform_info(id_type variantId) const
+    std::vector<std::tuple<std::string, GLint, GLenum>> shader_handle::get_uniform_info(rsl::id_type variantId) const
     {
         return ShaderCache::get_shader(id)->get_variant(variantId).get_uniform_info();
     }
@@ -1090,7 +1090,7 @@ namespace rythe::rendering
         return ShaderCache::get_shader(id)->get_attribute(name);
     }
 
-    attribute shader_handle::get_attribute(id_type attributeId)
+    attribute shader_handle::get_attribute(rsl::id_type attributeId)
     {
         return ShaderCache::get_shader(id)->get_attribute(attributeId);
     }
@@ -1115,11 +1115,11 @@ namespace rythe::rendering
         glUseProgram(0);
     }
 
-    bool shader::has_variant(id_type variantId) const
+    bool shader::has_variant(rsl::id_type variantId) const
     {
         if (variantId == 0)
         {
-            static id_type defaultId = rsl::nameHash("default");
+            static rsl::id_type defaultId = rsl::nameHash("default");
             return m_variants.count(defaultId);
         }
         return m_variants.count(variantId);
@@ -1132,11 +1132,11 @@ namespace rythe::rendering
         return m_variants.count(rsl::nameHash(variantName));
     }
 
-    void shader::configure_variant(id_type variantId) const
+    void shader::configure_variant(rsl::id_type variantId) const
     {
         if (variantId == 0)
         {
-            static id_type defaultId = rsl::nameHash("default");
+            static rsl::id_type defaultId = rsl::nameHash("default");
             m_currentShaderVariant = &m_variants.at(defaultId);
         }
         else if (m_variants.count(variantId))
@@ -1147,12 +1147,12 @@ namespace rythe::rendering
     {
         std::string variantName = variant;
         std::replace(variantName.begin(), variantName.end(), ' ', '_');
-        id_type variantId = rsl::nameHash(variantName);
+        rsl::id_type variantId = rsl::nameHash(variantName);
         if (m_variants.count(variantId))
             m_currentShaderVariant = &m_variants.at(variantId);
     }
 
-    shader_variant& shader::get_variant(id_type variantId)
+    shader_variant& shader::get_variant(rsl::id_type variantId)
     {
 #if defined(RYTHE_VALIDATE)
         if (!m_variants.count(variantId))
@@ -1160,7 +1160,7 @@ namespace rythe::rendering
 #endif
         if (variantId == 0)
         {
-            static id_type defaultId = rsl::nameHash("default");
+            static rsl::id_type defaultId = rsl::nameHash("default");
             return m_variants.at(defaultId);
         }
         return m_variants.at(variantId);
@@ -1171,7 +1171,7 @@ namespace rythe::rendering
         return m_variants.at(rsl::nameHash(variant));
     }
 
-    const shader_variant& shader::get_variant(id_type variantId) const
+    const shader_variant& shader::get_variant(rsl::id_type variantId) const
     {
 #if defined(RYTHE_VALIDATE)
         if (!m_variants.count(variantId))
@@ -1179,7 +1179,7 @@ namespace rythe::rendering
 #endif
         if (variantId == 0)
         {
-            static id_type defaultId = rsl::nameHash("default");
+            static rsl::id_type defaultId = rsl::nameHash("default");
             return m_variants.at(defaultId);
         }
         return m_variants.at(variantId);
@@ -1303,7 +1303,7 @@ namespace rythe::rendering
             return invalid_attribute;
         }
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         if (m_currentShaderVariant->attributes.count(id))
             return *(m_currentShaderVariant->attributes[id].get());
 
@@ -1311,7 +1311,7 @@ namespace rythe::rendering
         return invalid_attribute;
     }
 
-    attribute shader::get_attribute(id_type id)
+    attribute shader::get_attribute(rsl::id_type id)
     {
         if (!m_currentShaderVariant)
         {
@@ -1333,7 +1333,7 @@ namespace rythe::rendering
         return info;
     }
 
-    bool shader_handle::has_variant(id_type variantId) const
+    bool shader_handle::has_variant(rsl::id_type variantId) const
     {
         return ShaderCache::get_shader(id)->has_variant(variantId);
     }
@@ -1343,7 +1343,7 @@ namespace rythe::rendering
         return ShaderCache::get_shader(id)->has_variant(variant);
     }
 
-    void shader_handle::configure_variant(id_type variantId)
+    void shader_handle::configure_variant(rsl::id_type variantId)
     {
         ShaderCache::get_shader(id)->configure_variant(variantId);
     }

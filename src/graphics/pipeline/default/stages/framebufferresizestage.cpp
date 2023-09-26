@@ -118,11 +118,11 @@ namespace rythe::rendering
 
     void FramebufferResizeStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
     {
-        static id_type sceneColorId = rsl::nameHash("scene color history");
-        static id_type sceneNormalId = rsl::nameHash("scene normal history");
-        static id_type scenePositionId = rsl::nameHash("scene position history");
-        static id_type hdrOverdrawId = rsl::nameHash("HDR overdraw history");
-        static id_type sceneDepthId = rsl::nameHash("scene depth history");
+        static rsl::id_type sceneColorId = rsl::nameHash("scene color history");
+        static rsl::id_type sceneNormalId = rsl::nameHash("scene normal history");
+        static rsl::id_type scenePositionId = rsl::nameHash("scene position history");
+        static rsl::id_type hdrOverdrawId = rsl::nameHash("HDR overdraw history");
+        static rsl::id_type sceneDepthId = rsl::nameHash("scene depth history");
         static bool useTexture1 = false;
 
         float renderScale = m_renderScale.load(std::memory_order_acquire);

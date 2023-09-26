@@ -50,7 +50,7 @@ namespace rythe::rendering
         glBindTexture(static_cast<GLenum>(type), 0);
     }
 
-    sparse_map<id_type, texture> TextureCache::m_textures;
+    sparse_map<rsl::id_type, texture> TextureCache::m_textures;
     async::rw_spinlock TextureCache::m_textureLock;
     texture_handle TextureCache::m_invalidTexture;
 
@@ -64,7 +64,7 @@ namespace rythe::rendering
         return TextureCache::get_texture(id);
     }
 
-    const texture& TextureCache::get_texture(id_type id)
+    const texture& TextureCache::get_texture(rsl::id_type id)
     {
         if (m_invalidTexture.id == invalid_id)
             m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
@@ -75,7 +75,7 @@ namespace rythe::rendering
         return m_textures[id];
     }
 
-    texture_data TextureCache::get_data(id_type id)
+    texture_data TextureCache::get_data(rsl::id_type id)
     {
         texture texture;
         if (m_invalidTexture.id == invalid_id)
@@ -102,7 +102,7 @@ namespace rythe::rendering
 
     void TextureCache::destroy_texture(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_textureLock);
         m_textures.erase(id);
     }
@@ -115,7 +115,7 @@ namespace rythe::rendering
             m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
         }
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         {
             async::readonly_guard guard(m_textureLock);
@@ -150,7 +150,7 @@ namespace rythe::rendering
 
     texture_handle TextureCache::create_texture(const std::string& name, math::int2 size, texture_import_settings settings)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         {
             async::readonly_guard guard(m_textureLock);
             if (m_textures.contains(id))
@@ -249,7 +249,7 @@ namespace rythe::rendering
             return invalid_texture_handle;
         }
 
-        id_type id = img.id();
+        rsl::id_type id = img.id();
 
         {
             async::readonly_guard guard(m_textureLock);
@@ -343,14 +343,14 @@ namespace rythe::rendering
         if (m_invalidTexture.id == invalid_id)
             m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_textureLock);
         if (m_textures.contains(id))
             return { id };
         return invalid_texture_handle;
     }
 
-    texture_handle TextureCache::get_handle(id_type id)
+    texture_handle TextureCache::get_handle(rsl::id_type id)
     {
         if (m_invalidTexture.id == invalid_id)
             m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));

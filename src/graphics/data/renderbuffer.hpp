@@ -14,7 +14,7 @@ namespace rythe::rendering
         // Managed resource with the renderbuffer id, also has the responsibility of deleting the renderbuffer after all copies of this renderbuffer have been destroyed.
         common::managed_resource<app::gl_id> m_id = common::managed_resource<app::gl_id>(nullptr);
         // Amount of samples of the renderbuffer. 0 if the renderbuffer isn't multi-sampled.
-        uint m_samples = 0;
+        rsl::uint m_samples = 0;
         GLenum m_internalformat;
     public:
 
@@ -29,7 +29,7 @@ namespace rythe::rendering
          * @param resolution Resolution of the renderbuffer.
          * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
          */
-        renderbuffer(GLenum internalformat, math::int2 resolution, uint samples = 0);
+        renderbuffer(GLenum internalformat, math::int2 resolution, rsl::uint samples = 0);
 
         /**@brief Main allocating constructor. This constructor actually creates the GPU side renderbuffer.
          * @note Read more at <a href="http://docs.gl/gl4/glRenderbufferStorage">docs.gl.</a>
@@ -38,7 +38,7 @@ namespace rythe::rendering
          * @param height Height of the renderbuffer.
          * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
          */
-        renderbuffer(GLenum internalformat, int width, int height, uint samples = 0);
+        renderbuffer(GLenum internalformat, int width, int height, rsl::uint samples = 0);
 
 
         /**@brief Main non allocating constructor. This constructor actually creates the GPU side renderbuffer.
@@ -47,7 +47,7 @@ namespace rythe::rendering
          * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
          * @note This constructor doesn't actually allocate any VRAM to this renderbuffer yet and requires a resize call in order to allocate memory for it.
          */
-        renderbuffer(GLenum internalformat, uint samples = 0);
+        renderbuffer(GLenum internalformat, rsl::uint samples = 0);
 
         /**@brief Bind the renderbuffer to the current context. Useful for low level native rendering.
          */

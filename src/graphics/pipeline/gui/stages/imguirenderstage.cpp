@@ -24,7 +24,7 @@ namespace rythe::rendering
     void ImGuiStage::render(app::window& context, camera& cam, const camera::camera_input& camInput,
         rsl::span deltaTime)
     {
-        static id_type mainId = rsl::nameHash("main");
+        static rsl::id_type mainId = rsl::nameHash("main");
 
         auto fbo = getFramebuffer(mainId);
         if (!fbo)

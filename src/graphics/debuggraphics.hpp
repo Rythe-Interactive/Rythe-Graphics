@@ -6,7 +6,7 @@ namespace rythe::debug
 {
 #if !defined drawLine
 
-#define debug_line_event CONCAT(PROJECT_NAME, debug_line)
+#define debug_line_event RYTHE_CONCAT(PROJECT_NAME, debug_line)
 
     struct debug_line_event final : public events::event_base
     {
@@ -31,14 +31,14 @@ namespace rythe::debug
             return start == other.start && end == other.end && color == other.color && width == other.width && ignoreDepth == other.ignoreDepth;
         }
 
-        virtual id_type get_id()
+        virtual rsl::id_type get_id()
         {
-            static id_type id = rsl::nameHash("debug_line");
+            static rsl::id_type id = rsl::nameHash("debug_line");
             return id;
         }
     };
 
-#define drawLine CONCAT(PROJECT_NAME, DrawLine)
+#define drawLine RYTHE_CONCAT(PROJECT_NAME, DrawLine)
 
     inline void drawLine(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
     {
@@ -46,7 +46,7 @@ namespace rythe::debug
         events::EventBus::raiseEvent(val);
     }
 
-#define drawCube CONCAT(PROJECT_NAME, DrawCube)
+#define drawCube RYTHE_CONCAT(PROJECT_NAME, DrawCube)
 
     inline void drawCube(rsl::math::float3 min, rsl::math::float3 max, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
     {
@@ -84,11 +84,11 @@ namespace std
             std::hash<bool> boolHasher;
 
             size_t seed = 0;
-            rsl::math::detail::hash_combine(seed, vecHasher(line.start));
-            rsl::math::detail::hash_combine(seed, vecHasher(line.end));
-            rsl::math::detail::hash_combine(seed, colHasher(line.color));
-            rsl::math::detail::hash_combine(seed, fltHasher(line.width));
-            rsl::math::detail::hash_combine(seed, boolHasher(line.ignoreDepth));
+            rsl::combine_hash(seed, vecHasher(line.start));
+            rsl::combine_hash(seed, vecHasher(line.end));
+            rsl::combine_hash(seed, colHasher(line.color));
+            rsl::combine_hash(seed, fltHasher(line.width));
+            rsl::combine_hash(seed, boolHasher(line.ignoreDepth));
             return seed;
         }
     };

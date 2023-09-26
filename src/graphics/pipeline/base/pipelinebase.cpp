@@ -16,7 +16,7 @@ namespace rythe::rendering
 
     framebuffer* RenderPipelineBase::addFramebuffer(const std::string& name, GLenum target)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         if (m_framebuffers.contains(id))
         {
@@ -33,19 +33,19 @@ namespace rythe::rendering
 
     R_NODISCARD bool RenderPipelineBase::hasFramebuffer(const std::string& name, GLenum target)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         return m_framebuffers.contains(id) && m_framebuffers[id].target() == target;
     }
 
     R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         if(m_framebuffers.contains(id))
             return &m_framebuffers[id];
         return nullptr;
     }
 
-    framebuffer* RenderPipelineBase::addFramebuffer(id_type nameHash, GLenum target)
+    framebuffer* RenderPipelineBase::addFramebuffer(rsl::id_type nameHash, GLenum target)
     {
         if (m_framebuffers.contains(nameHash))
         {
@@ -60,12 +60,12 @@ namespace rythe::rendering
         return &m_framebuffers[nameHash];
     }
 
-    R_NODISCARD bool RenderPipelineBase::hasFramebuffer(id_type nameHash, GLenum target)
+    R_NODISCARD bool RenderPipelineBase::hasFramebuffer(rsl::id_type nameHash, GLenum target)
     {
         return m_framebuffers.contains(nameHash) && m_framebuffers[nameHash].target() == target;
     }
 
-    R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(id_type nameHash)
+    R_NODISCARD framebuffer* RenderPipelineBase::getFramebuffer(rsl::id_type nameHash)
     {
         if (m_framebuffers.contains(nameHash))
             return &m_framebuffers[nameHash];

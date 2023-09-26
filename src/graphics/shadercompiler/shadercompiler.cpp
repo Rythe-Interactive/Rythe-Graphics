@@ -286,7 +286,7 @@ namespace rythe::rendering
         return true;
     }
 
-    std::string ShaderCompiler::invoke_compiler(const fs::view& file, bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
+    std::string ShaderCompiler::invoke_compiler(const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
     {
         using severity = log::severity;
 
@@ -308,7 +308,7 @@ namespace rythe::rendering
         else
             definesString += " -D HIGH_PERFORMANCE";
 
-        bitfield8 apiSet = 0;
+        rsl::bitfield8 apiSet = 0;
         if (compilerSettings & shader_compiler_options::api_opengl)
         {
             apiSet |= rendering_api::opengl;
@@ -378,19 +378,19 @@ namespace rythe::rendering
         }
     }
 
-    bool ShaderCompiler::process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state)
+    bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state)
     {
         std::vector<std::string> temp;
         return process(file, compilerSettings, ilo, state, temp, temp);
     }
 
-    bool ShaderCompiler::process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines)
+    bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines)
     {
         std::vector<std::string> temp;
         return process(file, compilerSettings, ilo, state, defines, temp);
     }
 
-    bool ShaderCompiler::process(const fs::view& file, bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
+    bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
     {
         using severity = log::severity;
 

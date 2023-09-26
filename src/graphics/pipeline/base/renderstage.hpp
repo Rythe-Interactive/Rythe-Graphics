@@ -57,20 +57,20 @@ namespace rythe::rendering
         R_NODISCARD T* get_meta(const std::string& name);
 
         template<typename T>
-        R_NODISCARD bool has_meta(id_type nameHash);
+        R_NODISCARD bool has_meta(rsl::id_type nameHash);
 
         template<typename T, typename... Args>
-        T* create_meta(id_type nameHash, Args&&... args);
+        T* create_meta(rsl::id_type nameHash, Args&&... args);
 
         template<typename T>
-        R_NODISCARD T* get_meta(id_type nameHash);
+        R_NODISCARD T* get_meta(rsl::id_type nameHash);
 
         framebuffer* addFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
         R_NODISCARD bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
         R_NODISCARD framebuffer* getFramebuffer(const std::string& name);
-        framebuffer* addFramebuffer(id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD bool hasFramebuffer(id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD framebuffer* getFramebuffer(id_type nameHash);
+        framebuffer* addFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+        R_NODISCARD bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+        R_NODISCARD framebuffer* getFramebuffer(rsl::id_type nameHash);
 
     };
 

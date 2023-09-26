@@ -21,19 +21,19 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline bool RenderStageBase::has_meta(id_type nameHash)
+    R_NODISCARD inline bool RenderStageBase::has_meta(rsl::id_type nameHash)
     {
         return m_pipeline->has_meta<T>(nameHash);
     }
 
     template<typename T, typename ...Args>
-    inline T* RenderStageBase::create_meta(id_type nameHash, Args && ...args)
+    inline T* RenderStageBase::create_meta(rsl::id_type nameHash, Args && ...args)
     {
         return m_pipeline->create_meta<T>(nameHash, std::forward<Args>(args)...);
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderStageBase::get_meta(id_type nameHash)
+    R_NODISCARD inline T* RenderStageBase::get_meta(rsl::id_type nameHash)
     {
         return m_pipeline->get_meta<T>(nameHash);
     }

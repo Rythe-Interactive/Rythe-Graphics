@@ -62,7 +62,7 @@ namespace rythe::rendering
     }
 
     async::rw_spinlock MaterialCache::m_materialLock;
-    std::unordered_map<id_type, material> MaterialCache::m_materials;
+    std::unordered_map<rsl::id_type, material> MaterialCache::m_materials;
     material_handle MaterialCache::m_invalid_material;
 
     material_handle MaterialCache::create_material(const std::string& name, const shader_handle& shader)
@@ -73,7 +73,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         if (m_materials.count(id))
             return { id };
 
@@ -107,7 +107,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         if (m_materials.count(id))
             return { id };
 
@@ -127,7 +127,7 @@ namespace rythe::rendering
         return { id };
     }
 
-    std::pair<async::rw_spinlock&, std::unordered_map<id_type, material>&> MaterialCache::get_all_materials()
+    std::pair<async::rw_spinlock&, std::unordered_map<rsl::id_type, material>&> MaterialCache::get_all_materials()
     {
         return std::make_pair(std::ref(m_materialLock), std::ref(m_materials));
     }
@@ -140,7 +140,7 @@ namespace rythe::rendering
             m_materials[invalid_id].m_name = "invalid";
         }
 
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_materialLock);
         if (m_materials.count(id))
             return { id };
@@ -152,13 +152,13 @@ namespace rythe::rendering
         m_canLoadOrSave = false;
     }
 
-    id_type material_handle::current_variant() const
+    rsl::id_type material_handle::current_variant() const
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].current_variant();
     }
 
-    bool material_handle::has_variant(id_type variantId) const
+    bool material_handle::has_variant(rsl::id_type variantId) const
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_variant(variantId);
@@ -166,12 +166,12 @@ namespace rythe::rendering
 
     bool material_handle::has_variant(const std::string& variant) const
     {
-        id_type variantId = rsl::nameHash(variant);
+        rsl::id_type variantId = rsl::nameHash(variant);
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_variant(variantId);
     }
 
-    void material_handle::set_variant(id_type variantId)
+    void material_handle::set_variant(rsl::id_type variantId)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         MaterialCache::m_materials[id].set_variant(variantId);
@@ -179,7 +179,7 @@ namespace rythe::rendering
 
     void material_handle::set_variant(const std::string& variant)
     {
-        id_type variantId = rsl::nameHash(variant);
+        rsl::id_type variantId = rsl::nameHash(variant);
         async::readonly_guard guard(MaterialCache::m_materialLock);
         MaterialCache::m_materials[id].set_variant(variantId);
     }
@@ -203,7 +203,7 @@ namespace rythe::rendering
     }
 
 
-    R_NODISCARD const std::unordered_map<id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
+    R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_params();
@@ -215,12 +215,12 @@ namespace rythe::rendering
         return MaterialCache::m_materials[id].m_shader.get_attribute(name);
     }
 
-    id_type material::current_variant() const
+    rsl::id_type material::current_variant() const
     {
         return m_currentVariant;
     }
 
-    bool material::has_variant(id_type variantId) const
+    bool material::has_variant(rsl::id_type variantId) const
     {
         return m_shader.has_variant(variantId);
     }
@@ -230,7 +230,7 @@ namespace rythe::rendering
         return m_shader.has_variant(variant);
     }
 
-    void material::set_variant(id_type variantId)
+    void material::set_variant(rsl::id_type variantId)
     {
         if (m_shader.has_variant(variantId))
             m_currentVariant = variantId;
@@ -242,7 +242,7 @@ namespace rythe::rendering
     {
         std::string variantName = variant;
         std::replace(variantName.begin(), variantName.end(), ' ', '_');
-        id_type variantId = rsl::nameHash(variantName);
+        rsl::id_type variantId = rsl::nameHash(variantName);
         if (m_shader.has_variant(variantId))
             m_currentVariant = variantId;
         else

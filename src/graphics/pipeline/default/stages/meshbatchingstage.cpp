@@ -14,7 +14,7 @@ namespace  rythe::rendering
         (void)cam;
         (void)context;
 
-        static id_type batchesId = rsl::nameHash("mesh batches");
+        static rsl::id_type batchesId = rsl::nameHash("mesh batches");
         auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>(batchesId);
 
         static ecs::filter<position, rotation, scale, mesh_filter, mesh_renderer> renderablesQuery{};
@@ -64,7 +64,7 @@ namespace  rythe::rendering
                 auto poolSize = (schd::Scheduler::jobPoolSize() + 1) * 2;
                 rsl::size_type jobSize = math::iround(math::ceil(entityList.size() / static_cast<float>(poolSize)));
 
-                queueJobs(poolSize, [&](id_type jobId)
+                queueJobs(poolSize, [&](rsl::id_type jobId)
                     {
                         auto start = jobId * jobSize;
                         auto end = start + jobSize;

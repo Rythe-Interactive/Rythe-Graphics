@@ -34,9 +34,9 @@ namespace rythe::rendering
          */
         static vertexarray generate();
 
-        void setAttribPointer(const buffer& buf, uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset);
+        void setAttribPointer(const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset);
 
-        void setAttribDivisor(uint index, uint divisor);
+        void setAttribDivisor(rsl::uint index, rsl::uint divisor);
 
         /**@brief Bind the vertexarray to the current context. Useful for low level native rendering.
          */

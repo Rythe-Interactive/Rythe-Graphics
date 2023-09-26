@@ -16,7 +16,7 @@ namespace rythe::rendering
     {
     public:
         std::vector<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
-        virtual id_type getId() const RYTHE_PURE;
+        virtual rsl::id_type getId() const RYTHE_PURE;
         virtual const std::string& getName() const RYTHE_PURE;
         void init(app::window& context)
         {
@@ -48,9 +48,9 @@ namespace rythe::rendering
     class PostProcessingEffect : public PostProcessingEffectBase
     {
     public:
-        virtual id_type getId() const override { return id; }
+        virtual rsl::id_type getId() const override { return id; }
         virtual const std::string& getName() const override { return name; }
-        static const id_type id;
+        static const rsl::id_type id;
         static const std::string name;
 
     protected:
@@ -62,9 +62,9 @@ namespace rythe::rendering
     };
 
     template<typename Self>
-    const id_type PostProcessingEffect<Self>::id = rsl::typeHash<Self>();
+    const rsl::id_type PostProcessingEffect<Self>::id = rsl::typeHash<Self>();
 
     template<typename Self>
-    const std::string PostProcessingEffect<Self>::name = nameOfType<Self>();
+    const std::string PostProcessingEffect<Self>::name = rsl::nameOfType<Self>();
 
 }

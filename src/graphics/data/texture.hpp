@@ -115,12 +115,12 @@ namespace rythe::rendering
      */
     struct texture_handle
     {
-        id_type id = invalid_id;
+        rsl::id_type id = invalid_id;
 
         texture_data get_data() const;
         const texture& get_texture() const;
         bool operator==(const texture_handle& other) const { return id == other.id; }
-        operator id_type() const { return id; }
+        operator rsl::id_type() const { return id; }
     };
 
     /**@brief Default invalid texture handle.
@@ -162,11 +162,11 @@ namespace rythe::rendering
         friend class renderer;
         friend struct texture_handle;
     private:
-        static sparse_map<id_type, texture> m_textures;
+        static sparse_map<rsl::id_type, texture> m_textures;
         static async::rw_spinlock m_textureLock;
 
-        static const texture& get_texture(id_type id);
-        static texture_data get_data(id_type id);
+        static const texture& get_texture(rsl::id_type id);
+        static texture_data get_data(rsl::id_type id);
         static texture_handle m_invalidTexture;
     public:
 
@@ -203,6 +203,6 @@ namespace rythe::rendering
         /**@brief Returns a handle to a texture with a certain name. Will return invalid_texture_handle if the requested texture doesn't exist.
          * @param id Name hash
          */
-        static texture_handle get_handle(id_type id);
+        static texture_handle get_handle(rsl::id_type id);
     };
 }

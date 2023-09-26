@@ -22,7 +22,14 @@ DEALINGS IN THE SOFTWARE.
 ]]--
 
 print("including graphics")
-includedirs { "$(SolutionDir)rythe\\graphics\\src","rythe\\graphics\\third_party\\*"}
+includedirs { 
+    "$(SolutionDir)rythe/graphics/src",
+    "$(SolutionDir)rythe/graphics/third_party",
+    "src/",
+    "third_party/*/src",
+    "third_party/*/include",
+    "third_party/"
+}
 dependson { "core", "application" }
 filter "kind:not StaticLib"
     links { "core"}

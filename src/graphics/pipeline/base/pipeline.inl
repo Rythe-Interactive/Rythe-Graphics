@@ -4,20 +4,20 @@
 namespace rythe::rendering
 {
     template<typename Self>
-    std::multimap<priority_type, std::unique_ptr<RenderStageBase>, std::greater<>> RenderPipeline<Self>::m_stages;
+    std::multimap<rsl::priority_type, std::unique_ptr<RenderStageBase>, std::greater<>> RenderPipeline<Self>::m_stages;
 
 
     template<typename T>
     R_NODISCARD inline bool RenderPipelineBase::has_meta(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         return m_metadata.count(id) && (m_metadata[id].type() == typeid(T));
     }
 
     template<typename T, typename... Args>
     inline T* RenderPipelineBase::create_meta(const std::string& name, Args&&... args)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         if (m_metadata.count(id))
         {
@@ -34,7 +34,7 @@ namespace rythe::rendering
     template<typename T>
     R_NODISCARD inline T* RenderPipelineBase::get_meta(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         if (m_metadata.count(id) && (m_metadata[id].type() == typeid(T)))
             return std::any_cast<T>(&m_metadata[id]);
@@ -42,13 +42,13 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline bool RenderPipelineBase::has_meta(id_type nameHash)
+    R_NODISCARD inline bool RenderPipelineBase::has_meta(rsl::id_type nameHash)
     {
         return m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T));
     }
 
     template<typename T, typename... Args>
-    inline T* RenderPipelineBase::create_meta(id_type nameHash, Args&&... args)
+    inline T* RenderPipelineBase::create_meta(rsl::id_type nameHash, Args&&... args)
     {
         if (m_metadata.count(nameHash))
         {
@@ -63,7 +63,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderPipelineBase::get_meta(id_type nameHash)
+    R_NODISCARD inline T* RenderPipelineBase::get_meta(rsl::id_type nameHash)
     {
         if (m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T)))
             return std::any_cast<T>(&m_metadata[nameHash]);
@@ -71,7 +71,7 @@ namespace rythe::rendering
     }
 
     template<typename Self>
-    template<typename StageType CNDOXY(inherits_from<StageType, RenderStage<StageType>>)>
+    template<typename StageType, rsl::inherits_from<StageType, RenderStage<StageType>>>
     inline void RenderPipeline<Self>::attachStage()
     {
         auto ptr = new StageType();

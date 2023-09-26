@@ -5,11 +5,11 @@
 #include <fstream>
 namespace rythe::rendering
 {
-    sparse_map<id_type, model> ModelCache::m_models;
+    sparse_map<rsl::id_type, model> ModelCache::m_models;
     async::rw_spinlock ModelCache::m_modelLock;
 
     async::rw_spinlock ModelCache::m_modelNameLock;
-    std::unordered_map<id_type, std::string> ModelCache::m_modelNames;
+    std::unordered_map<rsl::id_type, std::string> ModelCache::m_modelNames;
     bool model_handle::is_buffered() const
     {
         return ModelCache::get_model(id).buffered;
@@ -35,19 +35,19 @@ namespace rythe::rendering
         return ModelCache::get_model(id);
     }
 
-    const model& ModelCache::get_model(id_type id)
+    const model& ModelCache::get_model(rsl::id_type id)
     {
         async::readonly_guard guard(m_modelLock);
         return m_models[id];
     }
 
-    std::string ModelCache::get_model_name(id_type id)
+    std::string ModelCache::get_model_name(rsl::id_type id)
     {
         async::readonly_guard guard(m_modelNameLock);
         return m_modelNames[id];
     }
 
-    void ModelCache::overwrite_buffer(id_type id, buffer& newBuffer, uint bufferID, bool perInstance)
+    void ModelCache::overwrite_buffer(rsl::id_type id, buffer& newBuffer, uint bufferID, bool perInstance)
     {
         if (id == invalid_id)
             return;
@@ -64,7 +64,7 @@ namespace rythe::rendering
         }
     }
 
-    void ModelCache::buffer_model(id_type id, const buffer& matrixBuffer)
+    void ModelCache::buffer_model(rsl::id_type id, const buffer& matrixBuffer)
     {
         if (id == invalid_id)
             return;
@@ -108,7 +108,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name, const fs::view& file, assets::import_settings<mesh> settings)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -266,7 +266,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -413,9 +413,9 @@ namespace rythe::rendering
         return { id };
     }
 
-    model_handle ModelCache::create_model(const std::string& name, id_type meshId)
+    model_handle ModelCache::create_model(const std::string& name, rsl::id_type meshId)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -561,7 +561,7 @@ namespace rythe::rendering
         return { id };
     }
 
-    model_handle ModelCache::create_model(id_type id)
+    model_handle ModelCache::create_model(rsl::id_type id)
     {
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -712,7 +712,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(const std::string& name, assets::asset<mesh> mesh)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -860,7 +860,7 @@ namespace rythe::rendering
 
     model_handle ModelCache::create_model(assets::asset<mesh> mesh)
     {
-        id_type id = mesh.id();
+        rsl::id_type id = mesh.id();
 
         {// Check if the model already exists.
             async::readonly_guard guard(m_modelLock);
@@ -1007,14 +1007,14 @@ namespace rythe::rendering
 
     model_handle ModelCache::get_handle(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         async::readonly_guard guard(m_modelLock);
         if (m_models.contains(id))
             return { id };
         return invalid_model_handle;
     }
 
-    model_handle ModelCache::get_handle(id_type id)
+    model_handle ModelCache::get_handle(rsl::id_type id)
     {
         async::readonly_guard guard(m_modelLock);
         if (m_models.contains(id))
@@ -1022,7 +1022,7 @@ namespace rythe::rendering
         return invalid_model_handle;
     }
 
-    assets::asset<mesh> ModelCache::get_mesh(id_type id)
+    assets::asset<mesh> ModelCache::get_mesh(rsl::id_type id)
     {
         return assets::get<mesh>(id);
     }
@@ -1030,7 +1030,7 @@ namespace rythe::rendering
     void ModelCache::destroy_model(const std::string& name)
     {
         bool erased = false;
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         {
             async::readwrite_guard guard(m_modelLock);
 
@@ -1047,7 +1047,7 @@ namespace rythe::rendering
 
     assets::asset<mesh> ModelCache::get_mesh(const std::string& name)
     {
-        id_type id = rsl::nameHash(name);
+        rsl::id_type id = rsl::nameHash(name);
         return assets::get<mesh>(id);
     }
 }
