@@ -419,7 +419,7 @@ namespace rythe::rendering
         }
     }
 
-    R_NODISCARD RenderPipelineBase* Renderer::getPipeline(app::window& context)
+    [[nodiscard]] RenderPipelineBase* Renderer::getPipeline(app::window& context)
     {
         if (!m_pipelineProvider)
             return nullptr;
@@ -430,12 +430,12 @@ namespace rythe::rendering
         return m_pipelineProvider->get(context);
     }
 
-    R_NODISCARD RenderPipelineBase* Renderer::getCurrentPipeline()
+    [[nodiscard]] RenderPipelineBase* Renderer::getCurrentPipeline()
     {
         return m_currentPipeline;
     }
 
-    R_NODISCARD RenderPipelineBase* Renderer::getMainPipeline()
+    [[nodiscard]] RenderPipelineBase* Renderer::getMainPipeline()
     {
         if (!m_pipelineProvider)
             return nullptr;

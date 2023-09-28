@@ -8,7 +8,7 @@ namespace rythe::rendering
 
 
     template<typename T>
-    R_NODISCARD inline bool RenderPipelineBase::has_meta(const std::string& name)
+    [[nodiscard]] inline bool RenderPipelineBase::has_meta(const std::string& name)
     {
         rsl::id_type id = rsl::nameHash(name);
         return m_metadata.count(id) && (m_metadata[id].type() == typeid(T));
@@ -32,7 +32,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderPipelineBase::get_meta(const std::string& name)
+    [[nodiscard]] inline T* RenderPipelineBase::get_meta(const std::string& name)
     {
         rsl::id_type id = rsl::nameHash(name);
 
@@ -42,7 +42,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline bool RenderPipelineBase::has_meta(rsl::id_type nameHash)
+    [[nodiscard]] inline bool RenderPipelineBase::has_meta(rsl::id_type nameHash)
     {
         return m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T));
     }
@@ -63,7 +63,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderPipelineBase::get_meta(rsl::id_type nameHash)
+    [[nodiscard]] inline T* RenderPipelineBase::get_meta(rsl::id_type nameHash)
     {
         if (m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T)))
             return std::any_cast<T>(&m_metadata[nameHash]);

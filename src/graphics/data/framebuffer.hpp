@@ -81,7 +81,7 @@ namespace rythe::rendering
          * @param attachment Attachment-point to fetch the attachment for.
          * @return const std::any& An std::any that should be any_castable to either a texture handle or a renderbuffer if an attachment was active, the std::any will be empty otherwise.
          */
-        R_NODISCARD const attachment& getAttachment(GLenum attachment) const;
+        [[nodiscard]] const attachment& getAttachment(GLenum attachment) const;
 
         /**@brief Release the framebuffer from the current context. Useful for low level native rendering.
          */
@@ -89,6 +89,6 @@ namespace rythe::rendering
 
         /**@brief Check if the framebuffer was generated or not.
          */
-        R_NODISCARD operator bool() const;
+        [[nodiscard]] operator bool() const;
     };
 }

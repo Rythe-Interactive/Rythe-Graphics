@@ -59,19 +59,19 @@ namespace rythe::rendering
 
         /**@brief Returns the rendering API id of the renderbuffer. Useful for low level native rendering.
          */
-        R_NODISCARD app::gl_id id() const;
+        [[nodiscard]] app::gl_id id() const;
 
         /**@brief Returns the multi-sampling sample count of the renderbuffer. Useful for low level native rendering.
          */
-        R_NODISCARD rsl::size_type samples() const;
+        [[nodiscard]] rsl::size_type samples() const;
 
         /**@brief Returns the internal format of the renderbuffer. Useful for low level native rendering.
          */
-        R_NODISCARD GLenum format() const;
+        [[nodiscard]] GLenum format() const;
 
         /**@brief Returns the current resolution of the renderbuffer.
          */
-        R_NODISCARD math::int2 size() const;
+        [[nodiscard]] math::int2 size() const;
 
         /**@brief Resizes the renderbuffer to a new resolution. This reallocates VRAM and thus invalidates all data in the renderbuffer.
          */

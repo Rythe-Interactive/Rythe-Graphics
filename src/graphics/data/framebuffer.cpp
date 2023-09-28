@@ -280,7 +280,7 @@ namespace rythe::rendering
         m_attachments[attachment] = att; // Insert the attachment into the map of attachments.
     }
 
-    R_NODISCARD const attachment& framebuffer::getAttachment(GLenum attachment) const
+    [[nodiscard]] const attachment& framebuffer::getAttachment(GLenum attachment) const
     {
         if (m_id.value == 0)
         {
@@ -306,7 +306,7 @@ namespace rythe::rendering
         glBindFramebuffer(m_target, 0);
     }
 
-    R_NODISCARD framebuffer::operator bool() const
+    [[nodiscard]] framebuffer::operator bool() const
     {
         return m_id.value;
     }

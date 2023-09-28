@@ -42,35 +42,35 @@ namespace rythe::rendering
         }
 
         virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
-        virtual rsl::priority_type priority() RYTHE_IMPURE_RETURN(default_priority);
+        virtual rsl::priority_type priority() { return default_priority; }
 
     protected:
         void abort();
 
         template<typename T>
-        R_NODISCARD bool has_meta(const std::string& name);
+        [[nodiscard]] bool has_meta(const std::string& name);
 
         template<typename T, typename... Args>
         T* create_meta(const std::string& name, Args&&... args);
 
         template<typename T>
-        R_NODISCARD T* get_meta(const std::string& name);
+        [[nodiscard]] T* get_meta(const std::string& name);
 
         template<typename T>
-        R_NODISCARD bool has_meta(rsl::id_type nameHash);
+        [[nodiscard]] bool has_meta(rsl::id_type nameHash);
 
         template<typename T, typename... Args>
         T* create_meta(rsl::id_type nameHash, Args&&... args);
 
         template<typename T>
-        R_NODISCARD T* get_meta(rsl::id_type nameHash);
+        [[nodiscard]] T* get_meta(rsl::id_type nameHash);
 
         framebuffer* addFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD framebuffer* getFramebuffer(const std::string& name);
+        [[nodiscard]] bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
+        [[nodiscard]] framebuffer* getFramebuffer(const std::string& name);
         framebuffer* addFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        R_NODISCARD framebuffer* getFramebuffer(rsl::id_type nameHash);
+        [[nodiscard]] bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+        [[nodiscard]] framebuffer* getFramebuffer(rsl::id_type nameHash);
 
     };
 

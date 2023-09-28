@@ -15,12 +15,12 @@ namespace rythe::rendering
         return m_pipeline->addFramebuffer(name, target);
     }
 
-    R_NODISCARD bool RenderStageBase::hasFramebuffer(const std::string& name, GLenum target)
+    [[nodiscard]] bool RenderStageBase::hasFramebuffer(const std::string& name, GLenum target)
     {
         return m_pipeline->hasFramebuffer(name, target);
     }
 
-    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(const std::string& name)
+    [[nodiscard]] framebuffer* RenderStageBase::getFramebuffer(const std::string& name)
     {
         return m_pipeline->getFramebuffer(name);
     }
@@ -30,12 +30,12 @@ namespace rythe::rendering
         return m_pipeline->addFramebuffer(nameHash, target);
     }
 
-    R_NODISCARD bool RenderStageBase::hasFramebuffer(rsl::id_type nameHash, GLenum target)
+    [[nodiscard]] bool RenderStageBase::hasFramebuffer(rsl::id_type nameHash, GLenum target)
     {
         return m_pipeline->hasFramebuffer(nameHash, target);
     }
 
-    R_NODISCARD framebuffer* RenderStageBase::getFramebuffer(rsl::id_type nameHash)
+    [[nodiscard]] framebuffer* RenderStageBase::getFramebuffer(rsl::id_type nameHash)
     {
         return m_pipeline->getFramebuffer(nameHash);
     }

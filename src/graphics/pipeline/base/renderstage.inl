@@ -3,7 +3,7 @@
 namespace rythe::rendering
 {
     template<typename T>
-    R_NODISCARD inline bool RenderStageBase::has_meta(const std::string& name)
+    [[nodiscard]] inline bool RenderStageBase::has_meta(const std::string& name)
     {
         return m_pipeline->has_meta<T>(name);
     }
@@ -15,13 +15,13 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderStageBase::get_meta(const std::string& name)
+    [[nodiscard]] inline T* RenderStageBase::get_meta(const std::string& name)
     {
         return m_pipeline->get_meta<T>(name);
     }
 
     template<typename T>
-    R_NODISCARD inline bool RenderStageBase::has_meta(rsl::id_type nameHash)
+    [[nodiscard]] inline bool RenderStageBase::has_meta(rsl::id_type nameHash)
     {
         return m_pipeline->has_meta<T>(nameHash);
     }
@@ -33,7 +33,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD inline T* RenderStageBase::get_meta(rsl::id_type nameHash)
+    [[nodiscard]] inline T* RenderStageBase::get_meta(rsl::id_type nameHash)
     {
         return m_pipeline->get_meta<T>(nameHash);
     }

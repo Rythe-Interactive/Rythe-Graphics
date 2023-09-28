@@ -37,7 +37,7 @@ namespace rythe::rendering
 
         /**@brief Get the name of the parameter
          */
-        R_NODISCARD std::string get_name() const { return m_name; }
+        [[nodiscard]] std::string get_name() const { return m_name; }
 
         /**@internal
          */
@@ -135,12 +135,12 @@ namespace rythe::rendering
         /**@brief Check if the material has a parameter by name.
          */
         template<typename T>
-        R_NODISCARD bool has_param(const std::string& name);
+        [[nodiscard]] bool has_param(const std::string& name);
 
         /**@brief Get the value of a parameter by name.
          */
         template<typename T>
-        R_NODISCARD T get_param(const std::string& name);
+        [[nodiscard]] T get_param(const std::string& name);
 
         /**@brief Set the value of a parameter by location.
          */
@@ -150,26 +150,26 @@ namespace rythe::rendering
         /**@brief Check if the material has a parameter by location.
          */
         template<typename T>
-        R_NODISCARD bool has_param(GLint location);
+        [[nodiscard]] bool has_param(GLint location);
 
         /**@brief Get the value of a parameter by location.
          */
         template<typename T>
-        R_NODISCARD T get_param(GLint location);
+        [[nodiscard]] T get_param(GLint location);
 
         /**@brief Get attribute bound to a certain name.
          */
-        R_NODISCARD attribute get_attribute(const std::string& name)
+        [[nodiscard]] attribute get_attribute(const std::string& name)
         {
             return m_shader.get_attribute(rsl::nameHash(name));
         }
 
-        R_NODISCARD const std::string& get_name()
+        [[nodiscard]] const std::string& get_name()
         {
             return m_name;
         }
 
-        R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params()
+        [[nodiscard]] const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params()
         {
             if (m_currentVariant == 0)
                 m_currentVariant = rsl::nameHash("default");
@@ -197,7 +197,7 @@ namespace rythe::rendering
         void set_variant(rsl::id_type variantId);
         void set_variant(const std::string& variant);
 
-        R_NODISCARD shader_handle get_shader();
+        [[nodiscard]] shader_handle get_shader();
 
         /**@brief Bind the material to the rendering context and prepare for use.
          */
@@ -218,12 +218,12 @@ namespace rythe::rendering
         /**@brief Check if the material has a parameter by name.
          */
         template<typename T>
-        R_NODISCARD bool has_param(const std::string& name);
+        [[nodiscard]] bool has_param(const std::string& name);
 
         /**@brief Get the value of a parameter by name.
          */
         template<typename T>
-        R_NODISCARD T get_param(const std::string& name);
+        [[nodiscard]] T get_param(const std::string& name);
 
         /**@brief Set the value of a parameter by location.
          */
@@ -233,16 +233,16 @@ namespace rythe::rendering
         /**@brief Check if the material has a parameter by location.
          */
         template<typename T>
-        R_NODISCARD bool has_param(GLint location);
+        [[nodiscard]] bool has_param(GLint location);
 
         /**@brief Get the value of a parameter by location.
          */
         template<typename T>
-        R_NODISCARD T get_param(GLint location);
+        [[nodiscard]] T get_param(GLint location);
 
-        R_NODISCARD const std::string& get_name() const;
+        [[nodiscard]] const std::string& get_name() const;
 
-        R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params();
+        [[nodiscard]] const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& get_params();
 
         /**@brief Get attribute bound to a certain name.
          */
@@ -317,28 +317,28 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD bool material_handle::has_param(const std::string& name)
+    [[nodiscard]] bool material_handle::has_param(const std::string& name)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_param<T>(name);
     }
 
     template<typename T>
-    R_NODISCARD bool material_handle::has_param(GLint location)
+    [[nodiscard]] bool material_handle::has_param(GLint location)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].has_param<T>(location);
     }
 
     template<typename T>
-    R_NODISCARD T material_handle::get_param(const std::string& name)
+    [[nodiscard]] T material_handle::get_param(const std::string& name)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_param<T>(name);
     }
 
     template<typename T>
-    R_NODISCARD T material_handle::get_param(GLint location)
+    [[nodiscard]] T material_handle::get_param(GLint location)
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_param<T>(location);
@@ -359,7 +359,7 @@ namespace rythe::rendering
     }
 
     template<>
-    R_NODISCARD inline bool material::has_param<math::color>(const std::string& name)
+    [[nodiscard]] inline bool material::has_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -370,7 +370,7 @@ namespace rythe::rendering
     }
 
     template<>
-    R_NODISCARD inline math::color material::get_param<math::color>(const std::string& name)
+    [[nodiscard]] inline math::color material::get_param<math::color>(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -403,7 +403,7 @@ namespace rythe::rendering
     }
 
     template<>
-    R_NODISCARD inline math::color material::get_param<math::color>(GLint location)
+    [[nodiscard]] inline math::color material::get_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -421,7 +421,7 @@ namespace rythe::rendering
     }
 
     template<>
-    R_NODISCARD inline bool material::has_param<math::color>(GLint location)
+    [[nodiscard]] inline bool material::has_param<math::color>(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -449,7 +449,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD bool material::has_param(const std::string& name)
+    [[nodiscard]] bool material::has_param(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -460,7 +460,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD T material::get_param(const std::string& name)
+    [[nodiscard]] T material::get_param(const std::string& name)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -493,7 +493,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD T material::get_param(GLint location)
+    [[nodiscard]] T material::get_param(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");
@@ -511,7 +511,7 @@ namespace rythe::rendering
     }
 
     template<typename T>
-    R_NODISCARD bool material::has_param(GLint location)
+    [[nodiscard]] bool material::has_param(GLint location)
     {
         if (m_currentVariant == 0)
             m_currentVariant = rsl::nameHash("default");

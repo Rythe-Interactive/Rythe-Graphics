@@ -116,22 +116,22 @@ namespace rythe::rendering
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 
-    R_NODISCARD app::gl_id renderbuffer::id() const
+    [[nodiscard]] app::gl_id renderbuffer::id() const
     {
         return m_id;
     }
 
-    R_NODISCARD rsl::size_type renderbuffer::samples() const
+    [[nodiscard]] rsl::size_type renderbuffer::samples() const
     {
         return m_samples;
     }
 
-    R_NODISCARD GLenum renderbuffer::format() const
+    [[nodiscard]] GLenum renderbuffer::format() const
     {
         return m_internalformat;
     }
 
-    R_NODISCARD math::int2 renderbuffer::size() const
+    [[nodiscard]] math::int2 renderbuffer::size() const
     {
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())

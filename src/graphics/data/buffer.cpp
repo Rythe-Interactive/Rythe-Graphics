@@ -56,22 +56,22 @@ namespace rythe::rendering
         glBindBuffer(target, 0);
     }
 
-    R_NODISCARD app::gl_id buffer::id() const
+    [[nodiscard]] app::gl_id buffer::id() const
     {
         return m_id;
     }
 
-    R_NODISCARD GLenum buffer::target() const
+    [[nodiscard]] GLenum buffer::target() const
     {
         return m_target;
     }
 
-    R_NODISCARD GLenum buffer::usage() const
+    [[nodiscard]] GLenum buffer::usage() const
     {
         return m_usage;
     }
 
-    R_NODISCARD rsl::size_type buffer::size() const
+    [[nodiscard]] rsl::size_type buffer::size() const
     {
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())

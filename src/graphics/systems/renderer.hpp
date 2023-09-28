@@ -54,9 +54,9 @@ namespace rythe::rendering
         template<typename Pipeline, rsl::inherits_from<Pipeline, RenderPipeline<Pipeline>> = 0>
         static void setPipeline();
 
-        R_NODISCARD static RenderPipelineBase* getPipeline(app::window& context);
-        R_NODISCARD static RenderPipelineBase* getCurrentPipeline();
-        R_NODISCARD static RenderPipelineBase* getMainPipeline();
+        [[nodiscard]] static RenderPipelineBase* getPipeline(app::window& context);
+        [[nodiscard]] static RenderPipelineBase* getCurrentPipeline();
+        [[nodiscard]] static RenderPipelineBase* getMainPipeline();
     };
 }
 

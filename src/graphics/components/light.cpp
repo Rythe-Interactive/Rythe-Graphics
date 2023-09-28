@@ -49,7 +49,7 @@ namespace rythe::rendering
         m_falloff = power;
     }
 
-    R_NODISCARD light light::directional(math::color color, float intensity)
+    [[nodiscard]] light light::directional(math::color color, float intensity)
     {
         light ret;
         ret.set_type(light_type::DIRECTIONAL);
@@ -58,7 +58,7 @@ namespace rythe::rendering
         return ret;
     }
 
-    R_NODISCARD light light::spot(math::color color, float angle, float intensity, float attenuation, float falloff)
+    [[nodiscard]] light light::spot(math::color color, float angle, float intensity, float attenuation, float falloff)
     {
         light ret;
         ret.set_type(light_type::SPOT);
@@ -70,7 +70,7 @@ namespace rythe::rendering
         return ret;
     }
 
-    R_NODISCARD light light::point(math::color color, float intensity, float attenuation, float falloff)
+    [[nodiscard]] light light::point(math::color color, float intensity, float attenuation, float falloff)
     {
         light ret;
         ret.set_type(light_type::POINT);

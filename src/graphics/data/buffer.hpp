@@ -57,19 +57,19 @@ namespace rythe::rendering
 
         /**@brief Returns the rendering API id of the buffer. Useful for low level native rendering.
          */
-        R_NODISCARD app::gl_id id() const;
+        [[nodiscard]] app::gl_id id() const;
 
         /**@brief Returns the rendering API type/target of the buffer. Useful for low level native rendering.
          */
-        R_NODISCARD GLenum target() const;
+        [[nodiscard]] GLenum target() const;
 
         /**@brief Returns the rendering API intended memory usage of the buffer. Useful for low level native rendering.
          */
-        R_NODISCARD GLenum usage() const;
+        [[nodiscard]] GLenum usage() const;
 
         /**@brief Returns the current size of the buffer in bytes.
          */
-        R_NODISCARD rsl::size_type size() const;
+        [[nodiscard]] rsl::size_type size() const;
 
         /**@brief Bind buffer to a set indexed buffer binding location in shaders.
          * @note Read more at <a href="http://docs.gl/gl4/glBindBufferBase">docs.gl.</a>

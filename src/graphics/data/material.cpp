@@ -184,7 +184,7 @@ namespace rythe::rendering
         MaterialCache::m_materials[id].set_variant(variantId);
     }
 
-    R_NODISCARD shader_handle material_handle::get_shader()
+    [[nodiscard]] shader_handle material_handle::get_shader()
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].m_shader;
@@ -196,14 +196,14 @@ namespace rythe::rendering
         MaterialCache::m_materials[id].bind();
     }
 
-    R_NODISCARD const std::string& material_handle::get_name() const
+    [[nodiscard]] const std::string& material_handle::get_name() const
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_name();
     }
 
 
-    R_NODISCARD const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
+    [[nodiscard]] const std::unordered_map<rsl::id_type, std::unique_ptr<material_parameter_base>>& material_handle::get_params()
     {
         async::readonly_guard guard(MaterialCache::m_materialLock);
         return MaterialCache::m_materials[id].get_params();
