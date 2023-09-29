@@ -13,7 +13,7 @@ namespace rythe::rendering
         template <class T,void(T::*Func)(app::window&, camera&, const camera::camera_input&, rsl::span)>
         static void addGuiRender(T* ptr)
         {
-            m_onGuiRender.emplace_back<T>(ptr, Func);
+            m_onGuiRender.push_back(Func);
         }
 
 

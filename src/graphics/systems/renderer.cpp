@@ -7,7 +7,7 @@ namespace rythe::rendering
 
     RenderPipelineBase* Renderer::m_currentPipeline;
 
-    void Renderer::debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam)
+    void Renderer::debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
     {
         if (id == 131185) // Filter out annoying Nvidia message of: Buffer you made will use VRAM because you told us that you want it to allocate VRAM.
             return;
@@ -17,7 +17,7 @@ namespace rythe::rendering
         if (!checkedNames)
         {
             auto& logData = log::impl::get();
-            async::readonly_guard guard(logData.threadNamesLock);
+            //async::readonly_guard guard(logData.threadNamesLock);
             if (!logData.threadNames.count(std::this_thread::get_id()))
             {
                 logData.threadNames[std::this_thread::get_id()] = "OpenGL";
@@ -104,14 +104,14 @@ namespace rythe::rendering
         }
     }
 
-    void Renderer::debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam)
+    void Renderer::debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
     {
         static bool checkedNames = false;
 
         if (!checkedNames)
         {
             auto& logData = log::impl::get();
-            async::readonly_guard guard(logData.threadNamesLock);
+            //async::readonly_guard guard(logData.threadNamesLock);
             if (!logData.threadNames.count(std::this_thread::get_id()))
             {
                 logData.threadNames[std::this_thread::get_id()] = "OpenGL";
@@ -189,14 +189,14 @@ namespace rythe::rendering
         }
     }
 
-    void Renderer::debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED void* userParam)
+    void Renderer::debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] void* userParam)
     {
         static bool checkedNames = false;
 
         if (!checkedNames)
         {
             auto& logData = log::impl::get();
-            async::readonly_guard guard(logData.threadNamesLock);
+           //async::readonly_guard guard(logData.threadNamesLock);
             if (!logData.threadNames.count(std::this_thread::get_id()))
             {
                 logData.threadNames[std::this_thread::get_id()] = "OpenGL";
@@ -404,7 +404,7 @@ namespace rythe::rendering
             scale& camScale = ent.get_component<scale>();
 
             math::float4x4 view(1.f);
-            math::compose(view, camScale, camRot, camPos);
+            view = math::compose(camScale, camRot, camPos);
             view = math::inverse(view);
 
             math::float4x4 projection = cam.get_projection(((float)viewportSize.x) / viewportSize.y);

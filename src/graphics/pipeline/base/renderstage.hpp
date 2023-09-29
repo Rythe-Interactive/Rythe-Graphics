@@ -79,7 +79,7 @@ namespace rythe::rendering
     {
         void _shutdown_impl() override
         {
-            if constexpr (has_shutdown_v<SelfType, void()>)
+            if constexpr (rsl::has_shutdown_v<SelfType, void()>)
             {
                 static_cast<SelfType*>(this)->shutdown();
             }

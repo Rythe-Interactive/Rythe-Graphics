@@ -28,9 +28,9 @@ namespace rythe::rendering
         static std::unique_ptr<pipeline_provider_base> m_pipelineProvider;
         std::atomic_bool m_exiting = false;
 
-        static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam);
-        static void debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED const void* userParam);
-        static void debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, R_MAYBEUNUSED void* userParam);
+        static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam);
+        static void debugCallbackARB(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam);
+        static void debugCallbackAMD(GLuint id, GLenum category, GLenum severity, GLsizei length, const GLchar* message, [[maybe_unused]] void* userParam);
         bool initContext(const app::window& window);
 
         void setThreadPriority();
