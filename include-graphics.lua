@@ -30,8 +30,8 @@ includedirs {
     "third_party/*/include",
     "third_party/"
 }
-dependson { "core", "application" }
+dependson { "core", "application", "graphics" }
 filter "kind:not StaticLib"
-    links { "core"}
+    links { "core", "application", "graphics"}
 
 dofile "rythe/engine/application/include-application.lua"

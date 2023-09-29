@@ -33,7 +33,7 @@ namespace rythe::rendering
         return vertexarray(nullptr);
     }
 
-    void vertexarray::setAttribPointer(const buffer& buf, uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset)
+    void vertexarray::setAttribPointer(const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset)
     {
 #if defined(RYTHE_DEBUG)
         if (buf.target() != GL_ARRAY_BUFFER)
@@ -56,7 +56,7 @@ namespace rythe::rendering
         glBindVertexArray(0);
     }
 
-    void vertexarray::setAttribDivisor(uint index, uint divisor)
+    void vertexarray::setAttribDivisor(rsl::uint index, rsl::uint divisor)
     {
 #if defined(RYTHE_DEBUG)
         if (!app::ContextHelper::getCurrentContext())

@@ -245,7 +245,7 @@ namespace rythe::rendering
         }
     }
 
-    bool ShaderCompiler::extract_ilo(const std::string& variant, std::string_view source, uint64 shaderType, shader_ilo& ilo)
+    bool ShaderCompiler::extract_ilo(const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo)
     {
         using severity = log::severity;
 

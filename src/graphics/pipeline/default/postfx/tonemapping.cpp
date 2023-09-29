@@ -84,7 +84,7 @@ namespace rythe::rendering
                 auto tex = historyTexture->get_texture();
                 auto size = tex.size();
 
-                rsl::size_type maxMip = math::log2(math::max(size.x, size.y));
+                rsl::size_type maxMip = log2(math::max(size.x, size.y));
 
                 static std::vector<math::color> colors = { math::color() };
 

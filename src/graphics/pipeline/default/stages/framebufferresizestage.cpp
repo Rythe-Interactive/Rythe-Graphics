@@ -91,7 +91,7 @@ namespace rythe::rendering
         fbo->attach(m_depthStencilTexture[0], GL_DEPTH_STENCIL_ATTACHMENT);
 
         fbo->bind();
-        uint attachments[4] = { FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT };
+        rsl::uint attachments[4] = { FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT };
         glDrawBuffers(4, attachments);
         fbo->release();
 

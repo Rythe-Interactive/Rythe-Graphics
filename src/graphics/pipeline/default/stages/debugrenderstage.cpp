@@ -58,7 +58,7 @@ namespace rythe::rendering
     void DebugRenderStage::setup(app::window& context)
     {
         startDebugDomain();
-        events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template from<DebugRenderStage, &DebugRenderStage::drawDebugLine>(this));
+        events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template create<DebugRenderStage, &DebugRenderStage::drawDebugLine>(*this));
     }
 
     void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
@@ -134,7 +134,7 @@ namespace rythe::rendering
         if (vao == -1)
             glGenVertexArrays(1, &vao);
 
-        static std::unordered_map<float, std::tuple<std::vector<uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
+        static std::unordered_map<float, std::tuple<std::vector<rsl::uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
         for (auto& [width, data] : lineBatches)
         {
             auto& [ignoreDepths, colors, vertices] = data;
@@ -215,11 +215,11 @@ namespace rythe::rendering
             rsl::size_type ignoreDepthCount = ignoreDepths.size();
             if (ignoreDepthCount > ignoreDepthBufferSize)
             {
-                glBufferData(GL_ARRAY_BUFFER, ignoreDepthCount * sizeof(uint), 0, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, ignoreDepthCount * sizeof(rsl::uint), 0, GL_DYNAMIC_DRAW);
                 ignoreDepthBufferSize = ignoreDepthCount;
             }
 
-            glBufferSubData(GL_ARRAY_BUFFER, 0, ignoreDepthCount * sizeof(uint), ignoreDepths.data());
+            glBufferSubData(GL_ARRAY_BUFFER, 0, ignoreDepthCount * sizeof(rsl::uint), ignoreDepths.data());
 
             auto ignoreDepthAttrib = debugMaterial.get_attribute("ignoreDepth");
 
@@ -232,8 +232,8 @@ namespace rythe::rendering
             ignoreDepthAttrib.set_attribute_pointer(1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
 
             ///------------ camera ------------///
-            glUniformMatrix4fv(SV_VIEW, 1, false, math::value_ptr(camInput.view));
-            glUniformMatrix4fv(SV_PROJECT, 1, false, math::value_ptr(camInput.proj));
+            glUniformMatrix4fv(SV_VIEW, 1, false, camInput.view.data);
+            glUniformMatrix4fv(SV_PROJECT, 1, false, camInput.proj.data);
 
             glLineWidth(width + 1);
 

@@ -50,7 +50,7 @@ namespace rythe::rendering
         glDepthMask(GL_FALSE);
 
         for (auto submesh : mesh.submeshes)
-            glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(uint)), (GLsizei)1);
+            glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)1);
 
         glDepthMask(GL_TRUE);
 

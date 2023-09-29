@@ -57,7 +57,8 @@ namespace rythe::rendering
         template<void(Self::* func_type)(framebuffer&, RenderPipelineBase* ,camera&, const camera::camera_input&, rsl::span)>
         void addRenderPass()
         {
-            renderPasses.push_back(rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::from<Self, func_type>(reinterpret_cast<Self*>(this)));
+            auto temp = rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::template create<Self, func_type>(*reinterpret_cast<Self*>(this));
+            renderPasses.push_back(rsl::force_cast<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>>(temp));
         }
     };
 

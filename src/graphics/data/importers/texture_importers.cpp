@@ -66,7 +66,7 @@ namespace rythe::rendering
         texture.immutable = settings.immutable;
         if (settings.immutable)
         {
-            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? math::log2(math::max(texSize.x, texSize.y)) : 1);
+            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(texSize.x, texSize.y)) : 1);
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexStorage2D(
                 glTexType,
@@ -83,12 +83,12 @@ namespace rythe::rendering
                 texSize.x,
                 texSize.y,
                 components_to_format[static_cast<int>(settings.components)],
-                channels_to_glenum[static_cast<uint>(settings.fileFormat)],
+                channels_to_glenum[static_cast<rsl::uint>(settings.fileFormat)],
                 imageData);
         }
         else
         {
-            texture.mipCount = settings.generateMipmaps ? math::log2(math::max(texSize.x, texSize.y)) : 1;
+            texture.mipCount = settings.generateMipmaps ? log2(math::max(texSize.x, texSize.y)) : 1;
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexImage2D(
                 static_cast<GLenum>(settings.type),
@@ -98,7 +98,7 @@ namespace rythe::rendering
                 texSize.y,
                 0,
                 components_to_format[static_cast<int>(settings.components)],
-                channels_to_glenum[static_cast<uint>(settings.fileFormat)],
+                channels_to_glenum[static_cast<rsl::uint>(settings.fileFormat)],
                 imageData);
         }
 

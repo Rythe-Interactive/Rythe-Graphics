@@ -114,7 +114,7 @@ namespace rythe::rendering
         // Brightness threshold stage.
         m_thresholdFbo.bind();
         // Add color attachment to fbo.
-        uint attachment = FRAGMENT_ATTACHMENT;
+        rsl::uint attachment = FRAGMENT_ATTACHMENT;
         glDrawBuffers(1, &attachment);
 
         static rsl::id_type autoFocusId = rsl::nameHash("auto_focus");

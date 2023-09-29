@@ -15,7 +15,7 @@ namespace rythe::rendering
         static const std::string& get_cachecleaner_path();
 
         static void extract_state(std::string_view source, shader_state& state);
-        static bool extract_ilo(const std::string& variant, std::string_view source, uint64 shaderType, shader_ilo& ilo);
+        static bool extract_ilo(const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo);
         static std::string invoke_compiler(const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
 
     public:
@@ -36,7 +36,7 @@ namespace rythe::rendering
             m_callback = func;
         }
 
-        template<typename lambda_type CNDOXY(std::enable_if_t<!std::is_same_v<std::remove_reference_t<lambda_type>, rsl::delegate<void(const std::string&, log::severity)>>, int> = 0)>
+        template<typename lambda_type, std::enable_if_t<!std::is_same_v<std::remove_reference_t<lambda_type>, rsl::delegate<void(const std::string&, log::severity)>>, int>>
         static void setErrorCallback(const lambda_type& lambda)
         {
             m_callback = lambda;

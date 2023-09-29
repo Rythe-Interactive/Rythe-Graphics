@@ -140,8 +140,8 @@ namespace rythe::rendering
                         auto materialName = mater.get_name();
 
                         camInput.bind(mater);
-                        if (mater.has_param<uint>(SV_LIGHTCOUNT))
-                            mater.set_param<uint>(SV_LIGHTCOUNT, *lightCount);
+                        if (mater.has_param<rsl::uint>(SV_LIGHTCOUNT))
+                            mater.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
 
                         if (sceneColor && mater.has_param<texture_handle>(SV_SCENECOLOR))
                             mater.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
@@ -191,7 +191,7 @@ namespace rythe::rendering
                             mesh.vertexArray.bind();
                             mesh.indexBuffer.bind();
                             lightsBuffer->bind();
-                            glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(uint)), (GLsizei)instances.second.size());
+                            glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
 
                             lightsBuffer->release();
                             mesh.indexBuffer.release();
@@ -222,8 +222,8 @@ namespace rythe::rendering
             auto materialName = material.get_name();
 
             camInput.bind(material);
-            if (material.has_param<uint>(SV_LIGHTCOUNT))
-                material.set_param<uint>(SV_LIGHTCOUNT, *lightCount);
+            if (material.has_param<rsl::uint>(SV_LIGHTCOUNT))
+                material.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
 
             if (sceneColor && material.has_param<texture_handle>(SV_SCENECOLOR))
                 material.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
@@ -286,7 +286,7 @@ namespace rythe::rendering
                     mesh.indexBuffer.bind();
                     lightsBuffer->bind();
                     for (auto submesh : mesh.submeshes)
-                        glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(uint)), (GLsizei)instances.second.size());
+                        glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
 
                     lightsBuffer->release();
                     mesh.indexBuffer.release();

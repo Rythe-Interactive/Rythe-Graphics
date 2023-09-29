@@ -1,7 +1,8 @@
-#include <graphics/data/shader.hpp>
-#include <graphics/util/bindings.hpp>
 #include <algorithm>
-#include <graphics/shadercompiler/shadercompiler.hpp>
+
+#include "graphics/data/shader.hpp"
+#include "graphics/util/bindings.hpp"
+#include "graphics/shadercompiler/shadercompiler.hpp"
 
 namespace rythe::rendering
 {
@@ -36,7 +37,7 @@ namespace rythe::rendering
 
             GLchar* uniformNameBuffer = new GLchar[maxUniformNameLength]; // Create buffer with the right length.
 
-            uint textureUnit = 1;
+            rsl::uint textureUnit = 1;
 
             for (int uniformId = 0; uniformId < numActiveUniforms; uniformId++)
             {
@@ -60,7 +61,7 @@ namespace rythe::rendering
                     textureUnit++;
                     break;
                 case GL_UNSIGNED_INT:
-                    uniform = new rendering::uniform<uint>(id, name, type, location);
+                    uniform = new rendering::uniform<rsl::uint>(id, name, type, location);
                     break;
                 case GL_FLOAT:
                     uniform = new rendering::uniform<float>(id, name, type, location);
@@ -240,17 +241,17 @@ namespace rythe::rendering
         while (start != end)
         {
             GLenum shaderType;
-            retrieveBinaryData(shaderType, start);
+            rsl::retrieveBinaryData(shaderType, start);
 
             std::string shaderVariant;
-            retrieveBinaryData(shaderVariant, start);
+            rsl::retrieveBinaryData(shaderVariant, start);
 
             switch (shaderType)
             {
             case 0:
             {
                 std::vector<GLenum> rawState;
-                retrieveBinaryData(rawState, start);
+                rsl::retrieveBinaryData(rawState, start);
                 if (rawState.size() % 2 != 0)
                     return false;
 
@@ -266,7 +267,7 @@ namespace rythe::rendering
             case GL_GEOMETRY_SHADER:
             {
                 std::string source;
-                retrieveBinaryData(source, start);
+                rsl::retrieveBinaryData(source, start);
 
                 ilo[shaderVariant].emplace_back(shaderType, source);
             }
@@ -303,23 +304,23 @@ namespace rythe::rendering
             for (auto& [variant, variantState] : state)
             {
                 GLenum stateType = 0;
-                appendBinaryData(&stateType, data);
-                appendBinaryData(&variant, data);
+                rsl::appendBinaryData(&stateType, data);
+                rsl::appendBinaryData(&variant, data);
                 rawState.clear();
                 for (auto& [key, value] : variantState)
                 {
                     rawState.push_back(key);
                     rawState.push_back(value);
                 }
-                appendBinaryData(&rawState, data);
+                rsl::appendBinaryData(&rawState, data);
             }
 
             for (auto& [shaderVariant, variantSource] : ilo)
                 for (auto& [shaderType, source] : variantSource)
                 {
-                    appendBinaryData(&shaderType, data);
-                    appendBinaryData(&shaderVariant, data);
-                    appendBinaryData(&source, data);
+                    rsl::appendBinaryData(&shaderType, data);
+                    rsl::appendBinaryData(&shaderVariant, data);
+                    rsl::appendBinaryData(&source, data);
                 }
 
             precompiled.set(resource).except([](fs_error err)

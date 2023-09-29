@@ -43,7 +43,7 @@ namespace rythe::rendering
         // Brightness threshold stage
         fbo.bind();
         // Create 2 color attachments and add them the buffer.
-        uint attachments[1] = { OVERDRAW_ATTACHMENT };
+        rsl::uint attachments[1] = { OVERDRAW_ATTACHMENT };
         glDrawBuffers(1, attachments);
 
         // Bind and assign the brightness threshold shader.
@@ -112,7 +112,7 @@ namespace rythe::rendering
         // Combining phase.
 
         fbo.bind();
-        uint attachments[1] = { FRAGMENT_ATTACHMENT };
+        rsl::uint attachments[1] = { FRAGMENT_ATTACHMENT };
         glDrawBuffers(1, attachments);
 
         // bind the combining shader.
@@ -126,7 +126,7 @@ namespace rythe::rendering
         // Release both the combining shader and framebuffer.
         m_combineShader.release();
 
-        uint defaultAttachments[4] = { FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT };
+        rsl::uint defaultAttachments[4] = { FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT };
         glDrawBuffers(4, defaultAttachments);
         fbo.release();
     }

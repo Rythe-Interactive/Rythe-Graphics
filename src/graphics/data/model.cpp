@@ -20,7 +20,7 @@ namespace rythe::rendering
         ModelCache::buffer_model(id, matrixBuffer);
     }
 
-    void model_handle::overwrite_buffer(buffer& newBuffer, uint bufferID, bool perInstance) const
+    void model_handle::overwrite_buffer(buffer& newBuffer, rsl::uint bufferID, bool perInstance) const
     {
         ModelCache::overwrite_buffer(id, newBuffer, bufferID, perInstance);
     }
@@ -47,7 +47,7 @@ namespace rythe::rendering
         return m_modelNames[id];
     }
 
-    void ModelCache::overwrite_buffer(rsl::id_type id, buffer& newBuffer, uint bufferID, bool perInstance)
+    void ModelCache::overwrite_buffer(rsl::id_type id, buffer& newBuffer, rsl::uint bufferID, bool perInstance)
     {
         if (id == invalid_id)
             return;
@@ -93,10 +93,10 @@ namespace rythe::rendering
         model.uvBuffer = buffer(GL_ARRAY_BUFFER, mesh_handle->uvs, GL_STATIC_DRAW);
         model.vertexArray.setAttribPointer(model.uvBuffer, SV_TEXCOORD0, 2, GL_FLOAT, false, 0, 0);
 
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::float4x4), 0 * sizeof(math::float4x4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::float4x4), 1 * sizeof(math::float4x4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::float4x4), 2 * sizeof(math::float4x4::col_type));
-        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::float4x4), 3 * sizeof(math::float4x4::col_type));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::float4x4), 0 * sizeof(math::float4));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::float4x4), 1 * sizeof(math::float4));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::float4x4), 2 * sizeof(math::float4));
+        model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::float4x4), 3 * sizeof(math::float4));
 
         model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 0, 1);
         model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 1, 1);

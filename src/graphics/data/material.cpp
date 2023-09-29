@@ -21,7 +21,7 @@ namespace rythe::rendering
             return new material_parameter<math::float4>(name, location);
             break;
         case GL_UNSIGNED_INT:
-            return new material_parameter<uint>(name, location);
+            return new material_parameter<rsl::uint>(name, location);
             break;
         case GL_INT:
             return new material_parameter<int>(name, location);

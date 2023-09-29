@@ -3,7 +3,7 @@
 namespace rythe::rendering
 {
 
-    std::multimap<priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>> PostProcessingStage::m_effects;
+    std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>> PostProcessingStage::m_effects;
 
 
     void PostProcessingStage::setup(app::window& context)
@@ -79,7 +79,7 @@ namespace rythe::rendering
         glDisable(GL_DEPTH_TEST);
 
         fbo->bind();
-        uint attachment = FRAGMENT_ATTACHMENT;
+        rsl::uint attachment = FRAGMENT_ATTACHMENT;
         glDrawBuffers(1, &attachment);
         fbo->release();
 

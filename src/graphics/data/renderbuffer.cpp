@@ -2,7 +2,7 @@
 
 namespace rythe::rendering
 {
-    renderbuffer::renderbuffer(GLenum internalformat, math::int2 resolution, uint samples)
+    renderbuffer::renderbuffer(GLenum internalformat, math::int2 resolution, rsl::uint samples)
         : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())
@@ -34,7 +34,7 @@ namespace rythe::rendering
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 
-    renderbuffer::renderbuffer(GLenum internalformat, int width, int height, uint samples)
+    renderbuffer::renderbuffer(GLenum internalformat, int width, int height, rsl::uint samples)
         : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())
@@ -66,7 +66,7 @@ namespace rythe::rendering
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 
-    renderbuffer::renderbuffer(GLenum internalformat, uint samples)
+    renderbuffer::renderbuffer(GLenum internalformat, rsl::uint samples)
         : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
             if (!app::ContextHelper::getCurrentContext())

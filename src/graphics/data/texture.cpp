@@ -5,17 +5,17 @@ namespace rythe::rendering
     void texture::to_resource(fs::basic_resource* resource, const texture& value)
     {
         resource->clear();
-        appendBinaryData(&value.textureId, resource->get());
-        appendBinaryData(&value.channels, resource->get());
-        appendBinaryData(&value.type, resource->get());
+        rsl::appendBinaryData(&value.textureId, resource->get());
+        rsl::appendBinaryData(&value.channels, resource->get());
+        rsl::appendBinaryData(&value.type, resource->get());
     }
 
     void texture::from_resource(texture* value, const fs::basic_resource& resource)
     {
         rsl::byte_vec::const_iterator start = resource.begin();
-        retrieveBinaryData(value->textureId, start);
-        retrieveBinaryData(value->channels, start);
-        retrieveBinaryData(value->type, start);
+        rsl::retrieveBinaryData(value->textureId, start);
+        rsl::retrieveBinaryData(value->channels, start);
+        rsl::retrieveBinaryData(value->type, start);
     }
 
     math::int2 texture::size() const
@@ -45,7 +45,7 @@ namespace rythe::rendering
             newSize.y,
             0,
             components_to_format[static_cast<int>(channels)],
-            channels_to_glenum[static_cast<uint>(fileFormat)],
+            channels_to_glenum[static_cast<rsl::uint>(fileFormat)],
             NULL);
         glBindTexture(static_cast<GLenum>(type), 0);
     }
@@ -185,7 +185,7 @@ namespace rythe::rendering
         texture.immutable = settings.immutable;
         if (settings.immutable)
         {
-            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? math::log2(math::max(size.x, size.y)) : 1);
+            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(size.x, size.y)) : 1);
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexStorage2D(
                 glTexType,
@@ -196,7 +196,7 @@ namespace rythe::rendering
         }
         else
         {
-            texture.mipCount = settings.generateMipmaps ? math::log2(math::max(size.x, size.y)) : 1;
+            texture.mipCount = settings.generateMipmaps ? log2(math::max(size.x, size.y)) : 1;
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexImage2D(
                 glTexType,
@@ -206,7 +206,7 @@ namespace rythe::rendering
                 size.y,
                 0,
                 components_to_format[static_cast<int>(settings.components)],
-                channels_to_glenum[static_cast<uint>(settings.fileFormat)],
+                channels_to_glenum[static_cast<rsl::uint>(settings.fileFormat)],
                 nullptr);
         }
 
@@ -286,7 +286,7 @@ namespace rythe::rendering
         texture.immutable = settings.immutable;
         if (settings.immutable)
         {
-            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? math::log2(math::max(res.x, res.y)) : 1);
+            texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(res.x, res.y)) : 1);
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexStorage2D(
                 glTexType,
@@ -303,12 +303,12 @@ namespace rythe::rendering
                 res.x,
                 res.y,
                 components_to_format[static_cast<int>(img->components())],
-                channels_to_glenum[static_cast<uint>(img->format())],
+                channels_to_glenum[static_cast<rsl::uint>(img->format())],
                 img->data());
         }
         else
         {
-            texture.mipCount = settings.generateMipmaps ? math::log2(math::max(res.x, res.y)) : 1;
+            texture.mipCount = settings.generateMipmaps ? log2(math::max(res.x, res.y)) : 1;
             glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
             glTexImage2D(
                 glTexType,
@@ -318,7 +318,7 @@ namespace rythe::rendering
                 res.y,
                 0,
                 components_to_format[static_cast<int>(img->components())],
-                channels_to_glenum[static_cast<uint>(img->format())],
+                channels_to_glenum[static_cast<rsl::uint>(img->format())],
                 img->data());
         }
 
