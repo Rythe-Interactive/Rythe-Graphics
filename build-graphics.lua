@@ -30,6 +30,8 @@ includedirs {
     "third_party/*",
     "third_party/*/src/",
     "third_party/*/include/",
+    "third_party/imgui/addons/*",
+    "third_party/imgui/backends/",
     "src"
 }    
 

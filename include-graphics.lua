@@ -28,7 +28,9 @@ includedirs {
     "src/",
     "third_party/*/src",
     "third_party/*/include",
-    "third_party/"
+    "third_party/*",
+    "third_party/",
+    "third_party/imgui/addons/*"
 }
 dependson { "core", "application", "graphics" }
 filter "kind:not StaticLib"
