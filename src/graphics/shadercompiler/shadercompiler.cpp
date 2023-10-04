@@ -55,14 +55,15 @@ namespace rythe::rendering
     const std::string& ShaderCompiler::get_shaderlib_path()
     {
         static std::string libPath = get_view_path(fs::view("engine://shaderlib"), false);
-        return libPath;
+        static std::string output = libPath.substr(0,libPath.size() - 1);
+        return output;
     }
 
     const std::string& ShaderCompiler::get_compiler_path()
     {
         static std::string compPath;
         if (compPath.empty())
-            compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "lgnspre";
+            compPath = get_view_path(fs::view("engine://tools"), false) + "lgnspre" + fs::strpath_manip::separator() + "lgnspre";
         return compPath;
     }
 
@@ -70,7 +71,7 @@ namespace rythe::rendering
     {
         static std::string compPath;
         if (compPath.empty())
-            compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "rytcleancache";
+            compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "lgncleancache";
         return compPath;
     }
 
@@ -431,12 +432,12 @@ namespace rythe::rendering
                 break;
 
             seperator = rest.substr(0, sourceLength).find_last_of('\n');
-            auto source = rest.substr(0, seperator);            
+            auto source = rest.substr(0, seperator);
             rest = rest.substr(seperator);
 
             seperator = source.find_first_of('\n');
             std::string variant(source.substr(0, seperator));
-            source = source.substr(seperator+1);
+            source = source.substr(seperator + 1);
 
             if (shaderType == 0)
             {
