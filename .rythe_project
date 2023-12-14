@@ -1,0 +1,7 @@
+local project = {
+    dependencies = {
+        "public rythe/application"
+    }
+}
+
+return project
