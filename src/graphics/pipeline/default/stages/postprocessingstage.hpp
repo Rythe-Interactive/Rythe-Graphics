@@ -1,59 +1,58 @@
 #pragma once
-#include <graphics/pipeline/base/renderstage.hpp>
-#include <graphics/pipeline/base/pipeline.hpp>
-#include <graphics/data/screen_quad.hpp>
 #include <graphics/data/postprocessingeffect.hpp>
+#include <graphics/data/screen_quad.hpp>
+#include <graphics/pipeline/base/pipeline.hpp>
+#include <graphics/pipeline/base/renderstage.hpp>
 
 namespace rythe::rendering
 {
-    /**
-     * @class PostProcessingStage
-     * @brief The stage that runs all of the post processing effects.
-     */
-    class PostProcessingStage : public RenderStage<PostProcessingStage>
-    {
-    private:
-        /**
-         * @brief A multimap with priority as key and postprocessing effect as value.
-         */
-        static std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>,std::greater<>> m_effects;
-        screen_quad m_screenQuad;
+	/**
+	 * @class PostProcessingStage
+	 * @brief The stage that runs all of the post processing effects.
+	 */
+	class PostProcessingStage : public RenderStage<PostProcessingStage>
+	{
+	private:
+		/**
+		 * @brief A multimap with priority as key and postprocessing effect as value.
+		 */
+		static std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>> m_effects;
+		screen_quad m_screenQuad;
 
-        framebuffer m_drawFBO;
+		framebuffer m_drawFBO;
 
-        texture_handle m_swapTexture;
+		texture_handle m_swapTexture;
 
-        shader_handle m_screenShader;
+		shader_handle m_screenShader;
 
-    public:
-        template<typename effect_type, typename ...Args,rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
-        static void addEffect(rsl::priority_type priority = default_priority, Args&&...args)
-        {
-            m_effects.emplace(priority, std::unique_ptr<PostProcessingEffectBase>(new effect_type(std::forward<Args>(args)...)));
-        }
+	public:
+		template <typename effect_type, typename... Args, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
+		static void addEffect(rsl::priority_type priority = default_priority, Args&&... args)
+		{
+			m_effects.emplace(priority, std::unique_ptr<PostProcessingEffectBase>(new effect_type(std::forward<Args>(args)...)));
+		}
 
-        template<typename effect_type, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
-        static void removeEffect()
-        {
-            for (auto iter = m_effects.begin(); iter != m_effects.end();)
-            {
-                const auto eraseIter = iter++;
-                if (eraseIter->second->getId() == effect_type::m_id)
-                {
-                    m_effects.erase(eraseIter);
-                }
-            }
-        }
+		template <typename effect_type, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
+		static void removeEffect()
+		{
+			for (auto iter = m_effects.begin(); iter != m_effects.end();)
+			{
+				const auto eraseIter = iter++;
+				if (eraseIter->second->getId() == effect_type::m_id)
+				{
+					m_effects.erase(eraseIter);
+				}
+			}
+		}
 
-        void shutdown()
-        {
-            m_effects.clear();
-        }
+		void shutdown()
+		{
+			m_effects.clear();
+		}
 
-        virtual void setup(app::window& context) override;
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
-        virtual rsl::priority_type priority() override;
-    };
+		virtual void setup(app::window& context) override;
+		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
+		virtual rsl::priority_type priority() override;
+	};
 
-}
-
+} // namespace rythe::rendering

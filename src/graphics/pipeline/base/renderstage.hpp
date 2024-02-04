@@ -14,78 +14,77 @@
 
 namespace rythe::rendering
 {
-    class RenderPipelineBase;
+	class RenderPipelineBase;
 
-    class RenderStageBase
-    {
-        friend class Renderer;
+	class RenderStageBase
+	{
+		friend class Renderer;
 
-        template<typename>
-        friend class RenderPipeline;
+		template <typename>
+		friend class RenderPipeline;
 
-    private:
-        bool m_isInitialized = false;
+	private:
+		bool m_isInitialized = false;
 
-    protected:
-        virtual void setup(app::window& context) = 0;
+	protected:
+		virtual void setup(app::window& context) = 0;
 
-        virtual void _shutdown_impl() = 0;
-    public:
-        static RenderPipelineBase* m_pipeline;
+		virtual void _shutdown_impl() = 0;
 
-        bool isInitialized() { return m_isInitialized; }
+	public:
+		static RenderPipelineBase* m_pipeline;
 
-        void init(app::window& context)
-        {
-            m_isInitialized = true;
-            setup(context);
-        }
+		bool isInitialized() { return m_isInitialized; }
 
-        virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
-        virtual rsl::priority_type priority() { return default_priority; }
+		void init(app::window& context)
+		{
+			m_isInitialized = true;
+			setup(context);
+		}
 
-    protected:
-        void abort();
+		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
+		virtual rsl::priority_type priority() { return default_priority; }
 
-        template<typename T>
-        [[nodiscard]] bool has_meta(const std::string& name);
+	protected:
+		void abort();
 
-        template<typename T, typename... Args>
-        T* create_meta(const std::string& name, Args&&... args);
+		template <typename T>
+		[[nodiscard]] bool has_meta(const std::string& name);
 
-        template<typename T>
-        [[nodiscard]] T* get_meta(const std::string& name);
+		template <typename T, typename... Args>
+		T* create_meta(const std::string& name, Args&&... args);
 
-        template<typename T>
-        [[nodiscard]] bool has_meta(rsl::id_type nameHash);
+		template <typename T>
+		[[nodiscard]] T* get_meta(const std::string& name);
 
-        template<typename T, typename... Args>
-        T* create_meta(rsl::id_type nameHash, Args&&... args);
+		template <typename T>
+		[[nodiscard]] bool has_meta(rsl::id_type nameHash);
 
-        template<typename T>
-        [[nodiscard]] T* get_meta(rsl::id_type nameHash);
+		template <typename T, typename... Args>
+		T* create_meta(rsl::id_type nameHash, Args&&... args);
 
-        framebuffer* addFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        [[nodiscard]] bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
-        [[nodiscard]] framebuffer* getFramebuffer(const std::string& name);
-        framebuffer* addFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        [[nodiscard]] bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
-        [[nodiscard]] framebuffer* getFramebuffer(rsl::id_type nameHash);
+		template <typename T>
+		[[nodiscard]] T* get_meta(rsl::id_type nameHash);
 
-    };
+		framebuffer* addFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
+		[[nodiscard]] bool hasFramebuffer(const std::string& name, GLenum target = GL_FRAMEBUFFER);
+		[[nodiscard]] framebuffer* getFramebuffer(const std::string& name);
+		framebuffer* addFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+		[[nodiscard]] bool hasFramebuffer(rsl::id_type nameHash, GLenum target = GL_FRAMEBUFFER);
+		[[nodiscard]] framebuffer* getFramebuffer(rsl::id_type nameHash);
+	};
 
-    template<typename SelfType>
-    class RenderStage : public RenderStageBase, protected System<SelfType>
-    {
-        void _shutdown_impl() override
-        {
-            if constexpr (rsl::has_shutdown_v<SelfType, void()>)
-            {
-                static_cast<SelfType*>(this)->shutdown();
-            }
-        }
-
-    };
-}
+	template <typename SelfType>
+	class RenderStage : public RenderStageBase, protected System<SelfType>
+	{
+		void _shutdown_impl() override
+		{
+			if constexpr (rsl::has_shutdown_v<SelfType, void()>)
+			{
+				static_cast<SelfType*>(this)->shutdown();
+			}
+		}
+	};
+} // namespace rythe::rendering
 
 #include <graphics/pipeline/base/renderstage.inl>

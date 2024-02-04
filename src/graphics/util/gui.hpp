@@ -1,9 +1,9 @@
 #pragma once
-#include <imgui/imgui.h>
+#include <imgui/addons/FileBrowser/ImGuiFileBrowser.h>
 #include <imgui/addons/ImGuizmo/ImGuizmo.h>
 #include <imgui/addons/ImGuizmo/ImSequencer.h>
-#include <imgui/addons/FileBrowser/ImGuiFileBrowser.h>
 #include <imgui/addons/ImNodes/imnodes.h>
+#include <imgui/imgui.h>
 
 /** @brief include for the imgui GUI-System
  *
@@ -17,5 +17,5 @@
 
 namespace imgui::base
 {
-    using namespace ImGui;
+	using namespace ImGui;
 }

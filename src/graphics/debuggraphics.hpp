@@ -6,91 +6,99 @@ namespace rythe::debug
 {
 #if !defined drawLine
 
-#define debug_line_event RYTHE_CONCAT(PROJECT_NAME, debug_line)
+	#define debug_line_event RYTHE_CONCAT(PROJECT_NAME, debug_line)
 
-    struct debug_line_event final : public events::event_base
-    {
-        rsl::math::float3 start;
-        rsl::math::float3 end;
-        math::color color = math::colors::white;
-        float width = 1.f;
-        float time = 0;
-        mutable float timeBuffer = 0;
-        bool ignoreDepth = false;
+	struct debug_line_event final : public events::event_base
+	{
+		rsl::math::float3 start;
+		rsl::math::float3 end;
+		math::color color = math::colors::white;
+		float width = 1.f;
+		float time = 0;
+		mutable float timeBuffer = 0;
+		bool ignoreDepth = false;
 
-        debug_line_event(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false) : start(start), end(end), color(color), width(width), time(time), ignoreDepth(ignoreDepth) {}
-        debug_line_event() = default;
-        debug_line_event(const debug_line_event&) = default;
-        debug_line_event(debug_line_event&&) = default;
+		debug_line_event(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+			: start(start),
+			  end(end),
+			  color(color),
+			  width(width),
+			  time(time),
+			  ignoreDepth(ignoreDepth)
+		{
+		}
+		debug_line_event() = default;
+		debug_line_event(const debug_line_event&) = default;
+		debug_line_event(debug_line_event&&) = default;
 
-        debug_line_event& operator=(const debug_line_event&) = default;
-        debug_line_event& operator=(debug_line_event&&) = default;
+		debug_line_event& operator=(const debug_line_event&) = default;
+		debug_line_event& operator=(debug_line_event&&) = default;
 
-        bool operator==(const debug_line_event& other) const
-        {
-            return start == other.start && end == other.end && color == other.color && width == other.width && ignoreDepth == other.ignoreDepth;
-        }
+		bool operator==(const debug_line_event& other) const
+		{
+			return start == other.start && end == other.end && color == other.color && width == other.width && ignoreDepth == other.ignoreDepth;
+		}
 
-        virtual rsl::id_type get_id()
-        {
-            static rsl::id_type id = rsl::nameHash("debug_line");
-            return id;
-        }
-    };
+		virtual rsl::id_type get_id()
+		{
+			static rsl::id_type id = rsl::nameHash("debug_line");
+			return id;
+		}
+	};
 
-#define drawLine RYTHE_CONCAT(PROJECT_NAME, DrawLine)
+	#define drawLine RYTHE_CONCAT(PROJECT_NAME, DrawLine)
 
-    inline void drawLine(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
-    {
-        auto val = debug_line_event(start, end, color, width, time, ignoreDepth);
-        events::EventBus::raiseEvent(val);
-    }
+	inline void drawLine(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+	{
+		auto val = debug_line_event(start, end, color, width, time, ignoreDepth);
+		events::EventBus::raiseEvent(val);
+	}
 
-#define drawCube RYTHE_CONCAT(PROJECT_NAME, DrawCube)
+	#define drawCube RYTHE_CONCAT(PROJECT_NAME, DrawCube)
 
-    inline void drawCube(rsl::math::float3 min, rsl::math::float3 max, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
-    {
-        //draws all 12 cube edges 
-        drawLine(min, rsl::math::float3(max.x, min.y, min.z), color, width, time, ignoreDepth);
-        drawLine(min, rsl::math::float3(min.x, max.y, min.z), color, width, time, ignoreDepth);
-        drawLine(min, rsl::math::float3(min.x, min.y, max.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(min.x, max.y, max.z), max, color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(max.x, max.y, min.z), max, color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(max.x, min.y, max.z), max, color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
-        drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
-    }
+	inline void drawCube(rsl::math::float3 min, rsl::math::float3 max, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+	{
+		// draws all 12 cube edges
+		drawLine(min, rsl::math::float3(max.x, min.y, min.z), color, width, time, ignoreDepth);
+		drawLine(min, rsl::math::float3(min.x, max.y, min.z), color, width, time, ignoreDepth);
+		drawLine(min, rsl::math::float3(min.x, min.y, max.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(min.x, max.y, max.z), max, color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(max.x, max.y, min.z), max, color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(max.x, min.y, max.z), max, color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
+		drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
+	}
 
 #endif
 
 
-}
+} // namespace rythe::debug
 
 #if !defined(DOXY_EXCLUDE)
 namespace std
 {
-    template<>
-    struct hash<rythe::debug::debug_line_event>
-    {
-        std::size_t operator()(rythe::debug::debug_line_event const& line) const noexcept
-        {
-            std::hash<rsl::math::float3> vecHasher;
-            std::hash<rsl::math::color> colHasher;
-            std::hash<float> fltHasher;
-            std::hash<bool> boolHasher;
+	template <>
+	struct hash<rythe::debug::debug_line_event>
+	{
+		std::size_t operator()(rythe::debug::debug_line_event const& line) const noexcept
+		{
+			std::hash<rsl::math::float3> vecHasher;
+			std::hash<rsl::math::color> colHasher;
+			std::hash<float> fltHasher;
+			std::hash<bool> boolHasher;
 
-            size_t seed = 0;
-            rsl::combine_hash(seed, vecHasher(line.start));
-            rsl::combine_hash(seed, vecHasher(line.end));
-            rsl::combine_hash(seed, colHasher(line.color));
-            rsl::combine_hash(seed, fltHasher(line.width));
-            rsl::combine_hash(seed, boolHasher(line.ignoreDepth));
-            return seed;
-        }
-    };
-}
+			size_t seed = 0;
+			rsl::combine_hash(seed, vecHasher(line.start));
+			rsl::combine_hash(seed, vecHasher(line.end));
+			rsl::combine_hash(seed, colHasher(line.color));
+			rsl::combine_hash(seed, fltHasher(line.width));
+			rsl::combine_hash(seed, boolHasher(line.ignoreDepth));
+			return seed;
+		}
+	};
+} // namespace std
 #endif

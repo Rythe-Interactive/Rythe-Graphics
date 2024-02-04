@@ -2,262 +2,263 @@
 
 namespace rythe::rendering
 {
-    async::spinlock DebugRenderStage::debugLinesLock;
-    thread_local std::unordered_set<debug::debug_line_event>* DebugRenderStage::localLines;
-    std::unordered_map<std::thread::id, std::unordered_set<debug::debug_line_event>*> DebugRenderStage::debugLines;
+	async::spinlock DebugRenderStage::debugLinesLock;
+	thread_local std::unordered_set<debug::debug_line_event>* DebugRenderStage::localLines;
+	std::unordered_map<std::thread::id, std::unordered_set<debug::debug_line_event>*> DebugRenderStage::debugLines;
 
-    void DebugRenderStage::startDebugDomain()
-    {
-        if (!localLines)
-            localLines = new std::unordered_set<debug::debug_line_event>();
-    }
+	void DebugRenderStage::startDebugDomain()
+	{
+		if (!localLines)
+			localLines = new std::unordered_set<debug::debug_line_event>();
+	}
 
-    void DebugRenderStage::endDebugDomain()
-    {
-        if (!localLines) return;
-        rsl::size_type localSize = localLines->size();
+	void DebugRenderStage::endDebugDomain()
+	{
+		if (!localLines)
+			return;
+		rsl::size_type localSize = localLines->size();
 
-        std::thread::id id = std::this_thread::get_id();
+		std::thread::id id = std::this_thread::get_id();
 
-        {
-            std::lock_guard guard(debugLinesLock);
+		{
+			std::lock_guard guard(debugLinesLock);
 
-            if (auto itr = debugLines.find(id); itr != debugLines.end())
-            {
-                auto* lineBuffer = itr->second;
-                if (localSize == 0 && lineBuffer->size() == 0)
-                    return;
+			if (auto itr = debugLines.find(id); itr != debugLines.end())
+			{
+				auto* lineBuffer = itr->second;
+				if (localSize == 0 && lineBuffer->size() == 0)
+					return;
 
-                for (auto& line : *lineBuffer)
-                {
-                    if (line.time > 0 && !localLines->count(line))
-                        localLines->insert(line);
-                }
+				for (auto& line : *lineBuffer)
+				{
+					if (line.time > 0 && !localLines->count(line))
+						localLines->insert(line);
+				}
 
-                delete lineBuffer;
-            }
-            else if (localSize == 0)
-                return;
+				delete lineBuffer;
+			}
+			else if (localSize == 0)
+				return;
 
-            debugLines[id] = localLines;
-            localLines = nullptr;
-        }
+			debugLines[id] = localLines;
+			localLines = nullptr;
+		}
 
-        localLines = new std::unordered_set<debug::debug_line_event>();
-        localLines->reserve(localSize);
-    }
+		localLines = new std::unordered_set<debug::debug_line_event>();
+		localLines->reserve(localSize);
+	}
 
-    void DebugRenderStage::drawDebugLine(events::event_base& event)
-    {
-        debug::debug_line_event& line = reinterpret_cast<debug::debug_line_event&>(event);
-        if (localLines->count(line))
-            localLines->erase(line);
-        localLines->insert(line);
-    }
+	void DebugRenderStage::drawDebugLine(events::event_base& event)
+	{
+		debug::debug_line_event& line = reinterpret_cast<debug::debug_line_event&>(event);
+		if (localLines->count(line))
+			localLines->erase(line);
+		localLines->insert(line);
+	}
 
-    void DebugRenderStage::setup(app::window& context)
-    {
-        startDebugDomain();
-        events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template create<DebugRenderStage, &DebugRenderStage::drawDebugLine>(*this));
-    }
+	void DebugRenderStage::setup(app::window& context)
+	{
+		startDebugDomain();
+		events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template create<DebugRenderStage, &DebugRenderStage::drawDebugLine>(*this));
+	}
 
-    void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
-    {
-        using namespace rythe::core::fs::literals;
-        endDebugDomain();
+	void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	{
+		using namespace rythe::core::fs::literals;
+		endDebugDomain();
 
-        std::vector<debug::debug_line_event> lines;
+		std::vector<debug::debug_line_event> lines;
 
-        {
-            std::lock_guard guard(debugLinesLock);
-            if (debugLines.size() == 0)
-                return;
+		{
+			std::lock_guard guard(debugLinesLock);
+			if (debugLines.size() == 0)
+				return;
 
-            std::vector<debug::debug_line_event> toRemove;
-            for (auto& [threadId, domain] : debugLines)
-            {
-                lines.insert(lines.end(), domain->begin(), domain->end());
+			std::vector<debug::debug_line_event> toRemove;
+			for (auto& [threadId, domain] : debugLines)
+			{
+				lines.insert(lines.end(), domain->begin(), domain->end());
 
-                for (auto& line : (*domain))
-                {
-                    if (line.time == 0)
-                        continue;
+				for (auto& line : (*domain))
+				{
+					if (line.time == 0)
+						continue;
 
-                    line.timeBuffer += deltaTime;
+					line.timeBuffer += deltaTime;
 
-                    if (line.timeBuffer >= line.time)
-                        toRemove.push_back(line);
-                }
+					if (line.timeBuffer >= line.time)
+						toRemove.push_back(line);
+				}
 
-                for (auto line : toRemove)
-                    domain->erase(line);
-            }
-        }
+				for (auto line : toRemove)
+					domain->erase(line);
+			}
+		}
 
-        static rsl::id_type mainId = rsl::nameHash("main");
-        auto fbo = getFramebuffer(mainId);
-        if (!fbo)
-        {
-            log::error("Main frame buffer is missing.");
-            abort();
-            return;
-        }
+		static rsl::id_type mainId = rsl::nameHash("main");
+		auto fbo = getFramebuffer(mainId);
+		if (!fbo)
+		{
+			log::error("Main frame buffer is missing.");
+			abort();
+			return;
+		}
 
-        app::context_guard guard(context);
-        if (!guard.contextIsValid())
-        {
-            abort();
-            return;
-        }
+		app::context_guard guard(context);
+		if (!guard.contextIsValid())
+		{
+			abort();
+			return;
+		}
 
-        static material_handle debugMaterial = MaterialCache::create_material("debug", "assets://shaders/debug.shs"_view);
-        static app::gl_id vertexBuffer = -1;
-        static rsl::size_type vertexBufferSize = 0;
-        static app::gl_id colorBuffer = -1;
-        static rsl::size_type colorBufferSize = 0;
-        static app::gl_id ignoreDepthBuffer = -1;
-        static rsl::size_type ignoreDepthBufferSize = 0;
-        static app::gl_id vao = -1;
+		static material_handle debugMaterial = MaterialCache::create_material("debug", "assets://shaders/debug.shs"_view);
+		static app::gl_id vertexBuffer = -1;
+		static rsl::size_type vertexBufferSize = 0;
+		static app::gl_id colorBuffer = -1;
+		static rsl::size_type colorBufferSize = 0;
+		static app::gl_id ignoreDepthBuffer = -1;
+		static rsl::size_type ignoreDepthBufferSize = 0;
+		static app::gl_id vao = -1;
 
-        if (debugMaterial == invalid_material_handle)
-            return;
+		if (debugMaterial == invalid_material_handle)
+			return;
 
-        if (vertexBuffer == -1)
-            glGenBuffers(1, &vertexBuffer);
+		if (vertexBuffer == -1)
+			glGenBuffers(1, &vertexBuffer);
 
-        if (colorBuffer == -1)
-            glGenBuffers(1, &colorBuffer);
+		if (colorBuffer == -1)
+			glGenBuffers(1, &colorBuffer);
 
-        if (ignoreDepthBuffer == -1)
-            glGenBuffers(1, &ignoreDepthBuffer);
+		if (ignoreDepthBuffer == -1)
+			glGenBuffers(1, &ignoreDepthBuffer);
 
-        if (vao == -1)
-            glGenVertexArrays(1, &vao);
+		if (vao == -1)
+			glGenVertexArrays(1, &vao);
 
-        static std::unordered_map<float, std::tuple<std::vector<rsl::uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
-        for (auto& [width, data] : lineBatches)
-        {
-            auto& [ignoreDepths, colors, vertices] = data;
-            ignoreDepths.clear();
-            colors.clear();
-            vertices.clear();
-        }
+		static std::unordered_map<float, std::tuple<std::vector<rsl::uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
+		for (auto& [width, data] : lineBatches)
+		{
+			auto& [ignoreDepths, colors, vertices] = data;
+			ignoreDepths.clear();
+			colors.clear();
+			vertices.clear();
+		}
 
-        for (auto& line : lines)
-        {
-            auto& [ignoreDepths, colors, vertices] = lineBatches[line.width];
-            ignoreDepths.push_back(line.ignoreDepth);
-            ignoreDepths.push_back(line.ignoreDepth);
-            colors.push_back(line.color);
-            colors.push_back(line.color);
-            vertices.push_back(line.start);
-            vertices.push_back(line.end);
-        }
+		for (auto& line : lines)
+		{
+			auto& [ignoreDepths, colors, vertices] = lineBatches[line.width];
+			ignoreDepths.push_back(line.ignoreDepth);
+			ignoreDepths.push_back(line.ignoreDepth);
+			colors.push_back(line.color);
+			colors.push_back(line.color);
+			vertices.push_back(line.start);
+			vertices.push_back(line.end);
+		}
 
-        auto [valid, message] = fbo->verify();
-        if (!valid)
-        {
-            log::error("Main frame buffer isn't complete: {}", message);
-            abort();
-            return;
-        }
+		auto [valid, message] = fbo->verify();
+		if (!valid)
+		{
+			log::error("Main frame buffer isn't complete: {}", message);
+			abort();
+			return;
+		}
 
-        fbo->bind();
+		fbo->bind();
 
-        debugMaterial.bind();
+		debugMaterial.bind();
 
-        glEnable(GL_LINE_SMOOTH);
-        glBindVertexArray(vao);
+		glEnable(GL_LINE_SMOOTH);
+		glBindVertexArray(vao);
 
-        for (auto& [width, lineData] : lineBatches)
-        {
-            auto& [ignoreDepths, colors, vertices] = lineData;
+		for (auto& [width, lineData] : lineBatches)
+		{
+			auto& [ignoreDepths, colors, vertices] = lineData;
 
-            ///------------ vertices ------------///
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+			///------------ vertices ------------///
+			glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
-            rsl::size_type vertexCount = vertices.size();
-            if (vertexCount > vertexBufferSize)
-            {
-                glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(rsl::math::float3), 0, GL_DYNAMIC_DRAW);
-                vertexBufferSize = vertexCount;
-            }
+			rsl::size_type vertexCount = vertices.size();
+			if (vertexCount > vertexBufferSize)
+			{
+				glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(rsl::math::float3), 0, GL_DYNAMIC_DRAW);
+				vertexBufferSize = vertexCount;
+			}
 
-            glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * sizeof(rsl::math::float3), vertices.data());
-            glEnableVertexAttribArray(SV_POSITION);
-            glVertexAttribPointer(SV_POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * sizeof(rsl::math::float3), vertices.data());
+			glEnableVertexAttribArray(SV_POSITION);
+			glVertexAttribPointer(SV_POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-            ///------------ colors ------------///
-            glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+			///------------ colors ------------///
+			glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 
-            rsl::size_type colorCount = colors.size();
-            if (colorCount > colorBufferSize)
-            {
-                glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(math::color), 0, GL_DYNAMIC_DRAW);
-                colorBufferSize = colorCount;
-            }
+			rsl::size_type colorCount = colors.size();
+			if (colorCount > colorBufferSize)
+			{
+				glBufferData(GL_ARRAY_BUFFER, colorCount * sizeof(math::color), 0, GL_DYNAMIC_DRAW);
+				colorBufferSize = colorCount;
+			}
 
-            glBufferSubData(GL_ARRAY_BUFFER, 0, colorCount * sizeof(math::color), colors.data());
+			glBufferSubData(GL_ARRAY_BUFFER, 0, colorCount * sizeof(math::color), colors.data());
 
-            auto colorAttrib = debugMaterial.get_attribute("color");
+			auto colorAttrib = debugMaterial.get_attribute("color");
 
-            if (colorAttrib == invalid_attribute)
-            {
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                break;
-            }
+			if (colorAttrib == invalid_attribute)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				break;
+			}
 
-            colorAttrib.set_attribute_pointer(4, GL_FLOAT, GL_FALSE, 0, 0);
+			colorAttrib.set_attribute_pointer(4, GL_FLOAT, GL_FALSE, 0, 0);
 
-            ///------------ ignore depth ------------///
-            glBindBuffer(GL_ARRAY_BUFFER, ignoreDepthBuffer);
+			///------------ ignore depth ------------///
+			glBindBuffer(GL_ARRAY_BUFFER, ignoreDepthBuffer);
 
-            rsl::size_type ignoreDepthCount = ignoreDepths.size();
-            if (ignoreDepthCount > ignoreDepthBufferSize)
-            {
-                glBufferData(GL_ARRAY_BUFFER, ignoreDepthCount * sizeof(rsl::uint), 0, GL_DYNAMIC_DRAW);
-                ignoreDepthBufferSize = ignoreDepthCount;
-            }
+			rsl::size_type ignoreDepthCount = ignoreDepths.size();
+			if (ignoreDepthCount > ignoreDepthBufferSize)
+			{
+				glBufferData(GL_ARRAY_BUFFER, ignoreDepthCount * sizeof(rsl::uint), 0, GL_DYNAMIC_DRAW);
+				ignoreDepthBufferSize = ignoreDepthCount;
+			}
 
-            glBufferSubData(GL_ARRAY_BUFFER, 0, ignoreDepthCount * sizeof(rsl::uint), ignoreDepths.data());
+			glBufferSubData(GL_ARRAY_BUFFER, 0, ignoreDepthCount * sizeof(rsl::uint), ignoreDepths.data());
 
-            auto ignoreDepthAttrib = debugMaterial.get_attribute("ignoreDepth");
+			auto ignoreDepthAttrib = debugMaterial.get_attribute("ignoreDepth");
 
-            if (ignoreDepthAttrib == invalid_attribute)
-            {
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                break;
-            }
+			if (ignoreDepthAttrib == invalid_attribute)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+				break;
+			}
 
-            ignoreDepthAttrib.set_attribute_pointer(1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+			ignoreDepthAttrib.set_attribute_pointer(1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
 
-            ///------------ camera ------------///
-            glUniformMatrix4fv(SV_VIEW, 1, false, camInput.view.data);
-            glUniformMatrix4fv(SV_PROJECT, 1, false, camInput.proj.data);
+			///------------ camera ------------///
+			glUniformMatrix4fv(SV_VIEW, 1, false, camInput.view.data);
+			glUniformMatrix4fv(SV_PROJECT, 1, false, camInput.proj.data);
 
-            glLineWidth(width + 1);
+			glLineWidth(width + 1);
 
-            glDrawArraysInstanced(GL_LINES, 0, vertices.size(), colors.size());
+			glDrawArraysInstanced(GL_LINES, 0, vertices.size(), colors.size());
 
-            ignoreDepthAttrib.disable_attribute_pointer();
-            colorAttrib.disable_attribute_pointer();
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
+			ignoreDepthAttrib.disable_attribute_pointer();
+			colorAttrib.disable_attribute_pointer();
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
 
-        glBindVertexArray(0);
+		glBindVertexArray(0);
 
-        glDisable(GL_LINE_SMOOTH);
+		glDisable(GL_LINE_SMOOTH);
 
-        debugMaterial.release();
+		debugMaterial.release();
 
-        fbo->release();
+		fbo->release();
 
-        startDebugDomain();
-    }
+		startDebugDomain();
+	}
 
-    rsl::priority_type DebugRenderStage::priority()
-    {
-        return post_fx_priority + 1;
-    }
+	rsl::priority_type DebugRenderStage::priority()
+	{
+		return post_fx_priority + 1;
+	}
 
-}
+} // namespace rythe::rendering

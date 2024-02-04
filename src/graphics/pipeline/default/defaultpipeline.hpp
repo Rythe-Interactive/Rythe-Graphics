@@ -3,8 +3,8 @@
 
 namespace rythe::rendering
 {
-    class DefaultPipeline : public RenderPipeline<DefaultPipeline>
-    {
-        virtual void setup(app::window& context) override;
-    };
-}
+	class DefaultPipeline : public RenderPipeline<DefaultPipeline>
+	{
+		virtual void setup(app::window& context) override;
+	};
+} // namespace rythe::rendering

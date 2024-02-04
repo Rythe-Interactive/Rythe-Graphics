@@ -2,167 +2,167 @@
 
 namespace rythe::rendering
 {
-    renderbuffer::renderbuffer(GLenum internalformat, math::int2 resolution, rsl::uint samples)
-        : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
+	renderbuffer::renderbuffer(GLenum internalformat, math::int2 resolution, rsl::uint samples)
+		: m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
-            if (!app::ContextHelper::getCurrentContext())
-            {
-                if (app::ContextHelper::initialized())
-                    log::error("No current context to delete renderbuffer with.");
-                return;
-            }
+			  if (!app::ContextHelper::getCurrentContext())
+			  {
+				  if (app::ContextHelper::initialized())
+					  log::error("No current context to delete renderbuffer with.");
+				  return;
+			  }
 #endif
-            if (value)
-                glDeleteRenderbuffers(1, &value);
-        }, invalid_id),
-        m_samples(samples),
-        m_internalformat(internalformat)
-    {
+			  if (value)
+				  glDeleteRenderbuffers(1, &value);
+		  }, invalid_id),
+		  m_samples(samples),
+		  m_internalformat(internalformat)
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to create renderbuffer with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to create renderbuffer with.");
+			return;
+		}
 #endif
-        glGenRenderbuffers(1, &m_id); // Generate framebuffer
-        glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-        if (samples > 0)
-            glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, resolution.x, resolution.y); // Allocate multi-sampling capable VRAM storage
-        else
-            glNamedRenderbufferStorage(m_id, internalformat, resolution.x, resolution.y); // Allocate VRAM
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
+		glGenRenderbuffers(1, &m_id); // Generate framebuffer
+		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+		if (samples > 0)
+			glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, resolution.x, resolution.y); // Allocate multi-sampling capable VRAM storage
+		else
+			glNamedRenderbufferStorage(m_id, internalformat, resolution.x, resolution.y);                     // Allocate VRAM
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
 
-    renderbuffer::renderbuffer(GLenum internalformat, int width, int height, rsl::uint samples)
-        : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
+	renderbuffer::renderbuffer(GLenum internalformat, int width, int height, rsl::uint samples)
+		: m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
-            if (!app::ContextHelper::getCurrentContext())
-            {
-                if (app::ContextHelper::initialized())
-                    log::error("No current context to delete renderbuffer with.");
-                return;
-            }
+			  if (!app::ContextHelper::getCurrentContext())
+			  {
+				  if (app::ContextHelper::initialized())
+					  log::error("No current context to delete renderbuffer with.");
+				  return;
+			  }
 #endif
-            if (value)
-                glDeleteRenderbuffers(1, &value);
-        }, invalid_id),
-        m_samples(samples),
-        m_internalformat(internalformat)
-    {
+			  if (value)
+				  glDeleteRenderbuffers(1, &value);
+		  }, invalid_id),
+		  m_samples(samples),
+		  m_internalformat(internalformat)
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to create renderbuffer with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to create renderbuffer with.");
+			return;
+		}
 #endif
-        glGenRenderbuffers(1, &m_id); // Generate framebuffer
-        glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-        if (samples > 0)
-            glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, width, height); // Allocate multi-sampling capable VRAM storage
-        else
-            glNamedRenderbufferStorage(m_id, internalformat, width, height); // Allocate VRAM
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
+		glGenRenderbuffers(1, &m_id); // Generate framebuffer
+		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+		if (samples > 0)
+			glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, width, height); // Allocate multi-sampling capable VRAM storage
+		else
+			glNamedRenderbufferStorage(m_id, internalformat, width, height);                     // Allocate VRAM
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
 
-    renderbuffer::renderbuffer(GLenum internalformat, rsl::uint samples)
-        : m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
+	renderbuffer::renderbuffer(GLenum internalformat, rsl::uint samples)
+		: m_id([](app::gl_id& value) { // Assign logic for renderbuffer deletion to managed resource.
 #if defined(RYTHE_DEBUG)
-            if (!app::ContextHelper::getCurrentContext())
-            {
-                if (app::ContextHelper::initialized())
-                    log::error("No current context to delete renderbuffer with.");
-                return;
-            }
+			  if (!app::ContextHelper::getCurrentContext())
+			  {
+				  if (app::ContextHelper::initialized())
+					  log::error("No current context to delete renderbuffer with.");
+				  return;
+			  }
 #endif
-            if (value)
-                glDeleteRenderbuffers(1, &value);
-        }, invalid_id),
-        m_samples(samples),
-        m_internalformat(internalformat)
-    {
+			  if (value)
+				  glDeleteRenderbuffers(1, &value);
+		  }, invalid_id),
+		  m_samples(samples),
+		  m_internalformat(internalformat)
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to create renderbuffer with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to create renderbuffer with.");
+			return;
+		}
 #endif
-        glGenRenderbuffers(1, &m_id); // Generate framebuffer
-    }
+		glGenRenderbuffers(1, &m_id); // Generate framebuffer
+	}
 
-    void renderbuffer::bind() const
-    {
+	void renderbuffer::bind() const
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to work with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to work with.");
+			return;
+		}
 #endif
-        glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-    }
+		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+	}
 
-    void renderbuffer::release()
-    {
+	void renderbuffer::release()
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to work with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to work with.");
+			return;
+		}
 #endif
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
 
-    [[nodiscard]] app::gl_id renderbuffer::id() const
-    {
-        return m_id;
-    }
+	[[nodiscard]] app::gl_id renderbuffer::id() const
+	{
+		return m_id;
+	}
 
-    [[nodiscard]] rsl::size_type renderbuffer::samples() const
-    {
-        return m_samples;
-    }
+	[[nodiscard]] rsl::size_type renderbuffer::samples() const
+	{
+		return m_samples;
+	}
 
-    [[nodiscard]] GLenum renderbuffer::format() const
-    {
-        return m_internalformat;
-    }
+	[[nodiscard]] GLenum renderbuffer::format() const
+	{
+		return m_internalformat;
+	}
 
-    [[nodiscard]] math::int2 renderbuffer::size() const
-    {
+	[[nodiscard]] math::int2 renderbuffer::size() const
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to read from.");
-            return math::int2(0, 0);
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to read from.");
+			return math::int2(0, 0);
+		}
 #endif
-        math::int2 size;
-        glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &size.x); // Fetch width.
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &size.y); // Fetch height.
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        return size;
-    }
+		math::int2 size;
+		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &size.x);  // Fetch width.
+		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &size.y); // Fetch height.
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		return size;
+	}
 
-    void renderbuffer::resize(math::ivec2 newSize) const
-    {
+	void renderbuffer::resize(math::ivec2 newSize) const
+	{
 #if defined(RYTHE_DEBUG)
-        if (!app::ContextHelper::getCurrentContext())
-        {
-            log::error("No current context to work with.");
-            return;
-        }
+		if (!app::ContextHelper::getCurrentContext())
+		{
+			log::error("No current context to work with.");
+			return;
+		}
 #endif
-        glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-        if (m_samples > 0)
-            glNamedRenderbufferStorageMultisample(m_id, m_samples, m_internalformat, newSize.x, newSize.y); // Allocate multi-sampling capable VRAM storage
-        else
-            glNamedRenderbufferStorage(m_id, m_internalformat, newSize.x, newSize.y); // Allocate VRAM
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
+		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
+		if (m_samples > 0)
+			glNamedRenderbufferStorageMultisample(m_id, m_samples, m_internalformat, newSize.x, newSize.y); // Allocate multi-sampling capable VRAM storage
+		else
+			glNamedRenderbufferStorage(m_id, m_internalformat, newSize.x, newSize.y);                       // Allocate VRAM
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
 
-}
+} // namespace rythe::rendering

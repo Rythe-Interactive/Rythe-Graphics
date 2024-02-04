@@ -1,298 +1,298 @@
-#include <graphics/pipeline/default/stages/transparencyrenderstage.hpp>
 #include <graphics/components/light.hpp>
+#include <graphics/components/renderable.hpp>
 #include <graphics/data/buffer.hpp>
 #include <graphics/data/model.hpp>
-#include <graphics/components/renderable.hpp>
+#include <graphics/pipeline/default/stages/transparencyrenderstage.hpp>
 
 namespace rythe::rendering
 {
-    void TransparencyRenderStage::setup(app::window& context)
-    {
-    }
+	void TransparencyRenderStage::setup(app::window& context)
+	{
+	}
 
-    void TransparencyRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
-    {
-        (void)deltaTime;
-        (void)cam;
-        static rsl::id_type mainId = rsl::nameHash("main");
-        static rsl::id_type batchesId = rsl::nameHash("mesh batches");
-        static rsl::id_type lightsId = rsl::nameHash("light buffer");
-        static rsl::id_type lightCountId = rsl::nameHash("light count");
-        static rsl::id_type matricesId = rsl::nameHash("model matrix buffer");
+	void TransparencyRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	{
+		(void)deltaTime;
+		(void)cam;
+		static rsl::id_type mainId = rsl::nameHash("main");
+		static rsl::id_type batchesId = rsl::nameHash("mesh batches");
+		static rsl::id_type lightsId = rsl::nameHash("light buffer");
+		static rsl::id_type lightCountId = rsl::nameHash("light count");
+		static rsl::id_type matricesId = rsl::nameHash("model matrix buffer");
 
-        // Leave this for later implementation, no time rn. (Glyn)
-        // static rsl::id_type sceneColorId = rsl::nameHash("scene color history");
-        // static rsl::id_type sceneDepthId = rsl::nameHash("scene depth history");
+		// Leave this for later implementation, no time rn. (Glyn)
+		// static rsl::id_type sceneColorId = rsl::nameHash("scene color history");
+		// static rsl::id_type sceneDepthId = rsl::nameHash("scene depth history");
 
-        //auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::unordered_set<ecs::entity>>>>(batchesId);
-        auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>(batchesId);
-        if (!batches)
-            return;
+		// auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::unordered_set<ecs::entity>>>>(batchesId);
+		auto* batches = get_meta<sparse_map<material_handle, sparse_map<model_handle, std::pair<std::vector<ecs::entity>, std::vector<math::float4x4>>>>>(batchesId);
+		if (!batches)
+			return;
 
-        buffer* lightsBuffer = get_meta<buffer>(lightsId);
-        if (!lightsBuffer)
-            return;
+		buffer* lightsBuffer = get_meta<buffer>(lightsId);
+		if (!lightsBuffer)
+			return;
 
-        rsl::size_type* lightCount = get_meta<rsl::size_type>(lightCountId);
-        if (!lightCount)
-            return;
+		rsl::size_type* lightCount = get_meta<rsl::size_type>(lightCountId);
+		if (!lightCount)
+			return;
 
-        buffer* modelMatrixBuffer = get_meta<buffer>(matricesId);
-        if (!modelMatrixBuffer)
-            return;
+		buffer* modelMatrixBuffer = get_meta<buffer>(matricesId);
+		if (!modelMatrixBuffer)
+			return;
 
-        auto* fbo = getFramebuffer(mainId);
-        if (!fbo)
-        {
-            log::error("Main frame buffer is missing.");
-            abort();
-            return;
-        }
+		auto* fbo = getFramebuffer(mainId);
+		if (!fbo)
+		{
+			log::error("Main frame buffer is missing.");
+			abort();
+			return;
+		}
 
-        texture_handle sceneColor;
-        auto colorAttachment = fbo->getAttachment(FRAGMENT_ATTACHMENT);
-        if (std::holds_alternative<texture_handle>(colorAttachment))
-            sceneColor = std::get<texture_handle>(colorAttachment);
+		texture_handle sceneColor;
+		auto colorAttachment = fbo->getAttachment(FRAGMENT_ATTACHMENT);
+		if (std::holds_alternative<texture_handle>(colorAttachment))
+			sceneColor = std::get<texture_handle>(colorAttachment);
 
-        texture_handle sceneNormal;
-        auto normalAttachment = fbo->getAttachment(NORMAL_ATTACHMENT);
-        if (std::holds_alternative<texture_handle>(normalAttachment))
-            sceneNormal = std::get<texture_handle>(normalAttachment);
+		texture_handle sceneNormal;
+		auto normalAttachment = fbo->getAttachment(NORMAL_ATTACHMENT);
+		if (std::holds_alternative<texture_handle>(normalAttachment))
+			sceneNormal = std::get<texture_handle>(normalAttachment);
 
-        texture_handle scenePosition;
-        auto positionAttachment = fbo->getAttachment(POSITION_ATTACHMENT);
-        if (std::holds_alternative<texture_handle>(positionAttachment))
-            scenePosition = std::get<texture_handle>(positionAttachment);
+		texture_handle scenePosition;
+		auto positionAttachment = fbo->getAttachment(POSITION_ATTACHMENT);
+		if (std::holds_alternative<texture_handle>(positionAttachment))
+			scenePosition = std::get<texture_handle>(positionAttachment);
 
-        texture_handle hdrOverdraw;
-        auto overdrawAttachment = fbo->getAttachment(OVERDRAW_ATTACHMENT);
-        if (std::holds_alternative<texture_handle>(overdrawAttachment))
-            hdrOverdraw = std::get<texture_handle>(overdrawAttachment);
+		texture_handle hdrOverdraw;
+		auto overdrawAttachment = fbo->getAttachment(OVERDRAW_ATTACHMENT);
+		if (std::holds_alternative<texture_handle>(overdrawAttachment))
+			hdrOverdraw = std::get<texture_handle>(overdrawAttachment);
 
-        texture_handle sceneDepth;
-        auto depthAttachment = fbo->getAttachment(GL_DEPTH_ATTACHMENT);
-        if (std::holds_alternative<std::monostate>(depthAttachment))
-            depthAttachment = fbo->getAttachment(GL_DEPTH_STENCIL_ATTACHMENT);
-        if (std::holds_alternative<texture_handle>(depthAttachment))
-            sceneDepth = std::get<texture_handle>(depthAttachment);
+		texture_handle sceneDepth;
+		auto depthAttachment = fbo->getAttachment(GL_DEPTH_ATTACHMENT);
+		if (std::holds_alternative<std::monostate>(depthAttachment))
+			depthAttachment = fbo->getAttachment(GL_DEPTH_STENCIL_ATTACHMENT);
+		if (std::holds_alternative<texture_handle>(depthAttachment))
+			sceneDepth = std::get<texture_handle>(depthAttachment);
 
-        texture_handle skyboxTex;
-        if (ecs::world.has_component<skybox_renderer>())
-            skyboxTex = ecs::world.get_component<skybox_renderer>()->material.get_param<texture_handle>(SV_SKYBOX);
+		texture_handle skyboxTex;
+		if (ecs::world.has_component<skybox_renderer>())
+			skyboxTex = ecs::world.get_component<skybox_renderer>()->material.get_param<texture_handle>(SV_SKYBOX);
 
-        app::context_guard guard(context);
-        if (!guard.contextIsValid())
-        {
-            abort();
-            return;
-        }
+		app::context_guard guard(context);
+		if (!guard.contextIsValid())
+		{
+			abort();
+			return;
+		}
 
-        auto [valid, message] = fbo->verify();
-        if (!valid)
-        {
-            log::error("Main frame buffer isn't complete: {}", message);
-            abort();
-            return;
-        }
+		auto [valid, message] = fbo->verify();
+		if (!valid)
+		{
+			log::error("Main frame buffer isn't complete: {}", message);
+			abort();
+			return;
+		}
 
-        fbo->bind();
+		fbo->bind();
 
-        for (auto [material, instancesPerMaterial] : *batches)
-        {
-            if (material.get_name() == "Test")
-            {
-                for (auto [modelHandle, instances] : instancesPerMaterial)
-                {
-                    material_handle mater;
+		for (auto [material, instancesPerMaterial] : *batches)
+		{
+			if (material.get_name() == "Test")
+			{
+				for (auto [modelHandle, instances] : instancesPerMaterial)
+				{
+					material_handle mater;
 
-                    if (modelHandle.id == invalid_id)
-                    {
-                        for (auto& ent : instances.first)
-                            log::warn("Invalid mesh found on entity {}.", ent->name);
+					if (modelHandle.id == invalid_id)
+					{
+						for (auto& ent : instances.first)
+							log::warn("Invalid mesh found on entity {}.", ent->name);
 
-                        continue;
-                    }
+						continue;
+					}
 
-                    const model& mesh = modelHandle.get_model();
-                    for (auto submesh : mesh.submeshes)
-                    {
-                        if (mesh.materials.empty())
-                            mater = material;
-                        else if (submesh.materialIndex == -1)
-                            continue;
-                        else
-                            mater = mesh.materials[submesh.materialIndex];
+					const model& mesh = modelHandle.get_model();
+					for (auto submesh : mesh.submeshes)
+					{
+						if (mesh.materials.empty())
+							mater = material;
+						else if (submesh.materialIndex == -1)
+							continue;
+						else
+							mater = mesh.materials[submesh.materialIndex];
 
-                        auto shader = mater.get_shader();
-                        if (!shader.is_valid())
-                            continue;
+						auto shader = mater.get_shader();
+						if (!shader.is_valid())
+							continue;
 
-                        auto& shaderState = shader.get_variant(mater.current_variant()).state;
-                        if ((shaderState.count(GL_BLEND) && (shaderState.at(GL_BLEND) != GL_FALSE)) ||
-                            (shaderState.count(GL_BLEND_SRC) && (shaderState.at(GL_BLEND_SRC) != GL_FALSE)) ||
-                            (shaderState.count(GL_BLEND_DST) && (shaderState.at(GL_BLEND_DST) != GL_FALSE)))
-                        {
+						auto& shaderState = shader.get_variant(mater.current_variant()).state;
+						if ((shaderState.count(GL_BLEND) && (shaderState.at(GL_BLEND) != GL_FALSE)) ||
+							(shaderState.count(GL_BLEND_SRC) && (shaderState.at(GL_BLEND_SRC) != GL_FALSE)) ||
+							(shaderState.count(GL_BLEND_DST) && (shaderState.at(GL_BLEND_DST) != GL_FALSE)))
+						{
 
-                            auto materialName = mater.get_name();
+							auto materialName = mater.get_name();
 
-                            camInput.bind(mater);
-                            if (mater.has_param<rsl::uint>(SV_LIGHTCOUNT))
-                                mater.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
+							camInput.bind(mater);
+							if (mater.has_param<rsl::uint>(SV_LIGHTCOUNT))
+								mater.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
 
-                            if (sceneColor && mater.has_param<texture_handle>(SV_SCENECOLOR))
-                                mater.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
+							if (sceneColor && mater.has_param<texture_handle>(SV_SCENECOLOR))
+								mater.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
 
-                            if (sceneNormal && mater.has_param<texture_handle>(SV_SCENENORMAL))
-                                mater.set_param<texture_handle>(SV_SCENENORMAL, sceneNormal);
+							if (sceneNormal && mater.has_param<texture_handle>(SV_SCENENORMAL))
+								mater.set_param<texture_handle>(SV_SCENENORMAL, sceneNormal);
 
-                            if (scenePosition && mater.has_param<texture_handle>(SV_SCENEPOSITION))
-                                mater.set_param<texture_handle>(SV_SCENEPOSITION, scenePosition);
+							if (scenePosition && mater.has_param<texture_handle>(SV_SCENEPOSITION))
+								mater.set_param<texture_handle>(SV_SCENEPOSITION, scenePosition);
 
-                            if (hdrOverdraw && mater.has_param<texture_handle>(SV_HDROVERDRAW))
-                                mater.set_param<texture_handle>(SV_HDROVERDRAW, hdrOverdraw);
+							if (hdrOverdraw && mater.has_param<texture_handle>(SV_HDROVERDRAW))
+								mater.set_param<texture_handle>(SV_HDROVERDRAW, hdrOverdraw);
 
-                            if (sceneDepth && mater.has_param<texture_handle>(SV_SCENEDEPTH))
-                                mater.set_param<texture_handle>(SV_SCENEDEPTH, sceneDepth);
+							if (sceneDepth && mater.has_param<texture_handle>(SV_SCENEDEPTH))
+								mater.set_param<texture_handle>(SV_SCENEDEPTH, sceneDepth);
 
-                            if (mater.has_param<texture_handle>("skybox"))
-                                mater.set_param("skybox", TextureCache::create_texture("skybox", fs::view("assets://textures/HDRI/park.jpg")));
+							if (mater.has_param<texture_handle>("skybox"))
+								mater.set_param("skybox", TextureCache::create_texture("skybox", fs::view("assets://textures/HDRI/park.jpg")));
 
-                            mater.bind();
+							mater.bind();
 
-                            ModelCache::create_model(modelHandle.id);
-                            auto modelName = ModelCache::get_model_name(modelHandle.id);
+							ModelCache::create_model(modelHandle.id);
+							auto modelName = ModelCache::get_model_name(modelHandle.id);
 
-                            if (!mesh.buffered)
-                                modelHandle.buffer_data(*modelMatrixBuffer);
+							if (!mesh.buffered)
+								modelHandle.buffer_data(*modelMatrixBuffer);
 
-                            if (mesh.submeshes.empty())
-                            {
-                                log::warn("Empty mesh found. Model name: {},  Model ID {}", modelName, modelHandle.get_mesh().id());
-                                continue;
-                            }
+							if (mesh.submeshes.empty())
+							{
+								log::warn("Empty mesh found. Model name: {},  Model ID {}", modelName, modelHandle.get_mesh().id());
+								continue;
+							}
 
-                            {
-                                /*m_matrices.resize(instances.size());
-                                int i = 0;
-                                for (auto& ent : instances)
-                                {
-                                    m_matrices[i] = transform(ent.get_component_handles<transform>()).get_local_to_world_matrix();
-                                    i++;
-                                }*/
+							{
+								/*m_matrices.resize(instances.size());
+								int i = 0;
+								for (auto& ent : instances)
+								{
+									m_matrices[i] = transform(ent.get_component_handles<transform>()).get_local_to_world_matrix();
+									i++;
+								}*/
 
-                                modelMatrixBuffer->bufferData(instances.second);
-                            }
+								modelMatrixBuffer->bufferData(instances.second);
+							}
 
-                            {
-                                mesh.vertexArray.bind();
-                                mesh.indexBuffer.bind();
-                                lightsBuffer->bind();
-                                glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
+							{
+								mesh.vertexArray.bind();
+								mesh.indexBuffer.bind();
+								lightsBuffer->bind();
+								glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
 
-                                lightsBuffer->release();
-                                mesh.indexBuffer.release();
-                                mesh.vertexArray.release();
-                            }
+								lightsBuffer->release();
+								mesh.indexBuffer.release();
+								mesh.vertexArray.release();
+							}
 
-                            mater.release();
-                        }
-                    }
-                }
-                continue;
-            }
+							mater.release();
+						}
+					}
+				}
+				continue;
+			}
 
-            auto shader = material.get_shader();
-            if (!shader.is_valid())
-                continue;
+			auto shader = material.get_shader();
+			if (!shader.is_valid())
+				continue;
 
-            auto& shaderState = shader.get_variant(material.current_variant()).state;
-            if ((shaderState.count(GL_BLEND) && (shaderState.at(GL_BLEND) != GL_FALSE)) ||
-                (shaderState.count(GL_BLEND_SRC) && (shaderState.at(GL_BLEND_SRC) != GL_FALSE)) ||
-                (shaderState.count(GL_BLEND_DST) && (shaderState.at(GL_BLEND_DST) != GL_FALSE)))
-            {
-                auto materialName = material.get_name();
+			auto& shaderState = shader.get_variant(material.current_variant()).state;
+			if ((shaderState.count(GL_BLEND) && (shaderState.at(GL_BLEND) != GL_FALSE)) ||
+				(shaderState.count(GL_BLEND_SRC) && (shaderState.at(GL_BLEND_SRC) != GL_FALSE)) ||
+				(shaderState.count(GL_BLEND_DST) && (shaderState.at(GL_BLEND_DST) != GL_FALSE)))
+			{
+				auto materialName = material.get_name();
 
-                camInput.bind(material);
-                if (material.has_param<rsl::uint>(SV_LIGHTCOUNT))
-                    material.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
+				camInput.bind(material);
+				if (material.has_param<rsl::uint>(SV_LIGHTCOUNT))
+					material.set_param<rsl::uint>(SV_LIGHTCOUNT, *lightCount);
 
-                if (sceneColor && material.has_param<texture_handle>(SV_SCENECOLOR))
-                    material.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
+				if (sceneColor && material.has_param<texture_handle>(SV_SCENECOLOR))
+					material.set_param<texture_handle>(SV_SCENECOLOR, sceneColor);
 
-                if (sceneNormal && material.has_param<texture_handle>(SV_SCENENORMAL))
-                    material.set_param<texture_handle>(SV_SCENENORMAL, sceneNormal);
+				if (sceneNormal && material.has_param<texture_handle>(SV_SCENENORMAL))
+					material.set_param<texture_handle>(SV_SCENENORMAL, sceneNormal);
 
-                if (scenePosition && material.has_param<texture_handle>(SV_SCENEPOSITION))
-                    material.set_param<texture_handle>(SV_SCENEPOSITION, scenePosition);
+				if (scenePosition && material.has_param<texture_handle>(SV_SCENEPOSITION))
+					material.set_param<texture_handle>(SV_SCENEPOSITION, scenePosition);
 
-                if (hdrOverdraw && material.has_param<texture_handle>(SV_HDROVERDRAW))
-                    material.set_param<texture_handle>(SV_HDROVERDRAW, hdrOverdraw);
+				if (hdrOverdraw && material.has_param<texture_handle>(SV_HDROVERDRAW))
+					material.set_param<texture_handle>(SV_HDROVERDRAW, hdrOverdraw);
 
-                if (sceneDepth && material.has_param<texture_handle>(SV_SCENEDEPTH))
-                    material.set_param<texture_handle>(SV_SCENEDEPTH, sceneDepth);
+				if (sceneDepth && material.has_param<texture_handle>(SV_SCENEDEPTH))
+					material.set_param<texture_handle>(SV_SCENEDEPTH, sceneDepth);
 
-                if (skyboxTex && material.has_param<texture_handle>(SV_SKYBOX))
-                    material.set_param(SV_SKYBOX, skyboxTex);
+				if (skyboxTex && material.has_param<texture_handle>(SV_SKYBOX))
+					material.set_param(SV_SKYBOX, skyboxTex);
 
-                material.bind();
+				material.bind();
 
-                for (auto [modelHandle, instances] : instancesPerMaterial)
-                {
-                    if (modelHandle.id == invalid_id)
-                    {
-                        for (auto& ent : instances.first)
-                            log::warn("Invalid mesh found on entity {}.", ent->name);
+				for (auto [modelHandle, instances] : instancesPerMaterial)
+				{
+					if (modelHandle.id == invalid_id)
+					{
+						for (auto& ent : instances.first)
+							log::warn("Invalid mesh found on entity {}.", ent->name);
 
-                        continue;
-                    }
+						continue;
+					}
 
-                    ModelCache::create_model(modelHandle.id);
-                    auto modelName = ModelCache::get_model_name(modelHandle.id);
+					ModelCache::create_model(modelHandle.id);
+					auto modelName = ModelCache::get_model_name(modelHandle.id);
 
-                    const model& mesh = modelHandle.get_model();
+					const model& mesh = modelHandle.get_model();
 
-                    if (!mesh.buffered)
-                        modelHandle.buffer_data(*modelMatrixBuffer);
+					if (!mesh.buffered)
+						modelHandle.buffer_data(*modelMatrixBuffer);
 
-                    if (mesh.submeshes.empty())
-                    {
-                        log::warn("Empty mesh found. Model name: {},  Model ID {}", modelName, modelHandle.get_mesh().id());
-                        continue;
-                    }
+					if (mesh.submeshes.empty())
+					{
+						log::warn("Empty mesh found. Model name: {},  Model ID {}", modelName, modelHandle.get_mesh().id());
+						continue;
+					}
 
-                    {
-                        /*m_matrices.resize(instances.size());
-                        int i = 0;
-                        for (auto& ent : instances)
-                        {
-                            m_matrices[i] = transform(ent.get_component_handles<transform>()).get_local_to_world_matrix();
-                            i++;
-                        }*/
+					{
+						/*m_matrices.resize(instances.size());
+						int i = 0;
+						for (auto& ent : instances)
+						{
+							m_matrices[i] = transform(ent.get_component_handles<transform>()).get_local_to_world_matrix();
+							i++;
+						}*/
 
-                        modelMatrixBuffer->bufferData(instances.second);
-                    }
+						modelMatrixBuffer->bufferData(instances.second);
+					}
 
-                    {
-                        mesh.vertexArray.bind();
-                        mesh.indexBuffer.bind();
-                        lightsBuffer->bind();
-                        for (auto submesh : mesh.submeshes)
-                            glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
+					{
+						mesh.vertexArray.bind();
+						mesh.indexBuffer.bind();
+						lightsBuffer->bind();
+						for (auto submesh : mesh.submeshes)
+							glDrawElementsInstanced(GL_TRIANGLES, (GLuint)submesh.indexCount, GL_UNSIGNED_INT, (GLvoid*)(submesh.indexOffset * sizeof(rsl::uint)), (GLsizei)instances.second.size());
 
-                        lightsBuffer->release();
-                        mesh.indexBuffer.release();
-                        mesh.vertexArray.release();
-                    }
-                }
+						lightsBuffer->release();
+						mesh.indexBuffer.release();
+						mesh.vertexArray.release();
+					}
+				}
 
-                material.release();
-            }
-        }
-        fbo->release();
-    }
+				material.release();
+			}
+		}
+		fbo->release();
+	}
 
-    rsl::priority_type TransparencyRenderStage::priority()
-    {
-        return transparent_priority;
-    }
-}
+	rsl::priority_type TransparencyRenderStage::priority()
+	{
+		return transparent_priority;
+	}
+} // namespace rythe::rendering

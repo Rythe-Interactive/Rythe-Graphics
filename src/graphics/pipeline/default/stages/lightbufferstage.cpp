@@ -2,77 +2,76 @@
 
 namespace rythe::rendering
 {
-   async::spinlock LightBufferStage::m_lightEntitiesLock;
-   std::unordered_set<ecs::entity> LightBufferStage::m_lightEntities;
-   std::vector<detail::light_data> LightBufferStage::m_lights;
+	async::spinlock LightBufferStage::m_lightEntitiesLock;
+	std::unordered_set<ecs::entity> LightBufferStage::m_lightEntities;
+	std::vector<detail::light_data> LightBufferStage::m_lights;
 
-    void LightBufferStage::onLightCreate(events::component_creation<light>& event)
-    {
-        std::lock_guard guard(m_lightEntitiesLock);
-        m_lightEntities.insert(event.entity);
-    }
+	void LightBufferStage::onLightCreate(events::component_creation<light>& event)
+	{
+		std::lock_guard guard(m_lightEntitiesLock);
+		m_lightEntities.insert(event.entity);
+	}
 
-    void LightBufferStage::onLightDestroy(events::component_destruction<light>& event)
-    {
-        std::lock_guard guard(m_lightEntitiesLock);
-        m_lightEntities.erase(event.entity);
-    }
+	void LightBufferStage::onLightDestroy(events::component_destruction<light>& event)
+	{
+		std::lock_guard guard(m_lightEntitiesLock);
+		m_lightEntities.erase(event.entity);
+	}
 
-    void LightBufferStage::setup(app::window& context)
-    {
-        buffer lightsBuffer;
+	void LightBufferStage::setup(app::window& context)
+	{
+		buffer lightsBuffer;
 
-        {
-            app::context_guard guard(context);
-            lightsBuffer = buffer(GL_SHADER_STORAGE_BUFFER, sizeof(detail::light_data) * 128, nullptr, GL_DYNAMIC_DRAW);
-            lightsBuffer.bindBufferBase(SV_LIGHTS);
-        }
+		{
+			app::context_guard guard(context);
+			lightsBuffer = buffer(GL_SHADER_STORAGE_BUFFER, sizeof(detail::light_data) * 128, nullptr, GL_DYNAMIC_DRAW);
+			lightsBuffer.bindBufferBase(SV_LIGHTS);
+		}
 
-        create_meta<buffer>("light buffer", lightsBuffer);
-        create_meta<rsl::size_type>("light count");
+		create_meta<buffer>("light buffer", lightsBuffer);
+		create_meta<rsl::size_type>("light count");
 
-        bindToEvent<events::component_creation<light>, &LightBufferStage::onLightCreate>();
-        bindToEvent<events::component_destruction<light>, &LightBufferStage::onLightDestroy>();
+		bindToEvent<events::component_creation<light>, &LightBufferStage::onLightCreate>();
+		bindToEvent<events::component_destruction<light>, &LightBufferStage::onLightDestroy>();
 
-        static ecs::filter<light> lightsQuery{};
+		static ecs::filter<light> lightsQuery{};
 
-        std::lock_guard guard(m_lightEntitiesLock);
-        for (auto ent : lightsQuery)
-            m_lightEntities.insert(ent);
-    }
+		std::lock_guard guard(m_lightEntitiesLock);
+		for (auto ent : lightsQuery)
+			m_lightEntities.insert(ent);
+	}
 
-    void LightBufferStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
-    {
-        (void)deltaTime;
-        (void)camInput;
-        (void)cam;
+	void LightBufferStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	{
+		(void)deltaTime;
+		(void)camInput;
+		(void)cam;
 
-        static rsl::id_type lightsbufferId = rsl::nameHash("light buffer");
-        static rsl::id_type lightCountId = rsl::nameHash("light count");
-        buffer* lightsBuffer = get_meta<buffer>(lightsbufferId);
+		static rsl::id_type lightsbufferId = rsl::nameHash("light buffer");
+		static rsl::id_type lightCountId = rsl::nameHash("light count");
+		buffer* lightsBuffer = get_meta<buffer>(lightsbufferId);
 
-        {
-            std::lock_guard guard(m_lightEntitiesLock);
-            *get_meta<rsl::id_type>(lightCountId) = m_lightEntities.size();
+		{
+			std::lock_guard guard(m_lightEntitiesLock);
+			*get_meta<rsl::id_type>(lightCountId) = m_lightEntities.size();
 
-            m_lights.resize(m_lightEntities.size());
-            int i = 0;
-            for (auto ent : m_lightEntities)
-            {
-                light lght = ent.get_component<light>();
-                m_lights[i] = lght.get_light_data(ent.get_component<position>(), ent.get_component<rotation>());
-                i++;
-            }
-        }
+			m_lights.resize(m_lightEntities.size());
+			int i = 0;
+			for (auto ent : m_lightEntities)
+			{
+				light lght = ent.get_component<light>();
+				m_lights[i] = lght.get_light_data(ent.get_component<position>(), ent.get_component<rotation>());
+				i++;
+			}
+		}
 
-        app::context_guard guard(context);
-        lightsBuffer->bufferData(m_lights);
+		app::context_guard guard(context);
+		lightsBuffer->bufferData(m_lights);
+	}
 
-    }
+	rsl::priority_type LightBufferStage::priority()
+	{
+		return setup_priority;
+	}
 
-    rsl::priority_type LightBufferStage::priority()
-    {
-        return setup_priority;
-    }
-
-}
+} // namespace rythe::rendering

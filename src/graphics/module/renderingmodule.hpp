@@ -1,29 +1,28 @@
 #pragma once
+#include <graphics/components/light.hpp>
+#include <graphics/components/renderable.hpp>
 #include <graphics/data/importers/texture_importers.hpp>
 #include <graphics/systems/renderer.hpp>
-#include <graphics/components/renderable.hpp>
-#include <graphics/components/light.hpp>
 
 namespace rythe::rendering
 {
-    class RenderingModule : public Module
-    {
-    public:
-        virtual void setup() override
-        {
-            for (rsl::cstring extension : stbi_texture_loader::extensions)
-                fs::AssetImporter::reportConverter<stbi_texture_loader>(extension);
+	class RenderingModule : public Module
+	{
+	public:
+		virtual void setup() override
+		{
+			for (rsl::cstring extension : stbi_texture_loader::extensions)
+				fs::AssetImporter::reportConverter<stbi_texture_loader>(extension);
 
-            registerComponentType<camera>();
-            registerComponentType<mesh_renderer>();
-            registerComponentType<light>();
-            reportSystem<Renderer>();
-        }
+			registerComponentType<camera>();
+			registerComponentType<mesh_renderer>();
+			registerComponentType<light>();
+			reportSystem<Renderer>();
+		}
 
-        virtual rsl::priority_type priority() override
-        {
-            return 99;
-        }
-
-    };
-}
+		virtual rsl::priority_type priority() override
+		{
+			return 99;
+		}
+	};
+} // namespace rythe::rendering
