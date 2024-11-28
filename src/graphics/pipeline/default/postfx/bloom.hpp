@@ -59,6 +59,9 @@ namespace rythe::rendering
 		 * @param depthtexture The depth data gathered from previous renderpasses.
 		 * @param deltaTime Current delta time.
 		 */
-		void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
+		void renderPass(
+			framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+			rsl::span deltaTime
+		);
 	};
 } // namespace rythe::rendering

@@ -11,21 +11,24 @@ namespace rythe::rendering
 	struct renderbuffer
 	{
 	private:
-		// Managed resource with the renderbuffer id, also has the responsibility of deleting the renderbuffer after all copies of this renderbuffer have been destroyed.
+		// Managed resource with the renderbuffer id, also has the responsibility of deleting the renderbuffer after all
+		// copies of this renderbuffer have been destroyed.
 		common::managed_resource<app::gl_id> m_id = common::managed_resource<app::gl_id>(nullptr);
 		// Amount of samples of the renderbuffer. 0 if the renderbuffer isn't multi-sampled.
 		rsl::uint m_samples = 0;
 		GLenum m_internalformat;
 
 	public:
-		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually create a renderbuffer.
-		 *        This means that default initialized renderbuffers are invalid temporary objects until they get properly initialized.
+		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually
+		 * create a renderbuffer. This means that default initialized renderbuffers are invalid temporary objects until
+		 * they get properly initialized.
 		 */
 		renderbuffer() = default;
 
 		/**@brief Main allocating constructor. This constructor actually creates the GPU side renderbuffer.
 		 * @note Read more at <a href="http://docs.gl/gl4/glRenderbufferStorage">docs.gl.</a>
-		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8, GL_STENCIL_INDEX
+		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8,
+		 * GL_STENCIL_INDEX
 		 * @param resolution Resolution of the renderbuffer.
 		 * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
 		 */
@@ -33,7 +36,8 @@ namespace rythe::rendering
 
 		/**@brief Main allocating constructor. This constructor actually creates the GPU side renderbuffer.
 		 * @note Read more at <a href="http://docs.gl/gl4/glRenderbufferStorage">docs.gl.</a>
-		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8, GL_STENCIL_INDEX
+		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8,
+		 * GL_STENCIL_INDEX
 		 * @param width Width of the renderbuffer.
 		 * @param height Height of the renderbuffer.
 		 * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
@@ -43,9 +47,11 @@ namespace rythe::rendering
 
 		/**@brief Main non allocating constructor. This constructor actually creates the GPU side renderbuffer.
 		 * @note Read more at <a href="http://docs.gl/gl4/glRenderbufferStorage">docs.gl.</a>
-		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8, GL_STENCIL_INDEX
+		 * @param internalformat Internal format of the renderbuffer. eg: GL_DEPTH_COMPONENT, GL_DEPTH24_STENCIL8,
+		 * GL_STENCIL_INDEX
 		 * @param samples Amount of samples to use for multi-sampling. Leave this 0 to disable multi-sampling.
-		 * @note This constructor doesn't actually allocate any VRAM to this renderbuffer yet and requires a resize call in order to allocate memory for it.
+		 * @note This constructor doesn't actually allocate any VRAM to this renderbuffer yet and requires a resize call
+		 * in order to allocate memory for it.
 		 */
 		renderbuffer(GLenum internalformat, rsl::uint samples = 0);
 
@@ -73,7 +79,8 @@ namespace rythe::rendering
 		 */
 		[[nodiscard]] math::int2 size() const;
 
-		/**@brief Resizes the renderbuffer to a new resolution. This reallocates VRAM and thus invalidates all data in the renderbuffer.
+		/**@brief Resizes the renderbuffer to a new resolution. This reallocates VRAM and thus invalidates all data in
+		 * the renderbuffer.
 		 */
 		void resize(math::ivec2 newSize) const;
 	};

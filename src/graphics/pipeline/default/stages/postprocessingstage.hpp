@@ -26,10 +26,14 @@ namespace rythe::rendering
 		shader_handle m_screenShader;
 
 	public:
-		template <typename effect_type, typename... Args, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
+		template <
+			typename effect_type, typename... Args,
+			rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
 		static void addEffect(rsl::priority_type priority = default_priority, Args&&... args)
 		{
-			m_effects.emplace(priority, std::unique_ptr<PostProcessingEffectBase>(new effect_type(std::forward<Args>(args)...)));
+			m_effects.emplace(
+				priority, std::unique_ptr<PostProcessingEffectBase>(new effect_type(std::forward<Args>(args)...))
+			);
 		}
 
 		template <typename effect_type, rsl::inherits_from<effect_type, PostProcessingEffect<effect_type>> = 0>
@@ -45,13 +49,11 @@ namespace rythe::rendering
 			}
 		}
 
-		void shutdown()
-		{
-			m_effects.clear();
-		}
+		void shutdown() { m_effects.clear(); }
 
 		virtual void setup(app::window& context) override;
-		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
+		virtual void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
 		virtual rsl::priority_type priority() override;
 	};
 

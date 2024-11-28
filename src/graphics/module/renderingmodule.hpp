@@ -12,7 +12,9 @@ namespace rythe::rendering
 		virtual void setup() override
 		{
 			for (rsl::cstring extension : stbi_texture_loader::extensions)
+			{
 				fs::AssetImporter::reportConverter<stbi_texture_loader>(extension);
+			}
 
 			registerComponentType<camera>();
 			registerComponentType<mesh_renderer>();
@@ -20,9 +22,6 @@ namespace rythe::rendering
 			reportSystem<Renderer>();
 		}
 
-		virtual rsl::priority_type priority() override
-		{
-			return 99;
-		}
+		virtual rsl::priority_type priority() override { return 99; }
 	};
 } // namespace rythe::rendering

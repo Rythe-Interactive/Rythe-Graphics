@@ -9,17 +9,20 @@ namespace rythe::rendering
 {
 	/**@class vertexarray
 	 * @brief Low level vertexarray object.
-	 * @note Read more at <a href="https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object">khronos.org wiki.</a>
+	 * @note Read more at <a
+	 * href="https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object">khronos.org wiki.</a>
 	 */
 	struct vertexarray
 	{
 	private:
-		// Managed resource with the VAO id, also has the responsibility of deleting the VAO after all copies of this renderbuffer have been destroyed.
+		// Managed resource with the VAO id, also has the responsibility of deleting the VAO after all copies of this
+		// renderbuffer have been destroyed.
 		common::managed_resource<app::gl_id> m_id = common::managed_resource<app::gl_id>(nullptr);
 
 	public:
-		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually create a VAO.
-		 *        This means that default initialized vertexarrays are invalid temporary objects until they get properly initialized.
+		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually
+		 * create a VAO. This means that default initialized vertexarrays are invalid temporary objects until they get
+		 * properly initialized.
 		 */
 		vertexarray() = default;
 
@@ -33,7 +36,10 @@ namespace rythe::rendering
 		 */
 		static vertexarray generate();
 
-		void setAttribPointer(const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset);
+		void setAttribPointer(
+			const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized,
+			rsl::size_type stride, rsl::size_type offset
+		);
 
 		void setAttribDivisor(rsl::uint index, rsl::uint divisor);
 

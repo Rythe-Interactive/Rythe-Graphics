@@ -8,15 +8,12 @@ namespace rythe::rendering
 	void SubmitStage::setup(app::window& context)
 	{
 		app::context_guard guard(context);
-		float quadVertices[] = {// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-								// positions         // texCoords
-								-1.0f, 1.0f, 1.0, 0.0f, 1.0f,
-								-1.0f, -1.0f, 1.0, 0.0f, 0.0f,
-								1.0f, -1.0f, 1.0, 1.0f, 0.0f,
+		float quadVertices[] = {
+			// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+			// positions         // texCoords
+			-1.0f, 1.0f, 1.0, 0.0f, 1.0f, -1.0f, -1.0f, 1.0, 0.0f, 0.0f, 1.0f, -1.0f, 1.0, 1.0f, 0.0f,
 
-								-1.0f, 1.0f, 1.0, 0.0f, 1.0f,
-								1.0f, -1.0f, 1.0, 1.0f, 0.0f,
-								1.0f, 1.0f, 1.0, 1.0f, 1.0f
+			-1.0f, 1.0f, 1.0, 0.0f, 1.0f, 1.0f,  -1.0f, 1.0, 1.0f, 0.0f, 1.0f, 1.0f,  1.0, 1.0f, 1.0f
 		};
 
 		glGenVertexArrays(1, &m_quadVAO);
@@ -31,7 +28,8 @@ namespace rythe::rendering
 		m_screenShader = ShaderCache::create_shader("screen shader", "engine://shaders/screenshader.shs"_view);
 	}
 
-	void SubmitStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void
+	SubmitStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
 	{
 		(void)deltaTime;
 		(void)camInput;
@@ -56,7 +54,8 @@ namespace rythe::rendering
 		auto viewportSize = context.framebufferSize();
 
 		auto colorAttachment = fbo->getAttachment(FRAGMENT_ATTACHMENT);
-		if (std::holds_alternative<std::monostate>(colorAttachment) || !std::holds_alternative<texture_handle>(colorAttachment))
+		if (std::holds_alternative<std::monostate>(colorAttachment) ||
+			!std::holds_alternative<texture_handle>(colorAttachment))
 		{
 			log::error("Color attachment of main FBO was invalid.");
 			return;

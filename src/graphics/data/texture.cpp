@@ -38,14 +38,8 @@ namespace rythe::rendering
 
 		glBindTexture(static_cast<GLenum>(type), textureId);
 		glTexImage2D(
-			static_cast<GLenum>(type),
-			0,
-			static_cast<GLint>(format),
-			newSize.x,
-			newSize.y,
-			0,
-			components_to_format[static_cast<int>(channels)],
-			channels_to_glenum[static_cast<rsl::uint>(fileFormat)],
+			static_cast<GLenum>(type), 0, static_cast<GLint>(format), newSize.x, newSize.y, 0,
+			components_to_format[static_cast<int>(channels)], channels_to_glenum[static_cast<rsl::uint>(fileFormat)],
 			NULL
 		);
 		glBindTexture(static_cast<GLenum>(type), 0);
@@ -68,11 +62,15 @@ namespace rythe::rendering
 	const texture& TextureCache::get_texture(rsl::id_type id)
 	{
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		async::readonly_guard guard(m_textureLock);
 		if (id == invalid_id)
+		{
 			return m_textures[rsl::nameHash("invalid texture")];
+		}
 		return m_textures[id];
 	}
 
@@ -80,14 +78,20 @@ namespace rythe::rendering
 	{
 		texture texture;
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		{
 			async::readonly_guard guard(m_textureLock);
 			if (id == invalid_id)
+			{
 				texture = m_textures[rsl::nameHash("invalid texture")];
+			}
 			else
+			{
 				texture = m_textures[id];
+			}
 		}
 		texture_data data{};
 		math::int2 texSize = texture.size();
@@ -96,7 +100,10 @@ namespace rythe::rendering
 		data.type = texture.type;
 		data.pixels.resize(data.size.x * data.size.y);
 		glBindTexture(static_cast<GLenum>(data.type), texture.textureId);
-		glGetTexImage(static_cast<GLenum>(data.type), 0, components_to_format[static_cast<int>(texture.channels)], GL_FLOAT, data.pixels.data());
+		glGetTexImage(
+			static_cast<GLenum>(data.type), 0, components_to_format[static_cast<int>(texture.channels)], GL_FLOAT,
+			data.pixels.data()
+		);
 		glBindTexture(static_cast<GLenum>(data.type), 0);
 		return data;
 	}
@@ -108,7 +115,8 @@ namespace rythe::rendering
 		m_textures.erase(id);
 	}
 
-	texture_handle TextureCache::create_texture(const std::string& name, const fs::view& file, texture_import_settings settings)
+	texture_handle
+	TextureCache::create_texture(const std::string& name, const fs::view& file, texture_import_settings settings)
 	{
 		if (m_invalidTexture.id == invalid_id)
 		{
@@ -121,16 +129,22 @@ namespace rythe::rendering
 		{
 			async::readonly_guard guard(m_textureLock);
 			if (m_textures.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		if (!file.is_valid() || !file.file_info().is_file)
+		{
 			return invalid_texture_handle;
+		}
 
 		auto result = fs::AssetImporter::tryLoad<texture>(file, settings);
 
 		if (result != common::valid)
+		{
 			return invalid_texture_handle;
+		}
 
 		{
 			texture t = result.value();
@@ -149,13 +163,16 @@ namespace rythe::rendering
 		return create_texture(file.get_filename(), file, settings);
 	}
 
-	texture_handle TextureCache::create_texture(const std::string& name, math::int2 size, texture_import_settings settings)
+	texture_handle
+	TextureCache::create_texture(const std::string& name, math::int2 size, texture_import_settings settings)
 	{
 		rsl::id_type id = rsl::nameHash(name);
 		{
 			async::readonly_guard guard(m_textureLock);
 			if (m_textures.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		texture texture{};
@@ -186,13 +203,11 @@ namespace rythe::rendering
 		texture.immutable = settings.immutable;
 		if (settings.immutable)
 		{
-			texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(size.x, size.y)) : 1);
+			texture.mipCount = settings.mipCount ? settings.mipCount
+												 : (settings.generateMipmaps ? log2(math::max(size.x, size.y)) : 1);
 			glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
 			glTexStorage2D(
-				glTexType,
-				static_cast<GLint>(texture.mipCount),
-				static_cast<GLint>(settings.intendedFormat),
-				size.x,
+				glTexType, static_cast<GLint>(texture.mipCount), static_cast<GLint>(settings.intendedFormat), size.x,
 				size.y
 			);
 		}
@@ -201,15 +216,9 @@ namespace rythe::rendering
 			texture.mipCount = settings.generateMipmaps ? log2(math::max(size.x, size.y)) : 1;
 			glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
 			glTexImage2D(
-				glTexType,
-				0,
-				static_cast<GLint>(settings.intendedFormat),
-				size.x,
-				size.y,
-				0,
+				glTexType, 0, static_cast<GLint>(settings.intendedFormat), size.x, size.y, 0,
 				components_to_format[static_cast<int>(settings.components)],
-				channels_to_glenum[static_cast<rsl::uint>(settings.fileFormat)],
-				nullptr
+				channels_to_glenum[static_cast<rsl::uint>(settings.fileFormat)], nullptr
 			);
 		}
 
@@ -228,7 +237,9 @@ namespace rythe::rendering
 	texture_handle TextureCache::create_texture_from_image(const std::string& name, texture_import_settings settings)
 	{
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		assets::asset<image> img = assets::get<image>(name);
 		if (img == assets::invalid_asset<image>)
@@ -243,7 +254,9 @@ namespace rythe::rendering
 	texture_handle TextureCache::create_texture_from_image(assets::asset<image> img, texture_import_settings settings)
 	{
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		if (img == assets::invalid_asset<image>)
 		{
@@ -256,7 +269,9 @@ namespace rythe::rendering
 		{
 			async::readonly_guard guard(m_textureLock);
 			if (m_textures.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		texture texture{};
@@ -288,26 +303,17 @@ namespace rythe::rendering
 		texture.immutable = settings.immutable;
 		if (settings.immutable)
 		{
-			texture.mipCount = settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(res.x, res.y)) : 1);
+			texture.mipCount =
+				settings.mipCount ? settings.mipCount : (settings.generateMipmaps ? log2(math::max(res.x, res.y)) : 1);
 			glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
 			glTexStorage2D(
-				glTexType,
-				static_cast<GLint>(texture.mipCount),
-				static_cast<GLint>(settings.intendedFormat),
-				res.x,
+				glTexType, static_cast<GLint>(texture.mipCount), static_cast<GLint>(settings.intendedFormat), res.x,
 				res.y
 			);
 
 			glTexSubImage2D(
-				glTexType,
-				0,
-				0,
-				0,
-				res.x,
-				res.y,
-				components_to_format[static_cast<int>(img->components())],
-				channels_to_glenum[static_cast<rsl::uint>(img->format())],
-				img->data()
+				glTexType, 0, 0, 0, res.x, res.y, components_to_format[static_cast<int>(img->components())],
+				channels_to_glenum[static_cast<rsl::uint>(img->format())], img->data()
 			);
 		}
 		else
@@ -315,21 +321,17 @@ namespace rythe::rendering
 			texture.mipCount = settings.generateMipmaps ? log2(math::max(res.x, res.y)) : 1;
 			glTexParameteri(glTexType, GL_TEXTURE_MAX_LEVEL, texture.mipCount);
 			glTexImage2D(
-				glTexType,
-				0,
-				static_cast<GLint>(settings.intendedFormat),
-				res.x,
-				res.y,
-				0,
+				glTexType, 0, static_cast<GLint>(settings.intendedFormat), res.x, res.y, 0,
 				components_to_format[static_cast<int>(img->components())],
-				channels_to_glenum[static_cast<rsl::uint>(img->format())],
-				img->data()
+				channels_to_glenum[static_cast<rsl::uint>(img->format())], img->data()
 			);
 		}
 
 		// Generate mips.
 		if (settings.generateMipmaps)
+		{
 			glGenerateMipmap(glTexType);
+		}
 
 		glBindTexture(glTexType, 0);
 
@@ -346,23 +348,31 @@ namespace rythe::rendering
 	texture_handle TextureCache::get_handle(const std::string& name)
 	{
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		rsl::id_type id = rsl::nameHash(name);
 		async::readonly_guard guard(m_textureLock);
 		if (m_textures.contains(id))
+		{
 			return {id};
+		}
 		return invalid_texture_handle;
 	}
 
 	texture_handle TextureCache::get_handle(rsl::id_type id)
 	{
 		if (m_invalidTexture.id == invalid_id)
+		{
 			m_invalidTexture = create_texture("invalid texture", fs::view("engine://resources/invalid/missing"));
+		}
 
 		async::readonly_guard guard(m_textureLock);
 		if (m_textures.contains(id))
+		{
 			return {id};
+		}
 		return invalid_texture_handle;
 	}
 

@@ -21,7 +21,8 @@ namespace rythe::rendering
 		ImNodes::CreateContext();
 	}
 
-	void ImGuiStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void
+	ImGuiStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
 	{
 		static rsl::id_type mainId = rsl::nameHash("main");
 
@@ -74,5 +75,6 @@ namespace rythe::rendering
 		return ui_priority;
 	}
 
-	rsl::multicast_delegate<void(app::window&, camera&, const camera::camera_input&, rsl::span)> ImGuiStage::m_onGuiRender;
+	rsl::multicast_delegate<void(app::window&, camera&, const camera::camera_input&, rsl::span)>
+		ImGuiStage::m_onGuiRender;
 } // namespace rythe::rendering

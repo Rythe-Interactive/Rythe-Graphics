@@ -3,7 +3,8 @@
 namespace rythe::rendering
 {
 
-	std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>> PostProcessingStage::m_effects;
+	std::multimap<rsl::priority_type, std::unique_ptr<PostProcessingEffectBase>, std::greater<>>
+		PostProcessingStage::m_effects;
 
 
 	void PostProcessingStage::setup(app::window& context)
@@ -16,12 +17,19 @@ namespace rythe::rendering
 
 		m_drawFBO = framebuffer(GL_FRAMEBUFFER);
 
-		m_swapTexture = TextureCache::create_texture("color_swap_image", math::int2(1, 1), {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr, texture_components::rgb, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_swapTexture = TextureCache::create_texture(
+			"color_swap_image", math::int2(1, 1),
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
+			 texture_components::rgb, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
 		m_screenShader = ShaderCache::create_shader("screen shader", "engine://shaders/screenshader.shs"_view);
 	}
 
-	void PostProcessingStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void PostProcessingStage::render(
+		app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime
+	)
 	{
 		static rsl::id_type mainId = rsl::nameHash("main");
 
@@ -72,7 +80,9 @@ namespace rythe::rendering
 
 		texture_handle depthTexture = invalid_texture_handle;
 		if (std::holds_alternative<texture_handle>(depthAttachment))
+		{
 			depthTexture = std::get<texture_handle>(depthAttachment);
+		}
 		glDisable(GL_DEPTH_TEST);
 
 		fbo->bind();
@@ -83,7 +93,9 @@ namespace rythe::rendering
 		for (auto& [_, effect] : m_effects)
 		{
 			if (!effect->isInitialized())
+			{
 				effect->init(context);
+			}
 			for (auto& pass : effect->renderPasses)
 			{
 				pass.invoke(*fbo, m_pipeline, cam, camInput, deltaTime);

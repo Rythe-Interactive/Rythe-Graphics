@@ -4,7 +4,7 @@ namespace rythe::rendering
 {
 	async::spinlock LightBufferStage::m_lightEntitiesLock;
 	std::unordered_set<ecs::entity> LightBufferStage::m_lightEntities;
-	std::vector<detail::light_data> LightBufferStage::m_lights;
+	std::vector<internal::light_data> LightBufferStage::m_lights;
 
 	void LightBufferStage::onLightCreate(events::component_creation<light>& event)
 	{
@@ -24,7 +24,8 @@ namespace rythe::rendering
 
 		{
 			app::context_guard guard(context);
-			lightsBuffer = buffer(GL_SHADER_STORAGE_BUFFER, sizeof(detail::light_data) * 128, nullptr, GL_DYNAMIC_DRAW);
+			lightsBuffer =
+				buffer(GL_SHADER_STORAGE_BUFFER, sizeof(internal::light_data) * 128, nullptr, GL_DYNAMIC_DRAW);
 			lightsBuffer.bindBufferBase(SV_LIGHTS);
 		}
 
@@ -38,10 +39,14 @@ namespace rythe::rendering
 
 		std::lock_guard guard(m_lightEntitiesLock);
 		for (auto ent : lightsQuery)
+		{
 			m_lightEntities.insert(ent);
+		}
 	}
 
-	void LightBufferStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void LightBufferStage::render(
+		app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime
+	)
 	{
 		(void)deltaTime;
 		(void)camInput;

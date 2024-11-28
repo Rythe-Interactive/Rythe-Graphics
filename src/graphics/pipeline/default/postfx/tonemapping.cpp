@@ -16,24 +16,14 @@ namespace rythe::rendering
 
 		switch (type)
 		{
-			case tonemapping_type::aces:
-				m_currentShader.store(acesId, std::memory_order_relaxed);
-				break;
-			case tonemapping_type::reinhard:
-				m_currentShader.store(reinhardId, std::memory_order_relaxed);
-				break;
+			case tonemapping_type::aces: m_currentShader.store(acesId, std::memory_order_relaxed); break;
+			case tonemapping_type::reinhard: m_currentShader.store(reinhardId, std::memory_order_relaxed); break;
 			case tonemapping_type::reinhard_jodie:
 				m_currentShader.store(reinhardJodieId, std::memory_order_relaxed);
 				break;
-			case tonemapping_type::rythe:
-				m_currentShader.store(rytheId, std::memory_order_relaxed);
-				break;
-			case tonemapping_type::unreal3:
-				m_currentShader.store(unreal3Id, std::memory_order_relaxed);
-				break;
-			default:
-				m_currentShader.store(rytheId, std::memory_order_relaxed);
-				break;
+			case tonemapping_type::rythe: m_currentShader.store(rytheId, std::memory_order_relaxed); break;
+			case tonemapping_type::unreal3: m_currentShader.store(unreal3Id, std::memory_order_relaxed); break;
+			default: m_currentShader.store(rytheId, std::memory_order_relaxed); break;
 		}
 	}
 
@@ -58,12 +48,17 @@ namespace rythe::rendering
 		addRenderPass<&Tonemapping::renderPass>();
 	}
 
-	void Tonemapping::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void Tonemapping::renderPass(
+		framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+		rsl::span deltaTime
+	)
 	{
 		// Try to get color attachment.
 		auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);
 		if (!std::holds_alternative<texture_handle>(color_attachment))
+		{
 			return;
+		}
 
 		// Get color texture.
 		auto color_texture = std::get<texture_handle>(color_attachment);
@@ -78,8 +73,9 @@ namespace rythe::rendering
 
 		if (doAutoExposure)
 		{
-			// Exposure here takes 6ms... including the mipmap generation at the end. needs to be replaced with gpu downsample and gpu exposure remixing.
-			// If all of this is on gpu then it doesn't require a gpu-cpu sync and a gpu vram to cpu ram fetch.
+			// Exposure here takes 6ms... including the mipmap generation at the end. needs to be replaced with gpu
+			// downsample and gpu exposure remixing. If all of this is on gpu then it doesn't require a gpu-cpu sync and
+			// a gpu vram to cpu ram fetch.
 			if (historyTexture && !firstFrame)
 			{
 				auto tex = historyTexture->get_texture();
@@ -91,23 +87,35 @@ namespace rythe::rendering
 
 
 				glBindTexture(static_cast<GLenum>(tex.type), tex.textureId);
-				glGetTexImage(static_cast<GLenum>(tex.type), maxMip, components_to_format[static_cast<int>(tex.channels)], GL_FLOAT, colors.data());
+				glGetTexImage(
+					static_cast<GLenum>(tex.type), maxMip, components_to_format[static_cast<int>(tex.channels)],
+					GL_FLOAT, colors.data()
+				);
 				glBindTexture(static_cast<GLenum>(tex.type), 0);
 
 
-				float luminance = math::dot(rsl::math::float3(colors[0].r, colors[0].g, colors[0].b), rsl::math::float3(0.2126f, 0.7152f, 0.0722f));
+				float luminance = math::dot(
+					rsl::math::float3(colors[0].r, colors[0].g, colors[0].b),
+					rsl::math::float3(0.2126f, 0.7152f, 0.0722f)
+				);
 
 				float newExposure = math::clamp(math::pow(math::max((1.0f - luminance), 0.f), 2.2f) * 10.f, 0.f, 10.f);
 
 				if (newExposure < exposure)
+				{
 					exposure = math::lerp(exposure, newExposure, deltaTime.seconds());
+				}
 				else
+				{
 					exposure = math::lerp(exposure, newExposure, deltaTime.seconds() * 0.5f);
+				}
 
 				m_exposure.store(exposure, std::memory_order_relaxed);
 			}
 			else
+			{
 				firstFrame = false;
+			}
 		}
 
 		auto shader = ShaderCache::get_handle(m_currentShader.load(std::memory_order_relaxed));
@@ -123,7 +131,11 @@ namespace rythe::rendering
 		fbo.release();
 
 		if (doAutoExposure)
+		{
 			if (historyTexture && !firstFrame)
+			{
 				glGenerateTextureMipmap(historyTexture->get_texture().textureId);
+			}
+		}
 	}
 } // namespace rythe::rendering

@@ -42,7 +42,8 @@ namespace rythe::rendering
 			setup(context);
 		}
 
-		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
+		virtual void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
 		virtual rsl::priority_type priority() { return default_priority; }
 
 	protected:

@@ -16,7 +16,9 @@ namespace rythe::rendering
 	struct ShaderCache;
 	struct shader_handle;
 
-	using shader_ilo = std::unordered_map<std::string, std::vector<std::pair<GLuint, std::string>>>; // Shader intermediate language object.
+	using shader_ilo =
+		std::unordered_map<std::string, std::vector<std::pair<GLuint, std::string>>>; // Shader intermediate language
+																					  // object.
 	using shader_state = std::unordered_map<GLenum, GLenum>;
 
 #pragma region shader parameters
@@ -35,21 +37,18 @@ namespace rythe::rendering
 			: m_shaderId(invalid_id),
 			  m_name(""),
 			  m_type(0),
-			  m_location(-1){};
+			  m_location(-1) {};
 
 		shader_parameter_base(rsl::id_type shaderId, std::string_view name, GLenum type, GLint location)
 			: m_shaderId(shaderId),
 			  m_name(name),
 			  m_type(type),
-			  m_location(location){};
+			  m_location(location) {};
 
 	public:
 		/**@brief Returns whether the parameter is referencing a valid shader and parameter location.
 		 */
-		virtual bool is_valid() const
-		{
-			return m_location != -1;
-		}
+		virtual bool is_valid() const { return m_location != -1; }
 
 		/**@brief Returns the GLenum of the data type of the parameter.
 		 */
@@ -63,12 +62,14 @@ namespace rythe::rendering
 
 		bool operator==(const shader_parameter_base& other)
 		{
-			return m_shaderId == other.m_shaderId && m_name == other.m_name && m_type == other.m_type && m_location == other.m_location;
+			return m_shaderId == other.m_shaderId && m_name == other.m_name && m_type == other.m_type &&
+				   m_location == other.m_location;
 		}
 
 		bool operator!=(const shader_parameter_base& other)
 		{
-			return m_shaderId != other.m_shaderId || m_name != other.m_name || m_type != other.m_type || m_location != other.m_location;
+			return m_shaderId != other.m_shaderId || m_name != other.m_name || m_type != other.m_type ||
+				   m_location != other.m_location;
 		}
 	};
 
@@ -84,7 +85,7 @@ namespace rythe::rendering
 		{
 		}
 		uniform(std::nullptr_t t)
-			: shader_parameter_base(t){};
+			: shader_parameter_base(t) {};
 		/**@brief Set the value of the uniform.
 		 */
 		void set_value(const T& value);
@@ -107,16 +108,20 @@ namespace rythe::rendering
 		{
 		}
 		uniform(std::nullptr_t t)
-			: shader_parameter_base(t){};
+			: shader_parameter_base(t) {};
 		/**@brief Set the value of the uniform.
 		 */
 		void set_value(const texture_handle& value)
 		{
 			texture tex;
 			if (is_valid())
+			{
 				tex = value.get_texture();
+			}
 			else
+			{
 				tex = invalid_texture_handle.get_texture();
+			}
 
 			glActiveTexture(GL_TEXTURE0 + m_textureUnit);
 			glBindTexture(GL_TEXTURE_2D, tex.textureId);
@@ -129,112 +134,144 @@ namespace rythe::rendering
 	inline void uniform<rsl::uint>::set_value(const rsl::uint& value)
 	{
 		if (is_valid())
+		{
 			glUniform1ui(m_location, value);
+		}
 	}
 
 	template <>
 	inline void uniform<float>::set_value(const float& value)
 	{
 		if (is_valid())
+		{
 			glUniform1f(m_location, value);
+		}
 	}
 
 	template <>
 	inline void uniform<math::float2>::set_value(const math::float2& value)
 	{
 		if (is_valid())
+		{
 			glUniform2fv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<rsl::math::float3>::set_value(const rsl::math::float3& value)
 	{
 		if (is_valid())
+		{
 			glUniform3fv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::float4>::set_value(const math::float4& value)
 	{
 		if (is_valid())
+		{
 			glUniform4fv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<int>::set_value(const int& value)
 	{
 		if (is_valid())
+		{
 			glUniform1i(m_location, value);
+		}
 	}
 
 	template <>
 	inline void uniform<math::int2>::set_value(const math::int2& value)
 	{
 		if (is_valid())
+		{
 			glUniform2iv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::int3>::set_value(const math::int3& value)
 	{
 		if (is_valid())
+		{
 			glUniform3iv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::int4>::set_value(const math::int4& value)
 	{
 		if (is_valid())
+		{
 			glUniform4iv(m_location, 1, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<bool>::set_value(const bool& value)
 	{
 		if (is_valid())
+		{
 			glUniform1i(m_location, value);
+		}
 	}
 
 	template <>
 	inline void uniform<math::bool2>::set_value(const math::bool2& value)
 	{
 		if (is_valid())
+		{
 			glUniform2iv(m_location, 1, math::int2(value).data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::bool3>::set_value(const math::bool3& value)
 	{
 		if (is_valid())
+		{
 			glUniform3iv(m_location, 1, math::int3(value).data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::bool4>::set_value(const math::bool4& value)
 	{
 		if (is_valid())
+		{
 			glUniform4iv(m_location, 1, math::int4(value).data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::float2x2>::set_value(const math::float2x2& value)
 	{
 		if (is_valid())
+		{
 			glUniformMatrix2fv(m_location, 1, false, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::float3x3>::set_value(const math::float3x3& value)
 	{
 		if (is_valid())
+		{
 			glUniformMatrix3fv(m_location, 1, false, value.data);
+		}
 	}
 
 	template <>
 	inline void uniform<math::float4x4>::set_value(const math::float4x4& value)
 	{
 		if (is_valid())
+		{
 			glUniformMatrix4fv(m_location, 1, false, value.data);
+		}
 	}
 
 	/**@class attribute
@@ -261,21 +298,18 @@ namespace rythe::rendering
 			glVertexAttribPointer(m_location, size, type, normalized, stride, reinterpret_cast<const GLvoid*>(pointer));
 		}
 
-		/**@brief Disable the attribute after you're done with it. Leaving it enabled can cause performance issues due to limiting the GPU to move and reallocate it's VRAM.
+		/**@brief Disable the attribute after you're done with it. Leaving it enabled can cause performance issues due
+		 * to limiting the GPU to move and reallocate it's VRAM.
 		 */
-		void disable_attribute_pointer()
-		{
-			glDisableVertexAttribArray(m_location);
-		}
+		void disable_attribute_pointer() { glDisableVertexAttribArray(m_location); }
 
 		/**@brief Set an interval between the iteration increments of the array.
-		 * @param offset Offset for the targeting location (0: vector or matrix row0, 1: matrix row1, 2: matrix row2... etc.).
-		 * @param divisor Amount of instances between each iteration increment. 0 means the iteration will increment for each vertex.
+		 * @param offset Offset for the targeting location (0: vector or matrix row0, 1: matrix row1, 2: matrix row2...
+		 * etc.).
+		 * @param divisor Amount of instances between each iteration increment. 0 means the iteration will increment for
+		 * each vertex.
 		 */
-		void set_divisor(rsl::uint offset, rsl::uint divisor)
-		{
-			glVertexAttribDivisor(m_location + offset, divisor);
-		}
+		void set_divisor(rsl::uint offset, rsl::uint divisor) { glVertexAttribDivisor(m_location + offset, divisor); }
 	};
 
 	/**@brief Invalid default attribute
@@ -320,7 +354,8 @@ namespace rythe::rendering
 		std::string name;
 		std::string path;
 
-		// Since copying would mean that the in-vram version of the actual shader would also need to be copied, we don't allow copying.
+		// Since copying would mean that the in-vram version of the actual shader would also need to be copied, we don't
+		// allow copying.
 		shader(const shader&) = delete;
 		// Moving should be fine though.
 		shader(shader&&) = default;
@@ -356,8 +391,12 @@ namespace rythe::rendering
 
 			auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[rsl::nameHash(uniformName)].get());
 			if (ptr)
+			{
 				return *ptr;
-			log::error("Uniform of type {} does not exist with name {} in shader {}.", rsl::nameOfType<T>(), uniformName, name);
+			}
+			log::error(
+				"Uniform of type {} does not exist with name {} in shader {}.", rsl::nameOfType<T>(), uniformName, name
+			);
 			return uniform<T>(nullptr);
 		}
 
@@ -371,7 +410,8 @@ namespace rythe::rendering
 			}
 
 			auto id = rsl::nameHash(uniformName);
-			return m_currentShaderVariant->uniforms.count(id) && dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get()) != nullptr;
+			return m_currentShaderVariant->uniforms.count(id) &&
+				   dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get()) != nullptr;
 		}
 
 		template <typename T>
@@ -385,7 +425,9 @@ namespace rythe::rendering
 
 			auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get());
 			if (ptr)
+			{
 				return *ptr;
+			}
 			log::error("Uniform of type {} does not exist with id {} in shader {}.", rsl::nameOfType<T>(), id, name);
 			return uniform<T>(nullptr);
 		}
@@ -399,7 +441,8 @@ namespace rythe::rendering
 				return false;
 			}
 
-			return m_currentShaderVariant->uniforms.count(id) && dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get()) != nullptr;
+			return m_currentShaderVariant->uniforms.count(id) &&
+				   dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[id].get()) != nullptr;
 		}
 
 		template <typename T>
@@ -411,10 +454,16 @@ namespace rythe::rendering
 				return uniform<T>(nullptr);
 			}
 
-			auto* ptr = dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[m_currentShaderVariant->idOfLocation[location]].get());
+			auto* ptr = dynamic_cast<uniform<T>*>(
+				m_currentShaderVariant->uniforms[m_currentShaderVariant->idOfLocation[location]].get()
+			);
 			if (ptr)
+			{
 				return *ptr;
-			log::error("Uniform of type {} does not exist with location {} in shader {}.", rsl::nameOfType<T>(), location, name);
+			}
+			log::error(
+				"Uniform of type {} does not exist with location {} in shader {}.", rsl::nameOfType<T>(), location, name
+			);
 			return uniform<T>(nullptr);
 		}
 
@@ -427,7 +476,10 @@ namespace rythe::rendering
 				return false;
 			}
 
-			return m_currentShaderVariant->uniforms.count(m_currentShaderVariant->idOfLocation[location]) && dynamic_cast<uniform<T>*>(m_currentShaderVariant->uniforms[m_currentShaderVariant->idOfLocation[location]].get()) != nullptr;
+			return m_currentShaderVariant->uniforms.count(m_currentShaderVariant->idOfLocation[location]) &&
+				   dynamic_cast<uniform<T>*>(
+					   m_currentShaderVariant->uniforms[m_currentShaderVariant->idOfLocation[location]].get()
+				   ) != nullptr;
 		}
 
 		attribute get_attribute(const std::string& name);
@@ -518,10 +570,14 @@ namespace rythe::rendering
 		static void process_io(shader& shader, rsl::id_type id);
 		static app::gl_id compile_shader(GLuint shaderType, rsl::cstring source, GLint sourceLength);
 
-		static bool load_precompiled(const fs::view& file, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
-		static void store_precompiled(const fs::view& file, const shader_ilo& ilo, const std::unordered_map<std::string, shader_state>& state);
+		static bool
+		load_precompiled(const fs::view& file, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
+		static void store_precompiled(
+			const fs::view& file, const shader_ilo& ilo, const std::unordered_map<std::string, shader_state>& state
+		);
 
-		static shader_handle create_invalid_shader(const fs::view& file, shader_import_settings settings = default_shader_settings);
+		static shader_handle
+		create_invalid_shader(const fs::view& file, shader_import_settings settings = default_shader_settings);
 
 		static void clear_modified_from_cache(const fs::view& path);
 
@@ -536,8 +592,11 @@ namespace rythe::rendering
 		static bool has_shader(const std::string& name);
 		static bool has_shader(rsl::id_type id);
 
-		static shader_handle create_shader(const std::string& name, const fs::view& file, shader_import_settings settings = default_shader_settings);
-		static shader_handle create_shader(const fs::view& file, shader_import_settings settings = default_shader_settings);
+		static shader_handle create_shader(
+			const std::string& name, const fs::view& file, shader_import_settings settings = default_shader_settings
+		);
+		static shader_handle
+		create_shader(const fs::view& file, shader_import_settings settings = default_shader_settings);
 		static shader_handle get_handle(const std::string& name);
 		static shader_handle get_handle(rsl::id_type id);
 	};

@@ -24,25 +24,75 @@ namespace rythe::rendering
 
 		app::context_guard guard(context);
 
-		m_colorTexture[0] = TextureCache::create_texture("color_image0", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr, texture_components::rgba, false, true, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_colorTexture[0] = TextureCache::create_texture(
+			"color_image0", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
+			 texture_components::rgba, false, true, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_colorTexture[1] = TextureCache::create_texture("color_image1", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr, texture_components::rgba, false, true, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_colorTexture[1] = TextureCache::create_texture(
+			"color_image1", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
+			 texture_components::rgba, false, true, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_normalTexture[0] = TextureCache::create_texture("normal_image0", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_normalTexture[0] = TextureCache::create_texture(
+			"normal_image0", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_normalTexture[1] = TextureCache::create_texture("normal_image1", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_normalTexture[1] = TextureCache::create_texture(
+			"normal_image1", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_positionTexture[0] = TextureCache::create_texture("position_image0", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_positionTexture[0] = TextureCache::create_texture(
+			"position_image0", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_positionTexture[1] = TextureCache::create_texture("position_image1", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_positionTexture[1] = TextureCache::create_texture(
+			"position_image1", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgb_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_overdrawTexture[0] = TextureCache::create_texture("overdraw_image0", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::edge_clamp, texture_wrap::edge_clamp, texture_wrap::edge_clamp});
+		m_overdrawTexture[0] = TextureCache::create_texture(
+			"overdraw_image0", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::edge_clamp, texture_wrap::edge_clamp, texture_wrap::edge_clamp}
+		);
 
-		m_overdrawTexture[1] = TextureCache::create_texture("overdraw_image1", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr, texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::edge_clamp, texture_wrap::edge_clamp, texture_wrap::edge_clamp});
+		m_overdrawTexture[1] = TextureCache::create_texture(
+			"overdraw_image1", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::float_hdr, texture_format::rgba_hdr,
+			 texture_components::rgba, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::edge_clamp, texture_wrap::edge_clamp, texture_wrap::edge_clamp}
+		);
 
-		m_depthStencilTexture[0] = TextureCache::create_texture("depth_stencil_image0", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::depth_stencil, texture_format::depth_stencil, texture_components::depth_stencil, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_depthStencilTexture[0] = TextureCache::create_texture(
+			"depth_stencil_image0", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::depth_stencil, texture_format::depth_stencil,
+			 texture_components::depth_stencil, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
-		m_depthStencilTexture[1] = TextureCache::create_texture("depth_stencil_image1", m_framebufferSize, {texture_type::two_dimensional, false, channel_format::depth_stencil, texture_format::depth_stencil, texture_components::depth_stencil, false, false, 0, texture_mipmap::linear, texture_mipmap::linear, texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat});
+		m_depthStencilTexture[1] = TextureCache::create_texture(
+			"depth_stencil_image1", m_framebufferSize,
+			{texture_type::two_dimensional, false, channel_format::depth_stencil, texture_format::depth_stencil,
+			 texture_components::depth_stencil, false, false, 0, texture_mipmap::linear, texture_mipmap::linear,
+			 texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat}
+		);
 
 		// m_stencilbuffer = renderbuffer(GL_STENCIL_INDEX8, m_framebufferSize);
 
@@ -86,7 +136,9 @@ namespace rythe::rendering
 		TextureCache::destroy_texture("depth_stencil_image1");
 	}
 
-	void FramebufferResizeStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void FramebufferResizeStage::render(
+		app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime
+	)
 	{
 		static rsl::id_type sceneColorId = rsl::nameHash("scene color history");
 		static rsl::id_type sceneNormalId = rsl::nameHash("scene normal history");
@@ -117,23 +169,33 @@ namespace rythe::rendering
 
 		auto* sceneColormeta = get_meta<texture_handle>(sceneColorId);
 		if (sceneColormeta)
+		{
 			*sceneColormeta = m_colorTexture[!useTexture1];
+		}
 
 		auto* sceneNormalmeta = get_meta<texture_handle>(sceneNormalId);
 		if (sceneNormalmeta)
+		{
 			*sceneNormalmeta = m_normalTexture[!useTexture1];
+		}
 
 		auto* scenePositionmeta = get_meta<texture_handle>(scenePositionId);
 		if (scenePositionmeta)
+		{
 			*scenePositionmeta = m_positionTexture[!useTexture1];
+		}
 
 		auto* hdrOverdrawmeta = get_meta<texture_handle>(hdrOverdrawId);
 		if (hdrOverdrawmeta)
+		{
 			*hdrOverdrawmeta = m_overdrawTexture[!useTexture1];
+		}
 
 		auto* sceneDepthmeta = get_meta<texture_handle>(sceneDepthId);
 		if (sceneDepthmeta)
+		{
 			*sceneDepthmeta = m_depthStencilTexture[!useTexture1];
+		}
 
 		{
 			app::context_guard guard(context);

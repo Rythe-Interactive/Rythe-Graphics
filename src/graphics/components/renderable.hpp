@@ -61,13 +61,12 @@ namespace rythe::rendering
 		{
 			rsl::id_type id = get<mesh_filter>().shared_mesh.id();
 			if (id == invalid_id)
+			{
 				return {invalid_id};
+			}
 			return ModelCache::create_model(id);
 		}
 
-		material_handle get_material()
-		{
-			return get<mesh_renderer>().material;
-		}
+		material_handle get_material() { return get<mesh_renderer>().material; }
 	};
 } // namespace rythe::rendering

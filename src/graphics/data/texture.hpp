@@ -51,9 +51,12 @@ namespace rythe::rendering
 
 	/**@brief Utility array for converting component count to GLenum. (components_to_format[4] = GL_RGBA)
 	 */
-	constexpr GLenum components_to_format[] = {0, GL_RED, GL_RG, GL_RGB, GL_RGBA, GL_DEPTH_COMPONENT, GL_STENCIL_INDEX, GL_DEPTH_STENCIL};
+	constexpr GLenum components_to_format[] = {
+		0, GL_RED, GL_RG, GL_RGB, GL_RGBA, GL_DEPTH_COMPONENT, GL_STENCIL_INDEX, GL_DEPTH_STENCIL
+	};
 
-	/**@brief Utility array for converting data size to GLenum. (channels_to_glenum[sizeof(rsl::byte)] = GL_UNSIGNED_BYTE)
+	/**@brief Utility array for converting data size to GLenum. (channels_to_glenum[sizeof(rsl::byte)] =
+	 * GL_UNSIGNED_BYTE)
 	 */
 	constexpr GLenum channels_to_glenum[] = {GL_UNSIGNED_INT_24_8, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, 0, GL_FLOAT};
 
@@ -149,9 +152,19 @@ namespace rythe::rendering
 	/**@brief Default texture import settings.
 	 */
 	constexpr texture_import_settings default_texture_settings{
-		texture_type::two_dimensional, true, channel_format::eight_bit, texture_format::rgba_hdr,
-		texture_components::rgba, true, true, 0, texture_mipmap::linear_mipmap_linear, texture_mipmap::linear,
-		texture_wrap::repeat, texture_wrap::repeat, texture_wrap::repeat
+		texture_type::two_dimensional,
+		true,
+		channel_format::eight_bit,
+		texture_format::rgba_hdr,
+		texture_components::rgba,
+		true,
+		true,
+		0,
+		texture_mipmap::linear_mipmap_linear,
+		texture_mipmap::linear,
+		texture_wrap::repeat,
+		texture_wrap::repeat,
+		texture_wrap::repeat
 	};
 
 	/**@class TextureCache
@@ -177,31 +190,45 @@ namespace rythe::rendering
 		 * @param name Identifying name for the texture.
 		 * @param file File to load from.
 		 * @param settings Settings to pass on to the import pipeline.
-		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if it fails.
+		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if
+		 * it fails.
 		 */
-		static texture_handle create_texture(const std::string& name, const fs::view& file, texture_import_settings settings = default_texture_settings);
-		static texture_handle create_texture(const fs::view& file, texture_import_settings settings = default_texture_settings);
-		static texture_handle create_texture(const std::string& name, math::int2 size, texture_import_settings settings = default_texture_settings);
+		static texture_handle create_texture(
+			const std::string& name, const fs::view& file, texture_import_settings settings = default_texture_settings
+		);
+		static texture_handle
+		create_texture(const fs::view& file, texture_import_settings settings = default_texture_settings);
+		static texture_handle create_texture(
+			const std::string& name, math::int2 size, texture_import_settings settings = default_texture_settings
+		);
 
 		/**@brief Create a new texture from an image if a texture with the same name doesn't exist yet.
 		 * @param name Name of the image and identifying name for the texture.
 		 * @param settings Settings to pass on to the import pipeline.
-		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if it fails.
+		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if
+		 * it fails.
 		 */
-		static texture_handle create_texture_from_image(const std::string& name, texture_import_settings settings = default_texture_settings);
+		static texture_handle
+		create_texture_from_image(const std::string& name, texture_import_settings settings = default_texture_settings);
 
 		/**@brief Create a new texture from an image if a texture with the same name doesn't exist yet.
-		 * @param assets::asset<image> Image to load from. The identifying name for the texture will be the same as the name of the image.
+		 * @param assets::asset<image> Image to load from. The identifying name for the texture will be the same as the
+		 * name of the image.
 		 * @param settings Settings to pass on to the import pipeline.
-		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if it fails.
+		 * @return texture_handle A valid handle to the newly created texture if it succeeds, invalid_texture_handle if
+		 * it fails.
 		 */
-		static texture_handle create_texture_from_image(assets::asset<image> image, texture_import_settings settings = default_texture_settings);
+		static texture_handle create_texture_from_image(
+			assets::asset<image> image, texture_import_settings settings = default_texture_settings
+		);
 
-		/**@brief Returns a handle to a texture with a certain name. Will return invalid_texture_handle if the requested texture doesn't exist.
+		/**@brief Returns a handle to a texture with a certain name. Will return invalid_texture_handle if the requested
+		 * texture doesn't exist.
 		 */
 		static texture_handle get_handle(const std::string& name);
 
-		/**@brief Returns a handle to a texture with a certain name. Will return invalid_texture_handle if the requested texture doesn't exist.
+		/**@brief Returns a handle to a texture with a certain name. Will return invalid_texture_handle if the requested
+		 * texture doesn't exist.
 		 * @param id Name hash
 		 */
 		static texture_handle get_handle(rsl::id_type id);

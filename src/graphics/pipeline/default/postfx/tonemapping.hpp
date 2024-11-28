@@ -28,7 +28,10 @@ namespace rythe::rendering
 
 		void setup(app::window& context) override;
 
-		void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
+		void renderPass(
+			framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+			rsl::span deltaTime
+		);
 	};
 
 

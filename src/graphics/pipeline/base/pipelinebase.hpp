@@ -55,7 +55,8 @@ namespace rythe::rendering
 
 		virtual void shutdown();
 
-		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
+		virtual void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) = 0;
 	};
 
 } // namespace rythe::rendering

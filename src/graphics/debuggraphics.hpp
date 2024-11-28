@@ -18,7 +18,10 @@ namespace rythe::debug
 		mutable float timeBuffer = 0;
 		bool ignoreDepth = false;
 
-		debug_line_event(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+		debug_line_event(
+			rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f,
+			float time = 0, bool ignoreDepth = false
+		)
 			: start(start),
 			  end(end),
 			  color(color),
@@ -36,7 +39,8 @@ namespace rythe::debug
 
 		bool operator==(const debug_line_event& other) const
 		{
-			return start == other.start && end == other.end && color == other.color && width == other.width && ignoreDepth == other.ignoreDepth;
+			return start == other.start && end == other.end && color == other.color && width == other.width &&
+				   ignoreDepth == other.ignoreDepth;
 		}
 
 		virtual rsl::id_type get_id()
@@ -48,7 +52,10 @@ namespace rythe::debug
 
 	#define drawLine RYTHE_CONCAT(PROJECT_NAME, DrawLine)
 
-	inline void drawLine(rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+	inline void drawLine(
+		rsl::math::float3 start, rsl::math::float3 end, math::color color = math::colors::white, float width = 1.f,
+		float time = 0, bool ignoreDepth = false
+	)
 	{
 		auto val = debug_line_event(start, end, color, width, time, ignoreDepth);
 		events::EventBus::raiseEvent(val);
@@ -56,7 +63,10 @@ namespace rythe::debug
 
 	#define drawCube RYTHE_CONCAT(PROJECT_NAME, DrawCube)
 
-	inline void drawCube(rsl::math::float3 min, rsl::math::float3 max, math::color color = math::colors::white, float width = 1.f, float time = 0, bool ignoreDepth = false)
+	inline void drawCube(
+		rsl::math::float3 min, rsl::math::float3 max, math::color color = math::colors::white, float width = 1.f,
+		float time = 0, bool ignoreDepth = false
+	)
 	{
 		// draws all 12 cube edges
 		drawLine(min, rsl::math::float3(max.x, min.y, min.z), color, width, time, ignoreDepth);
@@ -65,12 +75,30 @@ namespace rythe::debug
 		drawLine(rsl::math::float3(min.x, max.y, max.z), max, color, width, time, ignoreDepth);
 		drawLine(rsl::math::float3(max.x, max.y, min.z), max, color, width, time, ignoreDepth);
 		drawLine(rsl::math::float3(max.x, min.y, max.z), max, color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(max.x, min.y, max.z), color, width, time, ignoreDepth);
-		drawLine(rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(min.x, max.y, max.z), color, width, time, ignoreDepth);
+		drawLine(
+			rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time,
+			ignoreDepth
+		);
+		drawLine(
+			rsl::math::float3(max.x, min.y, min.z), rsl::math::float3(max.x, min.y, max.z), color, width, time,
+			ignoreDepth
+		);
+		drawLine(
+			rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(max.x, max.y, min.z), color, width, time,
+			ignoreDepth
+		);
+		drawLine(
+			rsl::math::float3(min.x, max.y, min.z), rsl::math::float3(min.x, max.y, max.z), color, width, time,
+			ignoreDepth
+		);
+		drawLine(
+			rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(max.x, min.y, max.z), color, width, time,
+			ignoreDepth
+		);
+		drawLine(
+			rsl::math::float3(min.x, min.y, max.z), rsl::math::float3(min.x, max.y, max.z), color, width, time,
+			ignoreDepth
+		);
 	}
 
 #endif

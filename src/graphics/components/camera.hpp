@@ -24,7 +24,10 @@ namespace rythe::rendering
 		math::color clearColor = math::colors::cornflower;
 		struct camera_input
 		{
-			camera_input(math::float4x4 view, math::float4x4 proj, rsl::math::float3 pos, rsl::math::float3 vdir, float nearz, float farz, math::int2 viewportSize)
+			camera_input(
+				math::float4x4 view, math::float4x4 proj, rsl::math::float3 pos, rsl::math::float3 vdir, float nearz,
+				float farz, math::int2 viewportSize
+			)
 				: view(view),
 				  proj(proj),
 				  pos(pos),
@@ -38,15 +41,25 @@ namespace rythe::rendering
 			void bind(material_handle& materialHandle) const
 			{
 				if (materialHandle.has_param<math::float4x4>(SV_VIEW))
+				{
 					materialHandle.set_param(SV_VIEW, view);
+				}
 				if (materialHandle.has_param<math::float4x4>(SV_PROJECT))
+				{
 					materialHandle.set_param(SV_PROJECT, proj);
+				}
 				if (materialHandle.has_param<math::float4>(SV_CAMPOS))
+				{
 					materialHandle.set_param(SV_CAMPOS, posnearz);
+				}
 				if (materialHandle.has_param<math::float4>(SV_VIEWDIR))
+				{
 					materialHandle.set_param(SV_VIEWDIR, vdirfarz);
+				}
 				if (materialHandle.has_param<math::ivec2>(SV_VIEWPORT))
+				{
 					materialHandle.set_param(SV_VIEWPORT, viewportSize);
+				}
 			}
 
 			union
@@ -101,12 +114,22 @@ namespace rythe::rendering
 			const auto fovx = math::deg2rad(fov);
 			const auto invTanHalfFovx = 1.f / math::tan(fovx * 0.5f);
 			const auto depthScale = farz / (farz - nearz);
-			return math::float4x4{
-				invTanHalfFovx, 0.f, 0.f, 0.f,
-				0.f, invTanHalfFovx * ratio, 0.f, 0.f,
-				0.f, 0.f, depthScale, 1.f,
-				0.f, 0.f, -nearz * depthScale, 0.f
-			};
+			return math::float4x4{invTanHalfFovx,
+								  0.f,
+								  0.f,
+								  0.f,
+								  0.f,
+								  invTanHalfFovx * ratio,
+								  0.f,
+								  0.f,
+								  0.f,
+								  0.f,
+								  depthScale,
+								  1.f,
+								  0.f,
+								  0.f,
+								  -nearz * depthScale,
+								  0.f};
 		}
 	};
 } // namespace rythe::rendering

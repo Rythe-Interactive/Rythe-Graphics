@@ -28,9 +28,15 @@ namespace rythe::rendering
 		glGenRenderbuffers(1, &m_id); // Generate framebuffer
 		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
 		if (samples > 0)
-			glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, resolution.x, resolution.y); // Allocate multi-sampling capable VRAM storage
+		{
+			glNamedRenderbufferStorageMultisample(
+				m_id, samples, internalformat, resolution.x, resolution.y
+			); // Allocate multi-sampling capable VRAM storage
+		}
 		else
-			glNamedRenderbufferStorage(m_id, internalformat, resolution.x, resolution.y);                     // Allocate VRAM
+		{
+			glNamedRenderbufferStorage(m_id, internalformat, resolution.x, resolution.y); // Allocate VRAM
+		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 
@@ -60,9 +66,15 @@ namespace rythe::rendering
 		glGenRenderbuffers(1, &m_id); // Generate framebuffer
 		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
 		if (samples > 0)
-			glNamedRenderbufferStorageMultisample(m_id, samples, internalformat, width, height); // Allocate multi-sampling capable VRAM storage
+		{
+			glNamedRenderbufferStorageMultisample(
+				m_id, samples, internalformat, width, height
+			); // Allocate multi-sampling capable VRAM storage
+		}
 		else
-			glNamedRenderbufferStorage(m_id, internalformat, width, height);                     // Allocate VRAM
+		{
+			glNamedRenderbufferStorage(m_id, internalformat, width, height); // Allocate VRAM
+		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 
@@ -159,9 +171,15 @@ namespace rythe::rendering
 #endif
 		glBindRenderbuffer(GL_RENDERBUFFER, m_id);
 		if (m_samples > 0)
-			glNamedRenderbufferStorageMultisample(m_id, m_samples, m_internalformat, newSize.x, newSize.y); // Allocate multi-sampling capable VRAM storage
+		{
+			glNamedRenderbufferStorageMultisample(
+				m_id, m_samples, m_internalformat, newSize.x, newSize.y
+			); // Allocate multi-sampling capable VRAM storage
+		}
 		else
-			glNamedRenderbufferStorage(m_id, m_internalformat, newSize.x, newSize.y);                       // Allocate VRAM
+		{
+			glNamedRenderbufferStorage(m_id, m_internalformat, newSize.x, newSize.y); // Allocate VRAM
+		}
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 

@@ -5,7 +5,9 @@ namespace rythe::rendering
 	void buffer::idDeleter(app::gl_id& value)
 	{
 		if (!app::ContextHelper::initialized())
+		{
 			return;
+		}
 
 #if defined(RYTHE_DEBUG)
 		if (!app::ContextHelper::getCurrentContext())
@@ -15,7 +17,9 @@ namespace rythe::rendering
 		}
 #endif
 		if (value)
+		{
 			glDeleteBuffers(1, &value);
+		}
 	}
 
 	buffer::buffer(GLenum target, rsl::size_type size, void* data, GLenum usage)
@@ -83,7 +87,9 @@ namespace rythe::rendering
 
 		rsl::size_type size;
 		glBindBuffer(m_target, m_id);
-		glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&size)); // Fetch VRAM size of the currently bound buffer.
+		glGetBufferParameteri64v(
+			m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&size)
+		); // Fetch VRAM size of the currently bound buffer.
 		glBindBuffer(m_target, 0);
 		return size;
 	}
@@ -97,9 +103,14 @@ namespace rythe::rendering
 			return;
 		}
 
-		if (m_target != GL_ATOMIC_COUNTER_BUFFER && m_target != GL_TRANSFORM_FEEDBACK_BUFFER && m_target != GL_UNIFORM_BUFFER && m_target != GL_SHADER_STORAGE_BUFFER)
+		if (m_target != GL_ATOMIC_COUNTER_BUFFER && m_target != GL_TRANSFORM_FEEDBACK_BUFFER &&
+			m_target != GL_UNIFORM_BUFFER && m_target != GL_SHADER_STORAGE_BUFFER)
 		{
-			log::error("Attempt at binding buffer base of an invalid target. Target must be GL_ATOMIC_COUNTER_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER or GL_SHADER_STORAGE_BUFFER. id: {}", m_id.value);
+			log::error(
+				"Attempt at binding buffer base of an invalid target. Target must be GL_ATOMIC_COUNTER_BUFFER, "
+				"GL_TRANSFORM_FEEDBACK_BUFFER, GL_UNIFORM_BUFFER or GL_SHADER_STORAGE_BUFFER. id: {}",
+				m_id.value
+			);
 			return;
 		}
 #endif
@@ -136,12 +147,22 @@ namespace rythe::rendering
 		glBindBuffer(m_target, m_id);
 
 		rsl::size_type oldSize;
-		glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)); // Fetch the previous size of the buffer.
+		glGetBufferParameteri64v(
+			m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)
+		); // Fetch the previous size of the buffer.
 
 		if (oldSize >= size)
-			glBufferSubData(m_target, 0, size, data);    // If the new data fits within the already allocated VRAM then we don't want to reallocate.
+		{
+			glBufferSubData(
+				m_target, 0, size, data
+			); // If the new data fits within the already allocated VRAM then we don't want to reallocate.
+		}
 		else
-			glBufferData(m_target, size, data, m_usage); // If the new data does not fit within the already allocated VRAM we want to reallocate the buffer.
+		{
+			glBufferData(
+				m_target, size, data, m_usage
+			); // If the new data does not fit within the already allocated VRAM we want to reallocate the buffer.
+		}
 
 		glBindBuffer(m_target, 0);
 	}
@@ -157,7 +178,9 @@ namespace rythe::rendering
 
 		rsl::size_type oldSize;
 		glBindBuffer(m_target, m_id);
-		glGetBufferParameteri64v(m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)); // Fetch VRAM size of the currently bound buffer.
+		glGetBufferParameteri64v(
+			m_target, GL_BUFFER_SIZE, reinterpret_cast<GLint64*>(&oldSize)
+		); // Fetch VRAM size of the currently bound buffer.
 		glBindBuffer(m_target, 0);
 		if (offset + size > oldSize)
 		{

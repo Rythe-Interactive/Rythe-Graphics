@@ -50,11 +50,15 @@ namespace rythe::rendering
 	void ModelCache::overwrite_buffer(rsl::id_type id, buffer& newBuffer, rsl::uint bufferID, bool perInstance)
 	{
 		if (id == invalid_id)
+		{
 			return;
+		}
 		// get mesh handle
 		auto mesh_handle = assets::get<mesh>(id);
 		if (!mesh_handle)
+		{
 			return;
+		}
 		// get mesh and lock
 		auto& model = m_models[id];
 		if (bufferID == SV_COLOR)
@@ -67,11 +71,15 @@ namespace rythe::rendering
 	void ModelCache::buffer_model(rsl::id_type id, const buffer& matrixBuffer)
 	{
 		if (id == invalid_id)
+		{
 			return;
+		}
 
 		auto mesh_handle = assets::get<mesh>(id);
 		if (!mesh_handle)
+		{
 			return;
+		}
 
 		model& model = m_models[id];
 
@@ -93,10 +101,18 @@ namespace rythe::rendering
 		model.uvBuffer = buffer(GL_ARRAY_BUFFER, mesh_handle->uvs, GL_STATIC_DRAW);
 		model.vertexArray.setAttribPointer(model.uvBuffer, SV_TEXCOORD0, 2, GL_FLOAT, false, 0, 0);
 
-		model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::float4x4), 0 * sizeof(math::float4));
-		model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::float4x4), 1 * sizeof(math::float4));
-		model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::float4x4), 2 * sizeof(math::float4));
-		model.vertexArray.setAttribPointer(matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::float4x4), 3 * sizeof(math::float4));
+		model.vertexArray.setAttribPointer(
+			matrixBuffer, SV_MODELMATRIX + 0, 4, GL_FLOAT, false, sizeof(math::float4x4), 0 * sizeof(math::float4)
+		);
+		model.vertexArray.setAttribPointer(
+			matrixBuffer, SV_MODELMATRIX + 1, 4, GL_FLOAT, false, sizeof(math::float4x4), 1 * sizeof(math::float4)
+		);
+		model.vertexArray.setAttribPointer(
+			matrixBuffer, SV_MODELMATRIX + 2, 4, GL_FLOAT, false, sizeof(math::float4x4), 2 * sizeof(math::float4)
+		);
+		model.vertexArray.setAttribPointer(
+			matrixBuffer, SV_MODELMATRIX + 3, 4, GL_FLOAT, false, sizeof(math::float4x4), 3 * sizeof(math::float4)
+		);
 
 		model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 0, 1);
 		model.vertexArray.setAttribDivisor(SV_MODELMATRIX + 1, 1);
@@ -106,19 +122,24 @@ namespace rythe::rendering
 		model.buffered = true;
 	}
 
-	model_handle ModelCache::create_model(const std::string& name, const fs::view& file, assets::import_settings<mesh> settings)
+	model_handle
+	ModelCache::create_model(const std::string& name, const fs::view& file, assets::import_settings<mesh> settings)
 	{
 		rsl::id_type id = rsl::nameHash(name);
 
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		// Check if the file is valid to load.
 		if (!file.is_valid() || !file.file_info().is_file)
+		{
 			return invalid_model_handle;
+		}
 
 		// Load the mesh if it wasn't already. (It's called MeshCache for a reason.)
 		model model{};
@@ -131,24 +152,35 @@ namespace rythe::rendering
 		}
 
 		if (result.has_warnings())
+		{
 			for (auto warn : result.warnings())
+			{
 				log::warn(warn);
+			}
+		}
 
 		auto& handle = result.value();
 		if (!handle->materials.empty())
 		{
 			for (auto& mat : handle->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(name + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -166,7 +198,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -244,7 +278,9 @@ namespace rythe::rendering
 
 
 		for (auto& submeshData : handle->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 		// The model still needs to be buffered on the rendering thread.
 		model.buffered = false;
@@ -271,7 +307,9 @@ namespace rythe::rendering
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		model model{};
@@ -288,16 +326,23 @@ namespace rythe::rendering
 		{
 			for (auto& mat : handle->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(name + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -315,7 +360,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -392,7 +439,9 @@ namespace rythe::rendering
 		}
 
 		for (auto& submeshData : handle->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 
 		// The model still needs to be buffered on the rendering thread.
@@ -420,7 +469,9 @@ namespace rythe::rendering
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		model model{};
@@ -437,16 +488,23 @@ namespace rythe::rendering
 		{
 			for (auto& mat : handle->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(name + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -464,7 +522,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -541,7 +601,9 @@ namespace rythe::rendering
 		}
 
 		for (auto& submeshData : handle->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 		// The model still needs to be buffered on the rendering thread.
 		model.buffered = false;
@@ -566,7 +628,9 @@ namespace rythe::rendering
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		model model{};
@@ -586,16 +650,23 @@ namespace rythe::rendering
 		{
 			for (auto& mat : handle->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(meshName + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -613,7 +684,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -690,7 +763,9 @@ namespace rythe::rendering
 		}
 
 		for (auto& submeshData : handle->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 		// The model still needs to be buffered on the rendering thread.
 		model.buffered = false;
@@ -717,7 +792,9 @@ namespace rythe::rendering
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		model model{};
@@ -734,16 +811,23 @@ namespace rythe::rendering
 		{
 			for (auto& mat : mesh->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(name + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -761,7 +845,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -838,7 +924,9 @@ namespace rythe::rendering
 		}
 
 		for (auto& submeshData : mesh->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 		// The model still needs to be buffered on the rendering thread.
 		model.buffered = false;
@@ -865,7 +953,9 @@ namespace rythe::rendering
 		{ // Check if the model already exists.
 			async::readonly_guard guard(m_modelLock);
 			if (m_models.contains(id))
+			{
 				return {id};
+			}
 		}
 
 		model model{};
@@ -884,16 +974,23 @@ namespace rythe::rendering
 		{
 			for (auto& mat : mesh->materials)
 			{
-				static auto defaultLitShader = ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
+				static auto defaultLitShader =
+					ShaderCache::create_shader("default lit", fs::view("engine://shaders/default_lit.shs"));
 
 				material_handle material = MaterialCache::create_material(meshName + "/" + mat.name, defaultLitShader);
 
 				if (mat.doubleSided && (mat.transparencyMode == transparency_mode::Blend))
+				{
 					material.set_variant("double_sided_transparent");
+				}
 				else if (mat.doubleSided)
+				{
 					material.set_variant("double_sided");
+				}
 				else if (mat.transparencyMode == transparency_mode::Blend)
+				{
 					material.set_variant("transparent");
+				}
 
 				material.set_param("alphaCutoff", mat.alphaCutoff);
 
@@ -911,7 +1008,9 @@ namespace rythe::rendering
 				if (mat.metallicRoughnessMap)
 				{
 					material.set_param("useMetallicRoughness", true);
-					material.set_param("metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap));
+					material.set_param(
+						"metallicRoughness", TextureCache::create_texture_from_image(mat.metallicRoughnessMap)
+					);
 				}
 				else
 				{
@@ -988,7 +1087,9 @@ namespace rythe::rendering
 		}
 
 		for (auto& submeshData : mesh->submeshes)
+		{
 			model.submeshes.push_back(submeshData);
+		}
 
 		// The model still needs to be buffered on the rendering thread.
 		model.buffered = false;
@@ -1010,7 +1111,9 @@ namespace rythe::rendering
 		rsl::id_type id = rsl::nameHash(name);
 		async::readonly_guard guard(m_modelLock);
 		if (m_models.contains(id))
+		{
 			return {id};
+		}
 		return invalid_model_handle;
 	}
 
@@ -1018,7 +1121,9 @@ namespace rythe::rendering
 	{
 		async::readonly_guard guard(m_modelLock);
 		if (m_models.contains(id))
+		{
 			return {id};
+		}
 		return invalid_model_handle;
 	}
 
@@ -1035,14 +1140,20 @@ namespace rythe::rendering
 			async::readwrite_guard guard(m_modelLock);
 
 			if (!m_models.contains(id))
+			{
 				return;
+			}
 			if (assets::exists<mesh>(id))
+			{
 				assets::destroy<mesh>(id);
+			}
 			erased = m_models.erase(id);
 		}
 
 		if (erased)
+		{
 			log::debug("Destroyed model {}", name);
+		}
 	}
 
 	assets::asset<mesh> ModelCache::get_mesh(const std::string& name)

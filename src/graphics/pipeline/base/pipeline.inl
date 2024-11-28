@@ -22,9 +22,13 @@ namespace rythe::rendering
 		if (m_metadata.count(id))
 		{
 			if (m_metadata[id].type() == typeid(T))
+			{
 				return std::any_cast<T>(&m_metadata[id]);
+			}
 			else
+			{
 				return nullptr;
+			}
 		}
 
 		m_metadata.emplace(id, std::make_any<T>(std::forward<Args>(args)...));
@@ -37,7 +41,9 @@ namespace rythe::rendering
 		rsl::id_type id = rsl::nameHash(name);
 
 		if (m_metadata.count(id) && (m_metadata[id].type() == typeid(T)))
+		{
 			return std::any_cast<T>(&m_metadata[id]);
+		}
 		return nullptr;
 	}
 
@@ -53,9 +59,13 @@ namespace rythe::rendering
 		if (m_metadata.count(nameHash))
 		{
 			if (m_metadata[nameHash].type() == typeid(T))
+			{
 				return std::any_cast<T>(&m_metadata[nameHash]);
+			}
 			else
+			{
 				return nullptr;
+			}
 		}
 
 		m_metadata.emplace(nameHash, std::make_any<T>(std::forward<Args>(args)...));
@@ -66,7 +76,9 @@ namespace rythe::rendering
 	[[nodiscard]] inline T* RenderPipelineBase::get_meta(rsl::id_type nameHash)
 	{
 		if (m_metadata.count(nameHash) && (m_metadata[nameHash].type() == typeid(T)))
+		{
 			return std::any_cast<T>(&m_metadata[nameHash]);
+		}
 		return nullptr;
 	}
 
@@ -89,34 +101,46 @@ namespace rythe::rendering
 	{
 		setup(context);
 		for (auto& [_, stage] : m_stages)
+		{
 			stage->init(context);
+		}
 	}
 
 	template <typename Self>
 	inline void RenderPipeline<Self>::shutdown()
 	{
 		for (auto& [_, stage] : m_stages)
+		{
 			stage->_shutdown_impl();
+		}
 
 		RenderPipelineBase::shutdown();
 		m_stages.clear();
 	}
 
 	template <typename Self>
-	inline void RenderPipeline<Self>::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	inline void RenderPipeline<Self>::render(
+		app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime
+	)
 	{
 		m_abort = false;
 		for (auto& [_, stage] : m_stages)
 		{
 			if (m_exiting.load(std::memory_order_acquire))
+			{
 				return;
+			}
 
 			if (!stage->isInitialized())
+			{
 				stage->init(context);
+			}
 
 			stage->render(context, cam, camInput, deltaTime);
 			if (m_abort)
+			{
 				break;
+			}
 		}
 	}
 } // namespace rythe::rendering

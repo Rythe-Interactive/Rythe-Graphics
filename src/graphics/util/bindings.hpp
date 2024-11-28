@@ -48,7 +48,7 @@
 /* attachment 2 */ #define POSITION_ATTACHMENT NORMAL_ATTACHMENT + 1
 /* attachment 3 */ #define OVERDRAW_ATTACHMENT POSITION_ATTACHMENT + 1
 
-namespace rythe::rendering::detail
+namespace rythe::rendering::internal
 {
 	inline const std::vector<std::string>& get_default_defines()
 	{
@@ -101,4 +101,4 @@ namespace rythe::rendering::detail
 
 		return defines;
 	}
-} // namespace rythe::rendering::detail
+} // namespace rythe::rendering::internal

@@ -21,9 +21,13 @@ namespace rythe::rendering
 		if (m_framebuffers.contains(id))
 		{
 			if (m_framebuffers[id].target() == target)
+			{
 				return &m_framebuffers[id];
+			}
 			else
+			{
 				return nullptr;
+			}
 		}
 
 		m_framebuffers[id] = framebuffer(target);
@@ -41,7 +45,9 @@ namespace rythe::rendering
 	{
 		rsl::id_type id = rsl::nameHash(name);
 		if (m_framebuffers.contains(id))
+		{
 			return &m_framebuffers[id];
+		}
 		return nullptr;
 	}
 
@@ -50,9 +56,13 @@ namespace rythe::rendering
 		if (m_framebuffers.contains(nameHash))
 		{
 			if (m_framebuffers[nameHash].target() == target)
+			{
 				return &m_framebuffers[nameHash];
+			}
 			else
+			{
 				return nullptr;
+			}
 		}
 
 		m_framebuffers[nameHash] = framebuffer(target);
@@ -68,7 +78,9 @@ namespace rythe::rendering
 	[[nodiscard]] framebuffer* RenderPipelineBase::getFramebuffer(rsl::id_type nameHash)
 	{
 		if (m_framebuffers.contains(nameHash))
+		{
 			return &m_framebuffers[nameHash];
+		}
 		return nullptr;
 	}
 

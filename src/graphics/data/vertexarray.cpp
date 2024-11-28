@@ -3,10 +3,13 @@
 namespace rythe::rendering
 {
 	vertexarray::vertexarray(std::nullptr_t t)
-		: m_id([](app::gl_id& value)
+		: m_id(
+			  [](app::gl_id& value)
 	{
 		if (!app::ContextHelper::initialized())
+		{
 			return;
+		}
 
 #if defined(RYTHE_DEBUG)
 		if (!app::ContextHelper::getCurrentContext())
@@ -17,7 +20,8 @@ namespace rythe::rendering
 #endif
 		if (value)
 			glDeleteVertexArrays(1, &value);
-	}, invalid_id)
+	}, invalid_id
+		  )
 	{
 #if defined(RYTHE_DEBUG)
 		if (!app::ContextHelper::getCurrentContext())
@@ -34,12 +38,19 @@ namespace rythe::rendering
 		return vertexarray(nullptr);
 	}
 
-	void vertexarray::setAttribPointer(const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride, rsl::size_type offset)
+	void vertexarray::setAttribPointer(
+		const buffer& buf, rsl::uint index, rsl::size_type size, GLenum type, bool normalized, rsl::size_type stride,
+		rsl::size_type offset
+	)
 	{
 #if defined(RYTHE_DEBUG)
 		if (buf.target() != GL_ARRAY_BUFFER)
 		{
-			log::error("Attempted to set attribute pointer for non GL_ARRAY_BUFFER, attribute pointers only work for VBOs. VAO: {} Buffer: {}", m_id.value, buf.id());
+			log::error(
+				"Attempted to set attribute pointer for non GL_ARRAY_BUFFER, attribute pointers only work for VBOs. "
+				"VAO: {} Buffer: {}",
+				m_id.value, buf.id()
+			);
 		}
 
 		if (!app::ContextHelper::getCurrentContext())

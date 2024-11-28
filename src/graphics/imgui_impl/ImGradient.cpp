@@ -67,14 +67,20 @@ namespace ImGradient
 		color.w = 1.f;
 		draw_list->AddRectFilled(p1, p2, ImColor(color));
 		if (editing)
+		{
 			draw_list->AddRect(p1, p2, 0xFFFFFFFF, 2.f, 15, 2.5f);
+		}
 		else
+		{
 			draw_list->AddRect(p1, p2, 0x80FFFFFF, 2.f, 15, 1.25f);
+		}
 
 		if (rc.Contains(io.MousePos))
 		{
 			if (io.MouseClicked[0])
+			{
 				return 2;
+			}
 			return 1;
 		}
 		return 0;
@@ -94,7 +100,9 @@ namespace ImGradient
 		static int currentSelection = -1;
 		static int movingPt = -1;
 		if (currentSelection >= int(delegate.GetPointCount()))
+		{
 			currentSelection = -1;
+		}
 		if (movingPt != -1)
 		{
 			ImVec4 current = pts[movingPt];
@@ -103,7 +111,9 @@ namespace ImGradient
 			delegate.EditPoint(movingPt, current);
 			ret = true;
 			if (!io.MouseDown[0])
+			{
 				movingPt = -1;
+			}
 		}
 		for (size_t i = 0; i < delegate.GetPointCount(); i++)
 		{

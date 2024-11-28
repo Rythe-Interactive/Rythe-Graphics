@@ -8,7 +8,8 @@ namespace rythe::rendering
 		glClearDepth(1.0f);
 	}
 
-	void ClearStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void
+	ClearStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
 	{
 		(void)deltaTime;
 		(void)camInput;

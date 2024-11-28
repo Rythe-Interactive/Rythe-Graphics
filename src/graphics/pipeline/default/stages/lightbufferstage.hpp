@@ -9,7 +9,7 @@ namespace rythe::rendering
 	{
 		static async::spinlock m_lightEntitiesLock;
 		static std::unordered_set<ecs::entity> m_lightEntities;
-		static std::vector<detail::light_data> m_lights;
+		static std::vector<internal::light_data> m_lights;
 
 		void onLightCreate(events::component_creation<light>& event);
 		void onLightDestroy(events::component_destruction<light>& event);
@@ -22,7 +22,8 @@ namespace rythe::rendering
 		}
 
 		virtual void setup(app::window& context) override;
-		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
+		virtual void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
 		virtual rsl::priority_type priority() override;
 	};
 } // namespace rythe::rendering

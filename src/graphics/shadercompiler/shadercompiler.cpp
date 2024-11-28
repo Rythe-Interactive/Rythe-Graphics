@@ -63,7 +63,10 @@ namespace rythe::rendering
 	{
 		static std::string compPath;
 		if (compPath.empty())
-			compPath = get_view_path(fs::view("engine://tools"), false) + "lgnspre" + fs::strpath_manip::separator() + "lgnspre";
+		{
+			compPath = get_view_path(fs::view("engine://tools"), false) + "lgnspre" + fs::strpath_manip::separator() +
+					   "lgnspre";
+		}
 		return compPath;
 	}
 
@@ -71,7 +74,10 @@ namespace rythe::rendering
 	{
 		static std::string compPath;
 		if (compPath.empty())
-			compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" + fs::strpath_manip::separator() + "lgncleancache";
+		{
+			compPath = get_view_path(fs::view("engine://tools"), false) + fs::strpath_manip::separator() + "lgnspre" +
+					   fs::strpath_manip::separator() + "lgncleancache";
+		}
 		return compPath;
 	}
 
@@ -85,7 +91,9 @@ namespace rythe::rendering
 			seperator = rest.find_first_of('\n', seperator);
 
 			if (seperator == std::string::npos)
+			{
 				seperator = rest.size();
+			}
 
 			auto line = rest.substr(0, seperator);
 			auto space = line.find(' ');
@@ -93,17 +101,25 @@ namespace rythe::rendering
 			{
 				auto param = line.substr(space + 1);
 				auto paramSpace = param.find(' ');
-				stateInput.push_back(std::make_pair(std::string(line.substr(0, space)), std::string(param.substr(0, paramSpace))));
+				stateInput.push_back(
+					std::make_pair(std::string(line.substr(0, space)), std::string(param.substr(0, paramSpace)))
+				);
 			}
 			else
+			{
 				stateInput.push_back(std::make_pair(std::string(line.substr(0, space)), std::string()));
+			}
 
 			rest = rest.substr(seperator);
 			seperator = rest.find_first_not_of('\n');
 			if (seperator == std::string::npos)
+			{
 				break;
+			}
 			else
+			{
 				rest = rest.substr(seperator);
+			}
 		}
 
 		// Create lookup table for the OpenGL function types that can be changed by the shader state.
@@ -125,8 +141,11 @@ namespace rythe::rendering
 
 		for (auto& [func, par] : stateInput)
 		{
-			if (!funcTypes.count(func)) // If the function type is unsupported or unknown we also want to fail compilation.
+			if (!funcTypes.count(func
+				)) // If the function type is unsupported or unknown we also want to fail compilation.
+			{
 				continue;
+			}
 
 			GLenum funcType = funcTypes.at(func); // Fetch the function type without risking editing the lookup table.
 			GLenum param = GL_FALSE;
@@ -152,7 +171,9 @@ namespace rythe::rendering
 					}
 
 					if (!params.count(par))
+					{
 						continue;
+					}
 
 					param = params.at(par);
 				}
@@ -171,7 +192,9 @@ namespace rythe::rendering
 					}
 
 					if (!params.count(par))
+					{
 						continue;
+					}
 
 					param = params.at(par);
 				}
@@ -206,7 +229,9 @@ namespace rythe::rendering
 					}
 
 					if (!params.count(par))
+					{
 						continue;
+					}
 
 					param = params.at(par);
 
@@ -232,50 +257,40 @@ namespace rythe::rendering
 					}
 
 					if (!params.count(par))
+					{
 						continue;
+					}
 
 					param = params.at(par);
 				}
 				break;
-				default:
-					param = GL_FALSE;
-					break;
+				default: param = GL_FALSE; break;
 			}
 
 			state[funcType] = param;
 		}
 	}
 
-	bool ShaderCompiler::extract_ilo(const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo)
+	bool ShaderCompiler::extract_ilo(
+		const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo
+	)
 	{
 		using severity = log::severity;
 
-		GLuint glShaderType = detail::get_gl_type(shaderType);
-		auto rytShaderType = detail::get_ryt_type(shaderType);
+		GLuint glShaderType = internal::get_gl_type(shaderType);
+		auto rytShaderType = internal::get_ryt_type(shaderType);
 
-		if (shaderType != GL_ryt_VERTEX_SHADER &&
-			shaderType != GL_ryt_FRAGMENT_SHADER &&
-			shaderType != GL_ryt_GEOMETRY_SHADER &&
-			shaderType != GL_ryt_TESS_EVALUATION_SHADER &&
+		if (shaderType != GL_ryt_VERTEX_SHADER && shaderType != GL_ryt_FRAGMENT_SHADER &&
+			shaderType != GL_ryt_GEOMETRY_SHADER && shaderType != GL_ryt_TESS_EVALUATION_SHADER &&
 			shaderType != GL_ryt_TESS_CONTROL_SHADER)
 		{
 			switch (rytShaderType)
 			{
-				case ryt_VERTEX_SHADER:
-					glShaderType = GL_VERTEX_SHADER;
-					break;
-				case ryt_FRAGMENT_SHADER:
-					glShaderType = GL_FRAGMENT_SHADER;
-					break;
-				case ryt_GEOMETRY_SHADER:
-					glShaderType = GL_GEOMETRY_SHADER;
-					break;
-				case ryt_TESS_EVALUATION_SHADER:
-					glShaderType = GL_TESS_EVALUATION_SHADER;
-					break;
-				case ryt_TESS_CONTROL_SHADER:
-					glShaderType = GL_TESS_CONTROL_SHADER;
-					break;
+				case ryt_VERTEX_SHADER: glShaderType = GL_VERTEX_SHADER; break;
+				case ryt_FRAGMENT_SHADER: glShaderType = GL_FRAGMENT_SHADER; break;
+				case ryt_GEOMETRY_SHADER: glShaderType = GL_GEOMETRY_SHADER; break;
+				case ryt_TESS_EVALUATION_SHADER: glShaderType = GL_TESS_EVALUATION_SHADER; break;
+				case ryt_TESS_CONTROL_SHADER: glShaderType = GL_TESS_CONTROL_SHADER; break;
 				default:
 					m_callback("Shader processor error: unkown shader type", severity::error);
 					return false;
@@ -287,27 +302,40 @@ namespace rythe::rendering
 		return true;
 	}
 
-	std::string ShaderCompiler::invoke_compiler(const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
+	std::string ShaderCompiler::invoke_compiler(
+		const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines,
+		const std::vector<std::string>& additionalIncludes
+	)
 	{
 		using severity = log::severity;
 
 		std::string filepath = get_view_path(file, true);
 		if (filepath.empty())
+		{
 			return "";
+		}
 
 		auto folderEnd = filepath.find_last_of("\\/");
 		std::string folderPath(filepath.c_str(), folderEnd);
 
 		std::string definesString = " -D RYTHE";
 		if (compilerSettings & shader_compiler_options::debug)
+		{
 			definesString += " -D DEBUG";
+		}
 		else
+		{
 			definesString += " -D RELEASE";
+		}
 
 		if (compilerSettings & shader_compiler_options::low_power)
+		{
 			definesString += " -D LOW_POWER";
+		}
 		else
+		{
 			definesString += " -D HIGH_PERFORMANCE";
+		}
 
 		rsl::bitfield8 apiSet = 0;
 		if (compilerSettings & shader_compiler_options::api_opengl)
@@ -321,7 +349,12 @@ namespace rythe::rendering
 			if (apiSet)
 			{
 				if (apiSet & rendering_api::opengl)
-					m_callback("Shader processor warning: both OpenGL and Vulkan were set as graphics api, OpenGL is assumed", severity::warn);
+				{
+					m_callback(
+						"Shader processor warning: both OpenGL and Vulkan were set as graphics api, OpenGL is assumed",
+						severity::warn
+					);
+				}
 			}
 			else
 			{
@@ -348,7 +381,8 @@ namespace rythe::rendering
 			includeString += " -I \"" + incl + "\"";
 		}
 
-		std::string command = "\"" + get_compiler_path() + "\" \"" + filepath + "\"" + definesString + includeString + " -f 1file -o stdout";
+		std::string command = "\"" + get_compiler_path() + "\" \"" + filepath + "\"" + definesString + includeString +
+							  " -f 1file -o stdout";
 
 		std::string out, err;
 
@@ -359,7 +393,9 @@ namespace rythe::rendering
 		}
 
 		if (!err.empty())
+		{
 			m_callback("Shader processor warning: " + err, severity::warn);
+		}
 
 		out.erase(std::remove(out.begin(), out.end(), '\r'), out.end());
 
@@ -371,7 +407,8 @@ namespace rythe::rendering
 		using severity = log::severity;
 		std::string out, err;
 
-		std::string command = "\"" + get_cachecleaner_path() + "\" \"" + get_view_path(path, false) + "\" -I \"" + get_shaderlib_path() + "\" ./ --filter=shil";
+		std::string command = "\"" + get_cachecleaner_path() + "\" \"" + get_view_path(path, false) + "\" -I \"" +
+							  get_shaderlib_path() + "\" ./ --filter=shil";
 
 		if (!ShellInvoke(command, out, err))
 		{
@@ -379,19 +416,29 @@ namespace rythe::rendering
 		}
 	}
 
-	bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state)
+	bool ShaderCompiler::process(
+		const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+		std::unordered_map<std::string, shader_state>& state
+	)
 	{
 		std::vector<std::string> temp;
 		return process(file, compilerSettings, ilo, state, temp, temp);
 	}
 
-	bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines)
+	bool ShaderCompiler::process(
+		const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+		std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines
+	)
 	{
 		std::vector<std::string> temp;
 		return process(file, compilerSettings, ilo, state, defines, temp);
 	}
 
-	bool ShaderCompiler::process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes)
+	bool ShaderCompiler::process(
+		const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+		std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines,
+		const std::vector<std::string>& additionalIncludes
+	)
 	{
 		using severity = log::severity;
 
@@ -400,7 +447,9 @@ namespace rythe::rendering
 		auto result = invoke_compiler(file, compilerSettings, defines, additionalIncludes);
 
 		if (result.empty())
+		{
 			return false;
+		}
 
 		auto start = result.find("=========== BEGIN SHADER CODE ===========\n") + 42;
 		start = result.find_first_not_of('\n', start);
@@ -412,24 +461,34 @@ namespace rythe::rendering
 		{
 			auto seperator = rest.find_first_not_of('\n');
 			if (seperator == std::string::npos)
+			{
 				break;
+			}
 
 			seperator = rest.find_first_of('\n', seperator) + 1;
 			if (rest.empty())
+			{
 				break;
+			}
 			auto shaderType = std::stoull(std::string(rest.substr(0, seperator)));
 			rest = rest.substr(seperator);
 			if (rest.empty())
+			{
 				break;
+			}
 
 			seperator = rest.find_first_of('\n') + 1;
 			auto sourceLength = std::stoull(std::string(rest.substr(0, seperator)));
 			if (sourceLength == 0)
+			{
 				continue;
+			}
 
 			rest = rest.substr(seperator);
 			if (rest.empty())
+			{
 				break;
+			}
 
 			seperator = rest.substr(0, sourceLength).find_last_of('\n');
 			auto source = rest.substr(0, seperator);
@@ -454,11 +513,15 @@ namespace rythe::rendering
 				return false;
 			}
 			if (rest.empty())
+			{
 				break;
+			}
 
 			seperator = rest.find_first_not_of('\n');
 			if (seperator == std::string::npos)
+			{
 				break;
+			}
 		}
 
 		if (ilo.empty())

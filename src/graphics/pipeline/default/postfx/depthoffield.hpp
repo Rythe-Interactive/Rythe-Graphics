@@ -58,7 +58,10 @@ namespace rythe::rendering
 		 * @param camInput The matrix data used to do everything 3D math-i.
 		 * @param deltaTime Current delta time.
 		 */
-		void renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime);
+		void renderPass(
+			framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+			rsl::span deltaTime
+		);
 		/**
 		 * @brief areaOfFocus Calculates what is in focus and what is not.
 		 * @param color_texture The scene color texture collected from the framebuffer.
@@ -99,7 +102,8 @@ namespace rythe::rendering
 		/**
 		 * @brief getTextures Gets all the necessary textures from the framebuffer.
 		 * @param fbo The framebuffer used for this particular effect.
-		 * @return Returns a tuple of a bool, stating if it managed to get the textures and the other 2 are getting the color and position texture.
+		 * @return Returns a tuple of a bool, stating if it managed to get the textures and the other 2 are getting the
+		 * color and position texture.
 		 */
 		std::tuple<bool, texture_handle, texture_handle> getTextures(framebuffer& fbo);
 	};

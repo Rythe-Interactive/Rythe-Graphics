@@ -15,20 +15,26 @@ namespace rythe::rendering
 		static const std::string& get_cachecleaner_path();
 
 		static void extract_state(std::string_view source, shader_state& state);
-		static bool extract_ilo(const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo);
-		static std::string invoke_compiler(const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
+		static bool
+		extract_ilo(const std::string& variant, std::string_view source, rsl::uint64 shaderType, shader_ilo& ilo);
+		static std::string invoke_compiler(
+			const fs::view& file, rsl::bitfield8 compilerSettings, const std::vector<std::string>& defines,
+			const std::vector<std::string>& additionalIncludes
+		);
 
 	public:
 		template <class owner_type, void (owner_type::*func_type)(const std::string&, log::severity)>
 		static void setErrorCallback(owner_type* instance = nullptr)
 		{
-			m_callback = rsl::delegate<void(const std::string&, log::severity)>::template from<owner_type, func_type>(instance);
+			m_callback =
+				rsl::delegate<void(const std::string&, log::severity)>::template from<owner_type, func_type>(instance);
 		}
 
 		template <class owner_type, void (owner_type::*func_type)(const std::string&, log::severity) const>
 		static void setErrorCallback(const owner_type* instance)
 		{
-			m_callback = rsl::delegate<void(const std::string&, log::severity)>::template from<owner_type, func_type>(instance);
+			m_callback =
+				rsl::delegate<void(const std::string&, log::severity)>::template from<owner_type, func_type>(instance);
 		}
 
 		static void setErrorCallback(const rsl::delegate<void(const std::string&, log::severity)>& func)
@@ -36,7 +42,12 @@ namespace rythe::rendering
 			m_callback = func;
 		}
 
-		template <typename lambda_type, std::enable_if_t<!std::is_same_v<std::remove_reference_t<lambda_type>, rsl::delegate<void(const std::string&, log::severity)>>, int>>
+		template <
+			typename lambda_type,
+			std::enable_if_t<
+				!std::is_same_v<
+					std::remove_reference_t<lambda_type>, rsl::delegate<void(const std::string&, log::severity)>>,
+				int>>
 		static void setErrorCallback(const lambda_type& lambda)
 		{
 			m_callback = lambda;
@@ -50,8 +61,18 @@ namespace rythe::rendering
 
 		static void cleanCache(const fs::view& path);
 
-		static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state);
-		static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines);
-		static bool process(const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines, const std::vector<std::string>& additionalIncludes);
+		static bool process(
+			const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+			std::unordered_map<std::string, shader_state>& state
+		);
+		static bool process(
+			const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+			std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines
+		);
+		static bool process(
+			const fs::view& file, rsl::bitfield8 compilerSettings, shader_ilo& ilo,
+			std::unordered_map<std::string, shader_state>& state, const std::vector<std::string>& defines,
+			const std::vector<std::string>& additionalIncludes
+		);
 	};
 } // namespace rythe::rendering

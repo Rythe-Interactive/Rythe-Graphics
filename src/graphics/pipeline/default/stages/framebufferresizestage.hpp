@@ -21,7 +21,8 @@ namespace rythe::rendering
 
 		virtual void setup(app::window& context) override;
 		void shutdown();
-		virtual void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
+		virtual void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
 		virtual rsl::priority_type priority() override;
 	};
 } // namespace rythe::rendering

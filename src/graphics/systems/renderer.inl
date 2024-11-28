@@ -16,7 +16,9 @@ namespace rythe::rendering
 			RenderStageBase::m_pipeline->init(context);
 		}
 		else
+		{
 			RenderStageBase::m_pipeline = m_pipelines[context].get();
+		}
 
 		return RenderStageBase::m_pipeline;
 	}
@@ -25,7 +27,9 @@ namespace rythe::rendering
 	inline void pipeline_provider<PipelineType>::shutdown()
 	{
 		for (auto& [_, pipeline] : m_pipelines)
+		{
 			pipeline->shutdown();
+		}
 
 		m_pipelines.clear();
 	}

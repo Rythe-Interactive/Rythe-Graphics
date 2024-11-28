@@ -14,9 +14,13 @@ namespace rythe::rendering
 	{
 		async::readonly_guard guard(m_shaderLock);
 		if (m_shaders.count(id))
+		{
 			return &m_shaders.at(id);
+		}
 		else
+		{
 			return &m_shaders.at(invalid_id);
+		}
 	}
 
 	void ShaderCache::process_io(shader& shader, rsl::id_type id)
@@ -44,12 +48,19 @@ namespace rythe::rendering
 				GLint arraySize = 0; // Use this later for uniform arrays.
 				GLenum type = 0;
 				GLsizei nameLength = 0;
-				glGetActiveUniform(variant.programId, uniformId, (GLsizei)maxUniformNameLength, &nameLength, &arraySize, &type, uniformNameBuffer);
+				glGetActiveUniform(
+					variant.programId, uniformId, (GLsizei)maxUniformNameLength, &nameLength, &arraySize, &type,
+					uniformNameBuffer
+				);
 
-				std::string_view name(uniformNameBuffer, nameLength + 1); // Get string_view of the actual name within the buffer.
+				std::string_view name(
+					uniformNameBuffer, nameLength + 1
+				);                                            // Get string_view of the actual name within the buffer.
 
-				if (name.find('[') != std::string_view::npos)             // We don't support uniform arrays yet.
+				if (name.find('[') != std::string_view::npos) // We don't support uniform arrays yet.
+				{
 					continue;
+				}
 
 				// Get location and create uniform object.
 				app::gl_location location = glGetUniformLocation(variant.programId, uniformNameBuffer);
@@ -60,45 +71,21 @@ namespace rythe::rendering
 						uniform = new rendering::uniform<texture_handle>(id, name, type, location, textureUnit);
 						textureUnit++;
 						break;
-					case GL_UNSIGNED_INT:
-						uniform = new rendering::uniform<rsl::uint>(id, name, type, location);
-						break;
-					case GL_FLOAT:
-						uniform = new rendering::uniform<float>(id, name, type, location);
-						break;
-					case GL_FLOAT_VEC2:
-						uniform = new rendering::uniform<math::float2>(id, name, type, location);
-						break;
+					case GL_UNSIGNED_INT: uniform = new rendering::uniform<rsl::uint>(id, name, type, location); break;
+					case GL_FLOAT: uniform = new rendering::uniform<float>(id, name, type, location); break;
+					case GL_FLOAT_VEC2: uniform = new rendering::uniform<math::float2>(id, name, type, location); break;
 					case GL_FLOAT_VEC3:
 						uniform = new rendering::uniform<rsl::math::float3>(id, name, type, location);
 						break;
-					case GL_FLOAT_VEC4:
-						uniform = new rendering::uniform<math::float4>(id, name, type, location);
-						break;
-					case GL_INT:
-						uniform = new rendering::uniform<int>(id, name, type, location);
-						break;
-					case GL_INT_VEC2:
-						uniform = new rendering::uniform<math::ivec2>(id, name, type, location);
-						break;
-					case GL_INT_VEC3:
-						uniform = new rendering::uniform<math::ivec3>(id, name, type, location);
-						break;
-					case GL_INT_VEC4:
-						uniform = new rendering::uniform<math::ivec4>(id, name, type, location);
-						break;
-					case GL_BOOL:
-						uniform = new rendering::uniform<bool>(id, name, type, location);
-						break;
-					case GL_BOOL_VEC2:
-						uniform = new rendering::uniform<math::bvec2>(id, name, type, location);
-						break;
-					case GL_BOOL_VEC3:
-						uniform = new rendering::uniform<math::bvec3>(id, name, type, location);
-						break;
-					case GL_BOOL_VEC4:
-						uniform = new rendering::uniform<math::bvec4>(id, name, type, location);
-						break;
+					case GL_FLOAT_VEC4: uniform = new rendering::uniform<math::float4>(id, name, type, location); break;
+					case GL_INT: uniform = new rendering::uniform<int>(id, name, type, location); break;
+					case GL_INT_VEC2: uniform = new rendering::uniform<math::ivec2>(id, name, type, location); break;
+					case GL_INT_VEC3: uniform = new rendering::uniform<math::ivec3>(id, name, type, location); break;
+					case GL_INT_VEC4: uniform = new rendering::uniform<math::ivec4>(id, name, type, location); break;
+					case GL_BOOL: uniform = new rendering::uniform<bool>(id, name, type, location); break;
+					case GL_BOOL_VEC2: uniform = new rendering::uniform<math::bvec2>(id, name, type, location); break;
+					case GL_BOOL_VEC3: uniform = new rendering::uniform<math::bvec3>(id, name, type, location); break;
+					case GL_BOOL_VEC4: uniform = new rendering::uniform<math::bvec4>(id, name, type, location); break;
 					case GL_FLOAT_MAT2:
 						uniform = new rendering::uniform<math::float2x2>(id, name, type, location);
 						break;
@@ -108,8 +95,7 @@ namespace rythe::rendering
 					case GL_FLOAT_MAT4:
 						uniform = new rendering::uniform<math::float4x4>(id, name, type, location);
 						break;
-					default:
-						continue;
+					default: continue;
 				}
 
 				// Insert uniform into the uniform list.
@@ -135,16 +121,24 @@ namespace rythe::rendering
 				GLint arraySize = 0; // Use this later for attribute arrays.
 				GLenum type = 0;
 				GLsizei nameLength = 0;
-				glGetActiveAttrib(variant.programId, attrib, (GLsizei)maxAttribNameLength, &nameLength, &arraySize, &type, attribNameBuffer);
+				glGetActiveAttrib(
+					variant.programId, attrib, (GLsizei)maxAttribNameLength, &nameLength, &arraySize, &type,
+					attribNameBuffer
+				);
 
-				std::string_view name(attribNameBuffer, nameLength + 1); // Get string_view of the actual name within the buffer.
+				std::string_view name(
+					attribNameBuffer, nameLength + 1
+				);                                            // Get string_view of the actual name within the buffer.
 
-				if (name.find('[') != std::string_view::npos)            // We don't support attribute arrays yet.
+				if (name.find('[') != std::string_view::npos) // We don't support attribute arrays yet.
+				{
 					continue;
+				}
 
 				// Get location and create attribute object
 				GLint location = glGetAttribLocation(variant.programId, attribNameBuffer);
-				variant.attributes[rsl::nameHash(name)] = std::unique_ptr<attribute>(new attribute(id, name, type, location));
+				variant.attributes[rsl::nameHash(name)] =
+					std::unique_ptr<attribute>(new attribute(id, name, type, location));
 			}
 
 			delete[] attribNameBuffer;
@@ -184,56 +178,52 @@ namespace rythe::rendering
 			rsl::cstring shaderTypename;
 			switch (shaderType)
 			{
-				case GL_FRAGMENT_SHADER:
-					shaderTypename = "fragment";
-					break;
-				case GL_VERTEX_SHADER:
-					shaderTypename = "vertex";
-					break;
-				case GL_GEOMETRY_SHADER:
-					shaderTypename = "geometry";
-					break;
-				case GL_TESS_CONTROL_SHADER:
-					shaderTypename = "tessellation control";
-					break;
-				case GL_TESS_EVALUATION_SHADER:
-					shaderTypename = "tessellation evaluation";
-					break;
-				case GL_COMPUTE_SHADER:
-					shaderTypename = "compute";
-					break;
-				default:
-					shaderTypename = "unknown type";
-					break;
+				case GL_FRAGMENT_SHADER: shaderTypename = "fragment"; break;
+				case GL_VERTEX_SHADER: shaderTypename = "vertex"; break;
+				case GL_GEOMETRY_SHADER: shaderTypename = "geometry"; break;
+				case GL_TESS_CONTROL_SHADER: shaderTypename = "tessellation control"; break;
+				case GL_TESS_EVALUATION_SHADER: shaderTypename = "tessellation evaluation"; break;
+				case GL_COMPUTE_SHADER: shaderTypename = "compute"; break;
+				default: shaderTypename = "unknown type"; break;
 			}
 
 			log::error("Error compiling {} shader:\n\t{}", shaderTypename, errorMessage);
 			if (infoLogLength > 0 && infoLogLength < 1024)
+			{
 				delete[] errorMessage; // Delete message.
+			}
 
-			glDeleteShader(shaderId);  // Delete shader.
+			glDeleteShader(shaderId); // Delete shader.
 			return -1;
 		}
 		return shaderId;
 	}
 
-	bool ShaderCache::load_precompiled(const fs::view& file, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state)
+	bool ShaderCache::load_precompiled(
+		const fs::view& file, shader_ilo& ilo, std::unordered_map<std::string, shader_state>& state
+	)
 	{
 		log::info("Loading precompiled shader: {}", file.get_virtual_path());
 		auto result = file.get();
 		if (result != common::valid)
+		{
 			return false;
+		}
 
 		auto resource = result.value();
 
 		if (resource.size() <= 22)
+		{
 			return false;
+		}
 
 		rsl::byte_vec data = resource.get();
 
 		std::string_view magic(reinterpret_cast<char*>(data.data()), 19);
 		if (magic != "\xabRYTHE SHADER\xbb\r\n\x13\n")
+		{
 			return false;
+		}
 
 		auto start = data.cbegin() + 19;
 		auto end = data.cend();
@@ -253,7 +243,9 @@ namespace rythe::rendering
 					std::vector<GLenum> rawState;
 					rsl::retrieveBinaryData(rawState, start);
 					if (rawState.size() % 2 != 0)
+					{
 						return false;
+					}
 
 					shader_state& variantState = state[shaderVariant];
 					for (int i = 0; i < rawState.size(); i += 2)
@@ -272,24 +264,31 @@ namespace rythe::rendering
 					ilo[shaderVariant].emplace_back(shaderType, source);
 				}
 				break;
-				default:
-					return false;
+				default: return false;
 			}
 		}
 		return true;
 	}
 
-	void ShaderCache::store_precompiled(const fs::view& file, const shader_ilo& ilo, const std::unordered_map<std::string, shader_state>& state)
+	void ShaderCache::store_precompiled(
+		const fs::view& file, const shader_ilo& ilo, const std::unordered_map<std::string, shader_state>& state
+	)
 	{
 		auto result = file.get_extension();
 		if (result != common::valid)
+		{
 			return;
+		}
 
 		fs::view precompiled("");
 		if (result.value() == ".shil" || result.value().empty())
+		{
 			precompiled = file;
+		}
 		else
+		{
 			precompiled = file / ".." / (file.get_filestem().value() + ".shil");
+		}
 
 		if (precompiled.is_valid(true) && precompiled.file_info().can_be_written)
 		{
@@ -298,7 +297,9 @@ namespace rythe::rendering
 
 			std::string magic = "\xabRYTHE SHADER\xbb\r\n\x13\n";
 			for (auto item : magic)
+			{
 				data.push_back(item);
+			}
 
 			std::vector<GLenum> rawState;
 			for (auto& [variant, variantState] : state)
@@ -316,17 +317,17 @@ namespace rythe::rendering
 			}
 
 			for (auto& [shaderVariant, variantSource] : ilo)
+			{
 				for (auto& [shaderType, source] : variantSource)
 				{
 					rsl::appendBinaryData(&shaderType, data);
 					rsl::appendBinaryData(&shaderVariant, data);
 					rsl::appendBinaryData(&source, data);
 				}
+			}
 
 			precompiled.set(resource).except([](fs_error err)
-			{
-				log::error("error occurred in {} at {} line {}: {}", err.file(), err.func(), err.file(), err.what());
-			});
+			{ log::error("error occurred in {} at {} line {}: {}", err.file(), err.func(), err.file(), err.what()); });
 		}
 	}
 
@@ -342,9 +343,7 @@ namespace rythe::rendering
 		}
 
 		ShaderCompiler::setErrorCallback([](const std::string& errormsg, log::severity severity)
-		{
-			log::println(severity, errormsg);
-		});
+		{ log::println(severity, errormsg); });
 
 		clear_modified_from_cache(file.parent());
 
@@ -353,14 +352,18 @@ namespace rythe::rendering
 
 		auto result = file.get_extension();
 		if (result != common::valid)
+		{
 			return invalid_shader_handle;
+		}
 
 		bool compiledFromScratch = false;
 
 		if (result.value().empty() || result.value() == ".shil")
 		{
 			if (!load_precompiled(file, shaders, state))
+			{
 				return invalid_shader_handle;
+			}
 		}
 		else
 		{
@@ -376,7 +379,9 @@ namespace rythe::rendering
 						if (traits.is_file && traits.can_be_read)
 						{
 							if (load_precompiled(precompiled, shaders, state))
+							{
 								break;
+							}
 						}
 					}
 				}
@@ -384,12 +389,18 @@ namespace rythe::rendering
 				rsl::byte compilerSettings = 0;
 				compilerSettings |= settings.api;
 				if (settings.debug)
+				{
 					compilerSettings |= shader_compiler_options::debug;
+				}
 				if (settings.low_power)
+				{
 					compilerSettings |= shader_compiler_options::low_power;
+				}
 
-				if (!ShaderCompiler::process(file, compilerSettings, shaders, state, detail::get_default_defines()))
+				if (!ShaderCompiler::process(file, compilerSettings, shaders, state, internal::get_default_defines()))
+				{
 					return invalid_shader_handle;
+				}
 
 				compiledFromScratch = true;
 
@@ -397,7 +408,9 @@ namespace rythe::rendering
 		}
 
 		if (shaders.empty())
+		{
 			return invalid_shader_handle;
+		}
 
 		shader shader;
 		shader.name = "invalid";
@@ -458,13 +471,16 @@ namespace rythe::rendering
 					case GL_DITHER:
 					{
 						if (param == GL_TRUE)
+						{
 							glEnable(GL_DITHER);
+						}
 						else
+						{
 							glDisable(GL_DITHER);
+						}
 					}
 					break;
-					default:
-						break;
+					default: break;
 				}
 			}
 
@@ -531,7 +547,9 @@ namespace rythe::rendering
 
 				log::error("Error linking invalid shader:\n\t{}", errorMessage);
 				if (infoLogLength > 0 && infoLogLength < 1024)
+				{
 					delete[] errorMessage; // Delete message.
+				}
 
 				for (auto& id : shaderIds)
 				{
@@ -570,7 +588,9 @@ namespace rythe::rendering
 
 				log::error("Error validating invalid shader:\n\t{}", errorMessage);
 				if (infoLogLength > 0 && infoLogLength < 1024)
+				{
 					delete[] errorMessage; // Delete message.
+				}
 
 				for (auto& shaderId : shaderIds)
 				{
@@ -585,7 +605,9 @@ namespace rythe::rendering
 		}
 
 		if (shader.m_variants.size() == 0)
+		{
 			return invalid_shader_handle;
+		}
 
 		process_io(shader, invalid_id);
 
@@ -596,7 +618,9 @@ namespace rythe::rendering
 		}
 
 		if (compiledFromScratch && settings.storePrecompiled)
+		{
 			store_precompiled(file, shaders, state);
+		}
 
 		return {invalid_id};
 	}
@@ -605,9 +629,13 @@ namespace rythe::rendering
 	{
 		auto pathHash = rsl::nameHash(path.get_virtual_path());
 		if (m_checkedPaths.count(pathHash))
+		{
 			return;
+		}
 		else
+		{
 			m_checkedPaths.insert(pathHash);
+		}
 
 		ShaderCompiler::cleanCache(path);
 	}
@@ -627,7 +655,9 @@ namespace rythe::rendering
 			for (auto [id, shaderProgram] : m_shaders)
 			{
 				if (id != invalid_id)
+				{
 					toReload.emplace_back(std::move(shaderProgram));
+				}
 			}
 
 			for (auto& item : toReload)
@@ -641,7 +671,9 @@ namespace rythe::rendering
 		for (auto& item : toReload)
 		{
 			for (auto& [id, variant] : item.m_variants)
+			{
 				glDeleteProgram(variant.programId);
+			}
 
 			create_shader(item.name, fs::view(item.path), item.m_importSettings);
 		}
@@ -659,7 +691,9 @@ namespace rythe::rendering
 		{
 			shader temp = std::move(m_shaders.at(id));
 			for (auto& [id, variant] : temp.m_variants)
+			{
 				glDeleteProgram(variant.programId);
+			}
 			m_shaders.erase(id);
 		}
 	}
@@ -682,7 +716,8 @@ namespace rythe::rendering
 		return false;
 	}
 
-	shader_handle ShaderCache::create_shader(const std::string& name, const fs::view& file, shader_import_settings settings)
+	shader_handle
+	ShaderCache::create_shader(const std::string& name, const fs::view& file, shader_import_settings settings)
 	{
 		static rsl::id_type defaultId = rsl::nameHash("default");
 
@@ -701,7 +736,9 @@ namespace rythe::rendering
 			{
 				auto& shader = m_shaders.at(id);
 				if (shader.m_variants.empty() || !shader.m_variants.count(defaultId))
+				{
 					return {invalid_id};
+				}
 
 				log::debug("Shader {} already exists, existing shader will be returned instead.", name);
 				return {id};
@@ -715,14 +752,18 @@ namespace rythe::rendering
 
 		auto result = file.get_extension();
 		if (result != common::valid)
+		{
 			return invalid_shader_handle;
+		}
 
 		bool compiledFromScratch = false;
 
 		if (result.value().empty() || result.value() == ".shil")
 		{
 			if (!load_precompiled(file, shaders, state))
+			{
 				return invalid_shader_handle;
+			}
 		}
 		else
 		{
@@ -738,7 +779,9 @@ namespace rythe::rendering
 						if (traits.is_file && traits.can_be_read)
 						{
 							if (load_precompiled(precompiled, shaders, state))
+							{
 								break;
+							}
 						}
 					}
 				}
@@ -746,12 +789,18 @@ namespace rythe::rendering
 				rsl::byte compilerSettings = 0;
 				compilerSettings |= settings.api;
 				if (settings.debug)
+				{
 					compilerSettings |= shader_compiler_options::debug;
+				}
 				if (settings.low_power)
+				{
 					compilerSettings |= shader_compiler_options::low_power;
+				}
 
-				if (!ShaderCompiler::process(file, compilerSettings, shaders, state, detail::get_default_defines()))
+				if (!ShaderCompiler::process(file, compilerSettings, shaders, state, internal::get_default_defines()))
+				{
 					return invalid_shader_handle;
+				}
 
 				compiledFromScratch = true;
 
@@ -759,7 +808,9 @@ namespace rythe::rendering
 		}
 
 		if (shaders.empty())
+		{
 			return invalid_shader_handle;
+		}
 
 		shader shader;
 
@@ -821,13 +872,16 @@ namespace rythe::rendering
 					case GL_DITHER:
 					{
 						if (param == GL_TRUE)
+						{
 							glEnable(GL_DITHER);
+						}
 						else
+						{
 							glDisable(GL_DITHER);
+						}
 					}
 					break;
-					default:
-						break;
+					default: break;
 				}
 			}
 
@@ -892,7 +946,9 @@ namespace rythe::rendering
 
 				log::error("Error linking {} shader:\n\t{}", name, errorMessage);
 				if (infoLogLength > 0 && infoLogLength < 1024)
+				{
 					delete[] errorMessage; // Delete message.
+				}
 
 				for (auto& id : shaderIds)
 				{
@@ -930,7 +986,9 @@ namespace rythe::rendering
 
 				log::error("Error validating {} shader:\n\t{}", name, errorMessage);
 				if (infoLogLength > 0 && infoLogLength < 1024)
+				{
 					delete[] errorMessage; // Delete message.
+				}
 
 				for (auto& shaderId : shaderIds)
 				{
@@ -980,7 +1038,9 @@ namespace rythe::rendering
 		}
 
 		if (compiledFromScratch && settings.storePrecompiled)
+		{
 			store_precompiled(file, shaders, state);
+		}
 
 		return {id};
 	}
@@ -1002,9 +1062,13 @@ namespace rythe::rendering
 		}
 
 		if (!m_shaders.contains(id))
+		{
 			return invalid_shader_handle;
+		}
 		else
+		{
 			return {id};
+		}
 	}
 
 	shader_handle ShaderCache::get_handle(rsl::id_type id)
@@ -1017,9 +1081,13 @@ namespace rythe::rendering
 		}
 
 		if (!m_shaders.contains(id))
+		{
 			return invalid_shader_handle;
+		}
 		else
+		{
 			return {id};
+		}
 	}
 
 	shader_variant& shader_handle::get_variant(rsl::id_type variantId)
@@ -1062,7 +1130,8 @@ namespace rythe::rendering
 		return ShaderCache::get_shader(id)->path;
 	}
 
-	std::unordered_map<rsl::id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> shader_handle::get_uniform_info() const
+	std::unordered_map<rsl::id_type, std::vector<std::tuple<std::string, GLint, GLenum>>>
+	shader_handle::get_uniform_info() const
 	{
 		auto* shader = ShaderCache::get_shader(id);
 		std::unordered_map<rsl::id_type, std::vector<std::tuple<std::string, GLint, GLenum>>> info;
@@ -1080,7 +1149,8 @@ namespace rythe::rendering
 		return ShaderCache::get_shader(id)->get_variant(variantId).get_uniform_info();
 	}
 
-	std::vector<std::tuple<std::string, GLint, GLenum>> shader_handle::get_uniform_info(const std::string& variant) const
+	std::vector<std::tuple<std::string, GLint, GLenum>> shader_handle::get_uniform_info(const std::string& variant
+	) const
 	{
 		return ShaderCache::get_shader(id)->get_variant(rsl::nameHash(variant)).get_uniform_info();
 	}
@@ -1140,7 +1210,9 @@ namespace rythe::rendering
 			m_currentShaderVariant = &m_variants.at(defaultId);
 		}
 		else if (m_variants.count(variantId))
+		{
 			m_currentShaderVariant = &m_variants.at(variantId);
+		}
 	}
 
 	void shader::configure_variant(const std::string& variant) const
@@ -1149,14 +1221,18 @@ namespace rythe::rendering
 		std::replace(variantName.begin(), variantName.end(), ' ', '_');
 		rsl::id_type variantId = rsl::nameHash(variantName);
 		if (m_variants.count(variantId))
+		{
 			m_currentShaderVariant = &m_variants.at(variantId);
+		}
 	}
 
 	shader_variant& shader::get_variant(rsl::id_type variantId)
 	{
 #if defined(RYTHE_VALIDATE)
 		if (!m_variants.count(variantId))
+		{
 			return const_cast<shader_variant&>(invalid_shader_handle.get_variant(0));
+		}
 #endif
 		if (variantId == 0)
 		{
@@ -1175,7 +1251,9 @@ namespace rythe::rendering
 	{
 #if defined(RYTHE_VALIDATE)
 		if (!m_variants.count(variantId))
+		{
 			return invalid_shader_handle.get_variant(0);
+		}
 #endif
 		if (variantId == 0)
 		{
@@ -1245,13 +1323,16 @@ namespace rythe::rendering
 				case GL_DITHER:
 				{
 					if (param == GL_TRUE)
+					{
 						glEnable(GL_DITHER);
+					}
 					else
+					{
 						glDisable(GL_DITHER);
+					}
 				}
 				break;
-				default:
-					break;
+				default: break;
 			}
 		}
 
@@ -1305,7 +1386,9 @@ namespace rythe::rendering
 
 		rsl::id_type id = rsl::nameHash(name);
 		if (m_currentShaderVariant->attributes.count(id))
+		{
 			return *(m_currentShaderVariant->attributes[id].get());
+		}
 
 		log::error("Shader {} does not contain attribute {}", this->name, name);
 		return invalid_attribute;
@@ -1320,7 +1403,9 @@ namespace rythe::rendering
 		}
 
 		if (m_currentShaderVariant->attributes.count(id))
+		{
 			return *(m_currentShaderVariant->attributes[id].get());
+		}
 		log::error("Shader {} does not contain attribute with id {}", this->name, id);
 		return invalid_attribute;
 	}
@@ -1329,7 +1414,9 @@ namespace rythe::rendering
 	{
 		std::vector<std::tuple<std::string, GLint, GLenum>> info;
 		for (auto& [_, uniform] : uniforms)
+		{
 			info.push_back(std::make_tuple(uniform->get_name(), uniform->get_location(), uniform->get_type()));
+		}
 		return info;
 	}
 

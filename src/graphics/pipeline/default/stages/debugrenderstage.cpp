@@ -9,13 +9,17 @@ namespace rythe::rendering
 	void DebugRenderStage::startDebugDomain()
 	{
 		if (!localLines)
+		{
 			localLines = new std::unordered_set<debug::debug_line_event>();
+		}
 	}
 
 	void DebugRenderStage::endDebugDomain()
 	{
 		if (!localLines)
+		{
 			return;
+		}
 		rsl::size_type localSize = localLines->size();
 
 		std::thread::id id = std::this_thread::get_id();
@@ -27,18 +31,24 @@ namespace rythe::rendering
 			{
 				auto* lineBuffer = itr->second;
 				if (localSize == 0 && lineBuffer->size() == 0)
+				{
 					return;
+				}
 
 				for (auto& line : *lineBuffer)
 				{
 					if (line.time > 0 && !localLines->count(line))
+					{
 						localLines->insert(line);
+					}
 				}
 
 				delete lineBuffer;
 			}
 			else if (localSize == 0)
+			{
 				return;
+			}
 
 			debugLines[id] = localLines;
 			localLines = nullptr;
@@ -52,17 +62,24 @@ namespace rythe::rendering
 	{
 		debug::debug_line_event& line = reinterpret_cast<debug::debug_line_event&>(event);
 		if (localLines->count(line))
+		{
 			localLines->erase(line);
+		}
 		localLines->insert(line);
 	}
 
 	void DebugRenderStage::setup(app::window& context)
 	{
 		startDebugDomain();
-		events::EventBus::bindToEvent(rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template create<DebugRenderStage, &DebugRenderStage::drawDebugLine>(*this));
+		events::EventBus::bindToEvent(
+			rsl::nameHash("debug_line"), rsl::delegate<void(events::event_base&)>::template create<
+											 DebugRenderStage, &DebugRenderStage::drawDebugLine>(*this)
+		);
 	}
 
-	void DebugRenderStage::render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void DebugRenderStage::render(
+		app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime
+	)
 	{
 		using namespace rythe::core::fs::literals;
 		endDebugDomain();
@@ -72,7 +89,9 @@ namespace rythe::rendering
 		{
 			std::lock_guard guard(debugLinesLock);
 			if (debugLines.size() == 0)
+			{
 				return;
+			}
 
 			std::vector<debug::debug_line_event> toRemove;
 			for (auto& [threadId, domain] : debugLines)
@@ -82,16 +101,22 @@ namespace rythe::rendering
 				for (auto& line : (*domain))
 				{
 					if (line.time == 0)
+					{
 						continue;
+					}
 
 					line.timeBuffer += deltaTime;
 
 					if (line.timeBuffer >= line.time)
+					{
 						toRemove.push_back(line);
+					}
 				}
 
 				for (auto line : toRemove)
+				{
 					domain->erase(line);
+				}
 			}
 		}
 
@@ -111,7 +136,8 @@ namespace rythe::rendering
 			return;
 		}
 
-		static material_handle debugMaterial = MaterialCache::create_material("debug", "assets://shaders/debug.shs"_view);
+		static material_handle debugMaterial =
+			MaterialCache::create_material("debug", "assets://shaders/debug.shs"_view);
 		static app::gl_id vertexBuffer = -1;
 		static rsl::size_type vertexBufferSize = 0;
 		static app::gl_id colorBuffer = -1;
@@ -121,21 +147,33 @@ namespace rythe::rendering
 		static app::gl_id vao = -1;
 
 		if (debugMaterial == invalid_material_handle)
+		{
 			return;
+		}
 
 		if (vertexBuffer == -1)
+		{
 			glGenBuffers(1, &vertexBuffer);
+		}
 
 		if (colorBuffer == -1)
+		{
 			glGenBuffers(1, &colorBuffer);
+		}
 
 		if (ignoreDepthBuffer == -1)
+		{
 			glGenBuffers(1, &ignoreDepthBuffer);
+		}
 
 		if (vao == -1)
+		{
 			glGenVertexArrays(1, &vao);
+		}
 
-		static std::unordered_map<float, std::tuple<std::vector<rsl::uint>, std::vector<math::color>, std::vector<rsl::math::float3>>> lineBatches;
+		static std::unordered_map<
+			float, std::tuple<std::vector<rsl::uint>, std::vector<math::color>, std::vector<rsl::math::float3>>>
+			lineBatches;
 		for (auto& [width, data] : lineBatches)
 		{
 			auto& [ignoreDepths, colors, vertices] = data;

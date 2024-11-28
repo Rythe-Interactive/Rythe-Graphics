@@ -85,7 +85,9 @@ namespace ImCurveEdit
 		float len_sq = C * C + D * D;
 		float param = -1.f;
 		if (len_sq > FLT_EPSILON)
+		{
 			param = dot / len_sq;
+		}
 
 		float xx, yy;
 
@@ -129,19 +131,30 @@ namespace ImCurveEdit
 		{
 			ret = 1;
 			if (io.MouseDown[0])
+			{
 				ret = 2;
+			}
 		}
 		if (edited)
+		{
 			draw_list->AddPolyline(offsets, 4, 0xFFFFFFFF, true, 3.0f);
+		}
 		else if (ret)
+		{
 			draw_list->AddPolyline(offsets, 4, 0xFF80B0FF, true, 2.0f);
+		}
 		else
+		{
 			draw_list->AddPolyline(offsets, 4, 0xFF0080FF, true, 2.0f);
+		}
 
 		return ret;
 	}
 
-	int Edit(Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect, ImVector<EditPoint>* selectedPoints)
+	int Edit(
+		Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect,
+		ImVector<EditPoint>* selectedPoints
+	)
 	{
 		static bool selectingQuad = false;
 		static ImVec2 quadSelection;
@@ -160,7 +173,9 @@ namespace ImCurveEdit
 		delegate.focused = ImGui::IsWindowFocused();
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		if (clippingRect)
+		{
 			draw_list->PushClipRect(clippingRect->Min, clippingRect->Max, true);
+		}
 
 		const ImVec2 offset = ImGui::GetCursorScreenPos() + ImVec2(0.f, size.y);
 		const ImVec2 ssize(size.x, -size.y);
@@ -202,24 +217,29 @@ namespace ImCurveEdit
 			min.y -= deltaH;
 			max.y -= deltaH;
 			if (!ImGui::IsMouseDown(2))
+			{
 				scrollingV = false;
+			}
 		}
 
 		draw_list->AddRectFilled(offset, offset + ssize, delegate.GetBackgroundColor());
 
-		auto pointToRange = [&](ImVec2 pt)
-		{ return (pt - min) / range; };
-		auto rangeToPoint = [&](ImVec2 pt)
-		{ return (pt * range) + min; };
+		auto pointToRange = [&](ImVec2 pt) { return (pt - min) / range; };
+		auto rangeToPoint = [&](ImVec2 pt) { return (pt * range) + min; };
 
-		draw_list->AddLine(ImVec2(-1.f, -min.y / range.y) * viewSize + offset, ImVec2(1.f, -min.y / range.y) * viewSize + offset, 0xFF000000, 1.5f);
+		draw_list->AddLine(
+			ImVec2(-1.f, -min.y / range.y) * viewSize + offset, ImVec2(1.f, -min.y / range.y) * viewSize + offset,
+			0xFF000000, 1.5f
+		);
 		bool overCurveOrPoint = false;
 
 		int localOverCurve = -1;
 		// make sure highlighted curve is rendered last
 		int* curvesIndex = (int*)_malloca(sizeof(int) * curveCount);
 		for (size_t c = 0; c < curveCount; c++)
+		{
 			curvesIndex[c] = int(c);
+		}
 		int highLightedCurveIndex = -1;
 		if (overCurve != -1 && curveCount)
 		{
@@ -231,17 +251,25 @@ namespace ImCurveEdit
 		{
 			int c = curvesIndex[cur];
 			if (!delegate.IsVisible(c))
+			{
 				continue;
+			}
 			const size_t ptCount = delegate.GetPointCount(c);
 			if (ptCount < 1)
+			{
 				continue;
+			}
 			CurveType curveType = delegate.GetCurveType(c);
 			if (curveType == CurveNone)
+			{
 				continue;
+			}
 			const ImVec2* pts = delegate.GetPoints(c);
 			uint32_t curveColor = delegate.GetCurveColor(c);
 			if ((c == highLightedCurveIndex && selection.empty() && !selectingQuad) || movingCurve == c)
+			{
 				curveColor = 0xFFFFFFFF;
+			}
 
 			for (size_t p = 0; p < ptCount - 1; p++)
 			{
@@ -296,7 +324,10 @@ namespace ImCurveEdit
 
 			for (size_t p = 0; p < ptCount; p++)
 			{
-				const int drawState = DrawPoint(draw_list, pointToRange(pts[p]), viewSize, offset, (selection.find({int(c), int(p)}) != selection.end() && movingCurve == -1 && !scrollingV));
+				const int drawState = DrawPoint(
+					draw_list, pointToRange(pts[p]), viewSize, offset,
+					(selection.find({int(c), int(p)}) != selection.end() && movingCurve == -1 && !scrollingV)
+				);
 				if (drawState && movingCurve == -1 && !selectingQuad)
 				{
 					overCurveOrPoint = true;
@@ -305,7 +336,9 @@ namespace ImCurveEdit
 					if (drawState == 2)
 					{
 						if (!io.KeyShift && selection.find({int(c), int(p)}) == selection.end())
+						{
 							selection.clear();
+						}
 						selection.insert({int(c), int(p)});
 					}
 				}
@@ -313,7 +346,9 @@ namespace ImCurveEdit
 		} // curves loop
 
 		if (localOverCurve == -1)
+		{
 			overCurve = -1;
+		}
 
 		// move selection
 		static bool pointsMoved = false;
@@ -341,7 +376,9 @@ namespace ImCurveEdit
 				int originalIndex = 0;
 				for (auto& sel : prevSelection)
 				{
-					const ImVec2 p = rangeToPoint(pointToRange(originalPoints[originalIndex]) + (io.MousePos - mousePosOrigin) * sizeOfPixel);
+					const ImVec2 p = rangeToPoint(
+						pointToRange(originalPoints[originalIndex]) + (io.MousePos - mousePosOrigin) * sizeOfPixel
+					);
 					const int newIndex = delegate.EditPoint(sel.curveIndex, sel.pointIndex, p);
 					if (newIndex != sel.pointIndex)
 					{
@@ -393,7 +430,10 @@ namespace ImCurveEdit
 			{
 				for (size_t p = 0; p < ptCount; p++)
 				{
-					delegate.EditPoint(movingCurve, int(p), rangeToPoint(pointToRange(originalPoints[p]) + (io.MousePos - mousePosOrigin) * sizeOfPixel));
+					delegate.EditPoint(
+						movingCurve, int(p),
+						rangeToPoint(pointToRange(originalPoints[p]) + (io.MousePos - mousePosOrigin) * sizeOfPixel)
+					);
 				}
 				ret = 1;
 			}
@@ -421,36 +461,47 @@ namespace ImCurveEdit
 			if (!io.MouseDown[0])
 			{
 				if (!io.KeyShift)
+				{
 					selection.clear();
+				}
 				// select everythnig is quad
 				for (size_t c = 0; c < curveCount; c++)
 				{
 					if (!delegate.IsVisible(c))
+					{
 						continue;
+					}
 
 					const size_t ptCount = delegate.GetPointCount(c);
 					if (ptCount < 1)
+					{
 						continue;
+					}
 
 					const ImVec2* pts = delegate.GetPoints(c);
 					for (size_t p = 0; p < ptCount; p++)
 					{
 						const ImVec2 center = pointToRange(pts[p]) * viewSize + offset;
 						if (selectionQuad.Contains(center))
+						{
 							selection.insert({int(c), int(p)});
+						}
 					}
 				}
 				// done
 				selectingQuad = false;
 			}
 		}
-		if (!overCurveOrPoint && ImGui::IsMouseClicked(0) && !selectingQuad && movingCurve == -1 && !overSelectedPoint && container.Contains(io.MousePos))
+		if (!overCurveOrPoint && ImGui::IsMouseClicked(0) && !selectingQuad && movingCurve == -1 &&
+			!overSelectedPoint && container.Contains(io.MousePos))
 		{
 			selectingQuad = true;
 			quadSelection = io.MousePos;
 		}
 		if (clippingRect)
+		{
 			draw_list->PopClipRect();
+		}
 
 		ImGui::EndChildFrame();
 		ImGui::PopStyleVar();
@@ -461,7 +512,9 @@ namespace ImCurveEdit
 			selectedPoints->resize(int(selection.size()));
 			int index = 0;
 			for (auto& point : selection)
+			{
 				(*selectedPoints)[index++] = point;
+			}
 		}
 		return ret;
 	}

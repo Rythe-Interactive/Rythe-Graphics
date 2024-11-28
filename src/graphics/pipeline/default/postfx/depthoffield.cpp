@@ -16,7 +16,8 @@ namespace rythe::rendering
 	{
 		using namespace fs::literals;
 		// Create all the shaders needed.
-		m_depthThresholdShader = ShaderCache::create_shader("depth threshold", "engine://shaders/depththreshold.shs"_view);
+		m_depthThresholdShader =
+			ShaderCache::create_shader("depth threshold", "engine://shaders/depththreshold.shs"_view);
 		m_bokehShader = ShaderCache::create_shader("dof bokeh", "engine://shaders/dofbokeh.shs"_view);
 		m_screenShader = ShaderCache::create_shader("screenshader", "engine://shaders/screenshader.shs"_view);
 		m_combineShader = ShaderCache::create_shader("dofcombineshader", "engine://shaders/dofcombine.shs"_view);
@@ -39,12 +40,17 @@ namespace rythe::rendering
 		// Adding itself to the post processing renderpass.
 		addRenderPass<&DepthOfField::renderPass>();
 	}
-	void DepthOfField::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void DepthOfField::renderPass(
+		framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+		rsl::span deltaTime
+	)
 	{
 		// Gets textures from framebuffer.
 		auto [valid_textures, depth_texture, color_texture] = getTextures(fbo);
 		if (!valid_textures)
+		{
 			return;
+		}
 
 		// Change sizes
 		math::int2 textureSize = color_texture.get_texture().size();
@@ -77,15 +83,21 @@ namespace rythe::rendering
 		// Try to get position attachment.
 		auto depth_attachment = fbo.getAttachment(GL_DEPTH_ATTACHMENT);
 		if (std::holds_alternative<std::monostate>(depth_attachment))
+		{
 			depth_attachment = fbo.getAttachment(GL_DEPTH_STENCIL_ATTACHMENT);
+		}
 
 		if (!std::holds_alternative<texture_handle>(depth_attachment))
+		{
 			return std::make_tuple(false, invalid_texture_handle, invalid_texture_handle);
+		}
 
 		// Try to get color attachment.
 		auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);
 		if (!std::holds_alternative<texture_handle>(color_attachment))
+		{
 			return std::make_tuple(false, invalid_texture_handle, invalid_texture_handle);
+		}
 
 		// Get position texture.
 		auto depth_texture = std::get<texture_handle>(depth_attachment);
@@ -123,7 +135,9 @@ namespace rythe::rendering
 		auto doAutoFocus = m_autoFocus.load(std::memory_order_relaxed);
 
 		if (doAutoFocus)
+		{
 			m_depthThresholdShader.configure_variant(autoFocusId);
+		}
 		// else
 		//     m_depthThresholdShader.configure_variant(0);
 

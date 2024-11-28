@@ -14,8 +14,11 @@ namespace rythe::rendering
 	{
 		using namespace rythe::core::fs::literals;
 		// Create all the shaders needed.
-		m_brightnessThresholdShader = rendering::ShaderCache::create_shader("bloom brightness threshold", "engine://shaders/bloombrightnessthreshold.shs"_view);
-		m_combineShader = rendering::ShaderCache::create_shader("bloom combine", "engine://shaders/bloomcombine.shs"_view);
+		m_brightnessThresholdShader = rendering::ShaderCache::create_shader(
+			"bloom brightness threshold", "engine://shaders/bloombrightnessthreshold.shs"_view
+		);
+		m_combineShader =
+			rendering::ShaderCache::create_shader("bloom combine", "engine://shaders/bloomcombine.shs"_view);
 
 		m_resampleShader = ShaderCache::create_shader("bloom resample", "engine://shaders/resample.shs"_view);
 		auto fbSize = context.size() / 2;
@@ -24,7 +27,9 @@ namespace rythe::rendering
 			m_downSampleTex[i] = TextureCache::create_texture("bloomTex" + std::to_string(i), fbSize, settings);
 
 			if (fbSize.x == 1 && fbSize.y == 1)
+			{
 				break;
+			}
 
 			fbSize = math::max(fbSize / 2, math::int2(1, 1));
 		}
@@ -49,7 +54,8 @@ namespace rythe::rendering
 		// Bind and assign the brightness threshold shader.
 		m_brightnessThresholdShader.bind();
 		m_brightnessThresholdShader.get_uniform_with_location<texture_handle>(SV_SCENECOLOR).set_value(colortexture);
-		m_brightnessThresholdShader.get_uniform_with_location<texture_handle>(SV_HDROVERDRAW).set_value(overdrawtexture);
+		m_brightnessThresholdShader.get_uniform_with_location<texture_handle>(SV_HDROVERDRAW)
+			.set_value(overdrawtexture);
 		// Render onto the quad.
 		renderQuad();
 		// Release the shader.
@@ -70,7 +76,9 @@ namespace rythe::rendering
 				m_downSampleTex[i].get_texture().resize(fbSize);
 
 				if (fbSize.x == 1 && fbSize.y == 1)
+				{
 					break;
+				}
 
 				fbSize = math::max(fbSize / 2, math::int2(1, 1));
 			}
@@ -85,9 +93,13 @@ namespace rythe::rendering
 			fbo.bind();
 			m_resampleShader.bind();
 			m_resampleShader.get_uniform_with_location<texture_handle>(SV_SCENECOLOR).set_value(src);
-			m_resampleShader.get_uniform<math::float2>("scale").set_value(math::float2(math::pow(2.f, static_cast<float>(idx))));
+			m_resampleShader.get_uniform<math::float2>("scale").set_value(
+				math::float2(math::pow(2.f, static_cast<float>(idx)))
+			);
 			if (upSample)
+			{
 				m_resampleShader.get_uniform<texture_handle>("mixTex").set_value(m_downSampleTex[idx]);
+			}
 
 			renderQuad();
 			m_resampleShader.release();
@@ -98,12 +110,16 @@ namespace rythe::rendering
 		m_resampleShader.configure_variant("downsample");
 
 		for (rsl::size_type i = 0; i < m_blurIterations; i++)
+		{
 			sampleProcess(i, false);
+		}
 
 		m_resampleShader.configure_variant("upsample");
 
 		for (rsl::size_type i = 1; i < m_blurIterations; i++)
+		{
 			sampleProcess(m_blurIterations - i - 1, true);
+		}
 
 		return src;
 	}
@@ -127,12 +143,17 @@ namespace rythe::rendering
 		// Release both the combining shader and framebuffer.
 		m_combineShader.release();
 
-		rsl::uint defaultAttachments[4] = {FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT};
+		rsl::uint defaultAttachments[4] = {
+			FRAGMENT_ATTACHMENT, NORMAL_ATTACHMENT, POSITION_ATTACHMENT, OVERDRAW_ATTACHMENT
+		};
 		glDrawBuffers(4, defaultAttachments);
 		fbo.release();
 	}
 
-	void Bloom::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void Bloom::renderPass(
+		framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+		rsl::span deltaTime
+	)
 	{
 		// If a brightness threshold texture had not been created yet, create one.
 		texture_handle overdrawTexture;
@@ -140,7 +161,9 @@ namespace rythe::rendering
 		// Try to get color attachment.
 		auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);
 		if (!std::holds_alternative<texture_handle>(color_attachment))
+		{
 			return;
+		}
 
 		// Get color texture.
 		auto color_texture = std::get<texture_handle>(color_attachment);
@@ -148,7 +171,9 @@ namespace rythe::rendering
 		{
 			auto attachment = fbo.getAttachment(OVERDRAW_ATTACHMENT);
 			if (std::holds_alternative<texture_handle>(attachment))
+			{
 				overdrawTexture = std::get<texture_handle>(attachment);
+			}
 		}
 
 		// Get brightest parts of the scene and append to overdraw buffer.

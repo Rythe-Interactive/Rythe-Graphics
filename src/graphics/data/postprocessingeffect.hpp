@@ -15,7 +15,9 @@ namespace rythe::rendering
 	class PostProcessingEffectBase
 	{
 	public:
-		std::vector<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>> renderPasses;
+		std::vector<
+			rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>>
+			renderPasses;
 		virtual rsl::id_type getId() const = 0;
 		virtual const std::string& getName() const = 0;
 		void init(app::window& context)
@@ -29,10 +31,7 @@ namespace rythe::rendering
 
 	protected:
 		virtual void setup(app::window& context) = 0;
-		void renderQuad()
-		{
-			m_quad.render();
-		}
+		void renderQuad() { m_quad.render(); }
 
 	private:
 		bool m_initialized = false;
@@ -55,11 +54,17 @@ namespace rythe::rendering
 		static const std::string name;
 
 	protected:
-		template <void (Self::*func_type)(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>
+		template <
+			void (Self::*func_type)(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>
 		void addRenderPass()
 		{
-			auto temp = rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>::template create<Self, func_type>(*reinterpret_cast<Self*>(this));
-			renderPasses.push_back(rsl::force_cast<rsl::delegate<void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>>(temp));
+			auto temp = rsl::delegate<void(
+				framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span
+			)>::template create<Self, func_type>(*reinterpret_cast<Self*>(this));
+			renderPasses.push_back(
+				rsl::force_cast<rsl::delegate<
+					void(framebuffer&, RenderPipelineBase*, camera&, const camera::camera_input&, rsl::span)>>(temp)
+			);
 		}
 	};
 

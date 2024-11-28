@@ -30,7 +30,8 @@ namespace rythe::rendering
 
 		void shutdown() override;
 
-		void render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
+		void
+		render(app::window& context, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime) override;
 	};
 } // namespace rythe::rendering
 

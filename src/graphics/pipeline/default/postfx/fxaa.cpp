@@ -9,12 +9,17 @@ namespace rythe::rendering
 		addRenderPass<&FXAA::renderPass>();
 	}
 
-	void FXAA::renderPass(framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput, rsl::span deltaTime)
+	void FXAA::renderPass(
+		framebuffer& fbo, RenderPipelineBase* pipeline, camera& cam, const camera::camera_input& camInput,
+		rsl::span deltaTime
+	)
 	{
 		// Try to get color attachment.
 		auto color_attachment = fbo.getAttachment(FRAGMENT_ATTACHMENT);
 		if (!std::holds_alternative<texture_handle>(color_attachment))
+		{
 			return;
+		}
 
 		// Get color texture.
 		auto color_texture = std::get<texture_handle>(color_attachment);
@@ -28,7 +33,8 @@ namespace rythe::rendering
 		m_fxaaShader.bind();
 
 		auto renderSize = color_texture.get_texture().size();
-		m_fxaaShader.get_uniform<math::float2>(texelSizeId).set_value(math::float2(1.f / renderSize.x, 1.f / renderSize.y));
+		m_fxaaShader.get_uniform<math::float2>(texelSizeId)
+			.set_value(math::float2(1.f / renderSize.x, 1.f / renderSize.y));
 
 		m_fxaaShader.get_uniform<float>(blurConstraintId).set_value(8.f);
 		m_fxaaShader.get_uniform<float>(reductionScaleId).set_value(1.f / 8.f);

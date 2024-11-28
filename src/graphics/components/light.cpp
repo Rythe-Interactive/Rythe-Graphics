@@ -17,15 +17,22 @@ namespace rythe::rendering
 	{
 	}
 
-	const detail::light_data& light::get_light_data(const ecs::component<position>& pos, const ecs::component<rotation>& rot)
+	const internal::light_data&
+	light::get_light_data(const ecs::component<position>& pos, const ecs::component<rotation>& rot)
 	{
 		if (m_type != light_type::DIRECTIONAL)
+		{
 			m_position = pos;
+		}
 		else
+		{
 			m_attenuation = FLT_MAX;
+		}
 
 		if (m_type != light_type::POINT)
+		{
 			m_direction = -rot->forward();
+		}
 
 		return m_lightData;
 	}

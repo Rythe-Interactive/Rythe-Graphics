@@ -19,7 +19,8 @@ namespace rythe::rendering
 	struct framebuffer
 	{
 	private:
-		// Managed resource with the framebuffer id, also has the responsibility of deleting the framebuffer after all copies of this framebuffer have been destroyed.
+		// Managed resource with the framebuffer id, also has the responsibility of deleting the framebuffer after all
+		// copies of this framebuffer have been destroyed.
 		common::managed_resource<app::gl_id> m_id = common::managed_resource<app::gl_id>(nullptr);
 		// Type of framebuffer, either read, write or both.
 		GLenum m_target = GL_FRAMEBUFFER;
@@ -28,8 +29,9 @@ namespace rythe::rendering
 		std::unordered_map<GLenum, attachment> m_attachments;
 
 	public:
-		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually create a framebuffer.
-		 *        This means that default initialized framebuffers are invalid temporary objects until they get properly initialized.
+		/**@brief Faux constructor. To prevent unnecessary GPU allocations the default constructor doesn't actually
+		 * create a framebuffer. This means that default initialized framebuffers are invalid temporary objects until
+		 * they get properly initialized.
 		 */
 		framebuffer() = default;
 
@@ -40,7 +42,8 @@ namespace rythe::rendering
 		explicit framebuffer(GLenum target);
 
 		/**@brief Check if the framebuffer is valid and complete.
-		 * @return std::pair<bool, std::string> First will be a boolean that will be true if the framebuffer is valid, the second will be the message about the state of the framebuffer.
+		 * @return std::pair<bool, std::string> First will be a boolean that will be true if the framebuffer is valid,
+		 * the second will be the message about the state of the framebuffer.
 		 */
 		std::pair<bool, std::string> verify() const;
 
@@ -78,7 +81,8 @@ namespace rythe::rendering
 
 		/**@brief Get the attachment of a certain attachment-point.
 		 * @param attachment Attachment-point to fetch the attachment for.
-		 * @return const std::any& An std::any that should be any_castable to either a texture handle or a renderbuffer if an attachment was active, the std::any will be empty otherwise.
+		 * @return const std::any& An std::any that should be any_castable to either a texture handle or a renderbuffer
+		 * if an attachment was active, the std::any will be empty otherwise.
 		 */
 		[[nodiscard]] const attachment& getAttachment(GLenum attachment) const;
 
